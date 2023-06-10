@@ -1,5 +1,5 @@
 <template>
-    <div class="pl-2 text-sm">
+    <div class="pl-2 text-sm" v-if="show_feedback">
         <h1 class="mt-2">CoolBox</h1>
         <span id="cb-settings">
             Edit extension settings (like enabling dark mode!) by clicking the CoolBox extension icon in the extensions menu (top right).<br>
@@ -14,10 +14,20 @@
     </div>
 </template>
 
-<script>
-export default {
-    name: "CoolBoxMessage"
-}
+<script setup>
+import {ref} from "vue";
+import browser from "webextension-polyfill";
+
+const show_feedback = ref(true)
+
+browser.storage.sync.get("feedback").then((result) => {
+    show_feedback.value = !result.feedback
+});
+browser.storage.sync.onChanged.addListener((changes) => {
+    if (changes.feedback) {
+        show_feedback.value = !changes.feedback.newValue;
+    }
+})
 </script>
 
 <style scoped>
