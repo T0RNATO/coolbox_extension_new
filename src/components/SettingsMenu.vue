@@ -1,6 +1,6 @@
 <template>
     <h1 class="w-full p-4 text-2xl text-white mb-0 bg-gradient-to-r from-[#ca88ce] to-[#50a9c2]">Coolbox Settings</h1>
-    <div class="grid-cols-2 grid p-4">
+    <div class="grid-cols-2 grid p-4 bg-gray-800">
         <span class="settings-label">Tiles RGB Speed:</span>
         <input type="range" id="rgb-tiles" min="1" max="200" class="range" v-model="rgb">
 
