@@ -1,11 +1,11 @@
 <template>
   <main>
-    <PageContent> Popup </PageContent>
+    <PopUp> Popup </PopUp>
   </main>
 </template>
 
 <script setup>
-import PageContent from "~/components/PageContent.vue";
+import PopUp from "~/components/PopUp.vue";
 </script>
 
 <style>

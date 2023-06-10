@@ -17,11 +17,13 @@ export default async function renderContent(
     cssPaths.forEach((cssPath) => {
       const styleEl = document.createElement("link");
       styleEl.setAttribute("rel", "stylesheet");
-      styleEl.setAttribute("href", browser.runtime.getURL(cssPath));    
+      styleEl.setAttribute("href", browser.runtime.getURL(cssPath));
       appRoot.appendChild(styleEl);
     });
   }
 
-  document.querySelector("#component36911 > div > div > div > h2").replaceWith(appRoot);
+  document.querySelector("#content").style.display = "none"
+  document.querySelector("#container").appendChild(appRoot);
+
   render(appRoot);
 }

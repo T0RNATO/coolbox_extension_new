@@ -4,7 +4,7 @@ const sharedManifest = {
   content_scripts: [
     {
       js: ["src/entries/contentScript/primary/main.js"],
-      matches: ["*://*/*"],
+      matches: ["*://schoolbox.donvale.vic.edu.au/*"],
     },
   ],
   icons: {
@@ -47,7 +47,7 @@ const ManifestV2 = {
     ...sharedManifest.options_ui,
     chrome_style: false,
   },
-  permissions: [...sharedManifest.permissions, "*://*/*"],
+  permissions: [...sharedManifest.permissions, "*://schoolbox.donvale.vic.edu.au/*"],
 };
 
 const ManifestV3 = {
@@ -56,7 +56,7 @@ const ManifestV3 = {
   background: {
     service_worker: "src/entries/background/serviceWorker.js",
   },
-  host_permissions: ["*://*/*"],
+  host_permissions: ["*://schoolbox.donvale.vic.edu.au/*"],
 };
 
 export function getManifest(manifestVersion) {

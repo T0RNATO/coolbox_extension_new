@@ -5,7 +5,7 @@
 </template>
 
 <script setup>
-import PageContent from "~/components/PageContent.vue";
+import PageContent from "~/components/PopUp.vue";
 </script>
 
 <style>
