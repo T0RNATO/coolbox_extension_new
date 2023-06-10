@@ -1,11 +1,11 @@
 <template>
   <main>
-    <PopUp> Popup </PopUp>
+    <SettingsMenu>Settings</SettingsMenu>
   </main>
 </template>
 
 <script setup>
-import PopUp from "~/components/PopUp.vue";
+import SettingsMenu from "~/components/SettingsMenu.vue";
 </script>
 
 <style>
