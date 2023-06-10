@@ -23,14 +23,19 @@
 </template>
 
 <script setup>
-import "tailwindcss/tailwind.css"; // Add this line
-import {computed} from "vue";
+import {computed, ref} from "vue";
 import browser from "webextension-polyfill";
 
+let slider_value = ref(0);
+
+browser.storage.sync.get("rgb_speed").then((result) => {
+  console.log(result.rgb_speed);
+  slider_value.value = result.rgb_speed;
+});
+
 const rgb = computed({
-    async get() {
-        let response = await browser.storage.sync.get("rgb_speed")
-        return response.rgb_speed
+    get() {
+        return slider_value.value;
     },
     set(value) {
         browser.storage.sync.set({

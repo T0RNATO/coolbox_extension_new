@@ -1,5 +1,4 @@
 import browser from "webextension-polyfill";
-import "tailwindcss/tailwind.css"; // Add this line
 
 export default async function renderContent(
   cssPaths,
