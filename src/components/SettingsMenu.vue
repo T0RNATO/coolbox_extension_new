@@ -39,22 +39,18 @@ browser.storage.sync.get("rgb_speed").then((result) => {
 });
 
 browser.storage.sync.get("pfp").then((result) => {
-  console.log(result.pfp);
   pfp.value = result.pfp;
 });
 
 browser.storage.sync.get("feedback").then((result) => {
-  console.log(result.feedback);
   feedback.value = result.feedback;
 });
 
 browser.storage.sync.get("theme_enabled").then((result) => {
-  console.log(result.theme_enabled);
   theme_enabled.value = result.theme_enabled;
 });
 
 browser.storage.sync.get("theme").then((result) => {
-  console.log(result.theme);
   theme.value = result.theme;
 });
 
