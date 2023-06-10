@@ -1,11 +1,11 @@
 <template>
   <main>
-    <PageContent> Options </PageContent>
+    <SettingsMenu> Options </SettingsMenu>
   </main>
 </template>
 
 <script setup>
-import PageContent from "~/components/PopUp.vue";
+import SettingsMenu from "~/components/SettingsMenu.vue";
 </script>
 
 <style>
