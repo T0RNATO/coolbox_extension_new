@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="grid grid-cols-[67%,33%]">
+    <div class="grid grid-cols-[65%,35%]">
       <!-- Left Column -->
       <div class="px-4">
         <GreetingText />
