@@ -26,11 +26,38 @@
 import {computed, ref} from "vue";
 import browser from "webextension-polyfill";
 
+
 let rgb_speed = ref(0);
+let pfp = ref(false);
+let feedback = ref(false);
+let theme_enabled = ref(false);
+let theme = ref(false);
+
 
 browser.storage.sync.get("rgb_speed").then((result) => {
   rgb_speed.value = result.rgb_speed;
 });
+
+browser.storage.sync.get("pfp").then((result) => {
+  console.log(result.pfp);
+  pfp.value = result.pfp;
+});
+
+browser.storage.sync.get("feedback").then((result) => {
+  console.log(result.feedback);
+  feedback.value = result.feedback;
+});
+
+browser.storage.sync.get("theme_enabled").then((result) => {
+  console.log(result.theme_enabled);
+  theme_enabled.value = result.theme_enabled;
+});
+
+browser.storage.sync.get("theme").then((result) => {
+  console.log(result.theme);
+  theme.value = result.theme;
+});
+
 
 const rgb = computed({
     get() {
@@ -43,13 +70,6 @@ const rgb = computed({
     }
 })
 
-let pfp = ref(false);
-
-browser.storage.sync.get("pfp").then((result) => {
-    console.log(result.pfp);
-    pfp.value = result.pfp;
-});
-
 const pfp_model = computed({
     get() {
         return pfp.value;
@@ -60,13 +80,6 @@ const pfp_model = computed({
         })
     }
 })
-
-let feedback = ref(false);
-
-browser.storage.sync.get("feedback").then((result) => {
-    console.log(result.feedback);
-    feedback.value = result.feedback;
-});
 
 const feedback_model = computed({
     get() {
@@ -79,13 +92,6 @@ const feedback_model = computed({
     }
 })
 
-let theme_enabled = ref(false);
-
-browser.storage.sync.get("theme_enabled").then((result) => {
-    console.log(result.theme_enabled);
-    theme_enabled.value = result.theme_enabled;
-});
-
 const theme_enabled_model = computed({
     get() {
         return theme_enabled.value;
@@ -97,13 +103,6 @@ const theme_enabled_model = computed({
     }
 })
 
-let theme = ref(false);
-
-browser.storage.sync.get("theme").then((result) => {
-    console.log(result.theme);
-    theme.value = result.theme;
-});
-
 const theme_model = computed({
     get() {
         return theme.value;
@@ -114,6 +113,7 @@ const theme_model = computed({
         })
     }
 })
+
 </script>
 
 <style>
