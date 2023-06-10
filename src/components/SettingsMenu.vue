@@ -5,13 +5,13 @@
         <input type="range" id="rgb-tiles" min="1" max="200" class="range" v-model="rgb">
 
         <span class="settings-label">Hide Profile Picture:</span>
-        <input type="checkbox" class="toggle" v-model="pfp_model">
+        <input type="checkbox" class="toggle" v-model="pfp_model" :hidden="pfp_model === undefined">
 
         <span class="settings-label">Hide Feedback Message:</span>
-        <input type="checkbox" class="toggle" v-model="feedback_model">
+        <input type="checkbox" class="toggle" v-model="feedback_model" :hidden="feedback_model === undefined">
 
         <span class="settings-label">Enable Theme:</span>
-        <input type="checkbox" class="toggle" v-model="theme_enabled_model">
+        <input type="checkbox" class="toggle" v-model="theme_enabled_model" :hidden="theme_enabled_model === undefined">
 
         <span class="settings-label">Theme:</span>
         <div>
@@ -28,9 +28,9 @@ import browser from "webextension-polyfill";
 
 
 let rgb_speed = ref(0);
-let pfp = ref(false);
-let feedback = ref(false);
-let theme_enabled = ref(false);
+let pfp = ref(undefined);
+let feedback = ref(undefined);
+let theme_enabled = ref(undefined);
 let theme = ref(false);
 
 
