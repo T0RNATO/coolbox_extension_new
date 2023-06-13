@@ -5,6 +5,7 @@
             <div class="px-4">
                 <GreetingText />
                 <hr>
+                <Timetable />
                 <Tiles />
                 <CoolBoxMessage/>
             </div>
@@ -21,6 +22,7 @@ import GreetingText from "~/components/GreetingText.vue";
 import UpcomingDueWork from "~/components/UpcomingDueWork.vue";
 import Tiles from "~/components/Tiles.vue";
 import CoolBoxMessage from "~/components/CoolBoxMessage.vue";
+import Timetable from "~/components/Timetable.vue";
 </script>
 
 <style>
