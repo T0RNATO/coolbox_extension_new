@@ -7,6 +7,7 @@
 }
 
 .material-symbols-outlined {
+    /*noinspection CssNoGenericFontName*/
     font-family: 'Material Symbols Outlined';
     font-weight: normal;
     font-style: normal;
