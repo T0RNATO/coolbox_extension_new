@@ -17,7 +17,7 @@ export default async function renderContent(
       const styleEl = document.createElement("link");
       styleEl.setAttribute("rel", "stylesheet");
       styleEl.setAttribute("href", browser.runtime.getURL(cssPath));
-      appRoot.appendChild(styleEl);
+      document.head.appendChild(styleEl);
     });
   }
 
