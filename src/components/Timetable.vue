@@ -1,6 +1,5 @@
 <template v-if="show">
-    <div v-html="timetable.innerHTML"></div>
-    <hr>
+    <div v-html="timetable.innerHTML" class="mb-3"></div>
 </template>
 
 <script setup>

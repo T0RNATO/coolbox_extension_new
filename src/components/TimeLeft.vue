@@ -1,6 +1,14 @@
 <template>
-    <span v-html="message"></span>
-    <hr v-if="message !== null">
+    <div v-if="minutesRemaining !== null">
+        <div v-if="minutesRemaining[0]">
+            <span v-if="isPlural(minutesRemaining[1])">There are <strong>{{ minutesRemaining[1] }}</strong> minutes until your next period.</span>
+            <span v-else>There is <strong>1</strong> minute until your next period.</span>
+        </div>
+        <div v-else>
+            <span v-if="isPlural(minutesRemaining[1])">There are <strong>{{ minutesRemaining[1] }}</strong> minutes left in this period.</span>
+            <span v-else>There is <strong>1</strong> minute left in this period.</span>
+        </div>
+    </div>
 </template>
 
 <script setup>
@@ -28,7 +36,7 @@ for (const periodElement of document.querySelectorAll(".timetable th")) {
 
         // Get the current date, and then set its time
         const date = new Date();
-        date.setHours(hours)
+        date.setHours(hours);
         date.setMinutes(Number(times[1]));
 
         period[keys[i]] = date.getTime();
@@ -36,7 +44,11 @@ for (const periodElement of document.querySelectorAll(".timetable th")) {
     periods.push(period);
 }
 
-const message = computed(() => {
+function isPlural(number) {
+    return number !== 1;
+}
+
+const minutesRemaining = computed(() => {
     // Get the period that you are either in, or is next
     const now = Date.now();
     const targetPeriod = periods.filter((per) => {
@@ -45,27 +57,23 @@ const message = computed(() => {
 
     // If nonexistent, school is over
     if (targetPeriod === undefined) {
-        return null
+        return null;
     }
 
     // If the user is inside a period
-    else if (periods.some((per) => {return now >= per.from && now < per.to})) {
+    else if (periods.some((per) => {
+        return now >= per.from && now < per.to;
+    })) {
         const timeDifference = targetPeriod.to - now;
-        const minutesLeft = Math.ceil(timeDifference / 1000 / 60);
-
-        const plural = minutesLeft > 1;
-
-        return `There ${plural ? "are" : "is"}<strong>${minutesLeft} minute${plural ? "s" : ""}</strong>left in the period.`
+        // Boolean represents currently in a period
+        return [true, Math.ceil(timeDifference / 1000 / 60)];
     }
 
     // If the user is in between periods
     else {
         const timeDifference = targetPeriod.from - now;
-        const minutesUntilNextPeriod = Math.ceil(timeDifference / 1000 / 60);
-
-        const plural = minutesUntilNextPeriod > 1;
-
-        return `There ${plural > 1 ? "are" : "is"} <strong>${minutesUntilNextPeriod} minute${plural ? "s" : ""}</strong> until your next period.`
+        // Boolean represents not currently in a period
+        return [true, Math.ceil(timeDifference / 1000 / 60)];
     }
 })
 </script>

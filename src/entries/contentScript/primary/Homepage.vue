@@ -7,6 +7,7 @@
                 <hr>
                 <Timetable />
                 <TimeLeft />
+                <hr>
                 <Tiles />
                 <CoolBoxMessage/>
             </div>
