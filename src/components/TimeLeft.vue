@@ -68,20 +68,18 @@ const minutesRemaining = computed(() => {
     // If nonexistent, school is over
     if (targetPeriod === undefined) {
         return null;
+    }
 
+    if (periods.some((per) => {
+        return now >= per.from && now < per.to;
+    })) {
+        // If the user is inside a period
+        const timeDifference = targetPeriod.to - now;
+        // Boolean represents currently in a period, and converts epoch to minutes
+        return [true, Math.ceil(timeDifference / 1000 / 60)];
     } else {
-        let timeDifference;
-
-        if (periods.some((per) => {
-            return now >= per.from && now < per.to;
-        })) {
-            // If the user is inside a period
-            timeDifference = targetPeriod.to - now;
-        } else {
-            // Or if the user is in between periods
-            timeDifference = targetPeriod.from - now;
-        }
-        // Boolean represents currently in a period
+        // Or if the user is in between periods
+        const timeDifference = targetPeriod.from - now;
         return [true, Math.ceil(timeDifference / 1000 / 60)];
     }
 })
