@@ -1,12 +1,22 @@
 <template>
     <div v-if="minutesRemaining !== null">
         <div v-if="minutesRemaining[0]">
-            <span v-if="isPlural(minutesRemaining[1])">There are <strong>{{ minutesRemaining[1] }}</strong> minutes until your next period.</span>
-            <span v-else>There is <strong>1</strong> minute until your next period.</span>
+            <span v-if="isPlural(minutesRemaining[1])">
+                There are <strong>{{ minutesRemaining[1] }}</strong> minutes until your next period.
+            </span>
+
+            <span v-else>
+                There is <strong>1</strong> minute until your next period.
+            </span>
         </div>
         <div v-else>
-            <span v-if="isPlural(minutesRemaining[1])">There are <strong>{{ minutesRemaining[1] }}</strong> minutes left in this period.</span>
-            <span v-else>There is <strong>1</strong> minute left in this period.</span>
+            <span v-if="isPlural(minutesRemaining[1])">
+                There are <strong>{{ minutesRemaining[1] }}</strong> minutes left in this period.
+            </span>
+
+            <span v-else>
+                There is <strong>1</strong> minute left in this period.
+            </span>
         </div>
     </div>
 </template>
@@ -58,21 +68,20 @@ const minutesRemaining = computed(() => {
     // If nonexistent, school is over
     if (targetPeriod === undefined) {
         return null;
-    }
 
-    // If the user is inside a period
-    else if (periods.some((per) => {
-        return now >= per.from && now < per.to;
-    })) {
-        const timeDifference = targetPeriod.to - now;
+    } else {
+        let timeDifference;
+
+        if (periods.some((per) => {
+            return now >= per.from && now < per.to;
+        })) {
+            // If the user is inside a period
+            timeDifference = targetPeriod.to - now;
+        } else {
+            // Or if the user is in between periods
+            timeDifference = targetPeriod.from - now;
+        }
         // Boolean represents currently in a period
-        return [true, Math.ceil(timeDifference / 1000 / 60)];
-    }
-
-    // If the user is in between periods
-    else {
-        const timeDifference = targetPeriod.from - now;
-        // Boolean represents not currently in a period
         return [true, Math.ceil(timeDifference / 1000 / 60)];
     }
 })
