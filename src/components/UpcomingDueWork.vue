@@ -1,10 +1,26 @@
 <template>
     <div>
         <h2 class="subheader">Upcoming Due Work</h2>
-        <ul class="information-list">
-            <li v-for="tile in dueWorkItems" class="bg-white">
-                <div class="card small-12" v-html="tile.innerHTML"></div>
+        <ul class="information-list bg-white">
+            <li v-for="tile in dueWorkItems">
+                <div class="card" v-html="tile.innerHTML"></div>
                 <div class="material-symbols-outlined reminder-button">notification_add</div>
+            </li>
+            <li>
+                <div class="card flex-row w-full">
+                    <div class="button">
+                        <div>
+                            <span class="material-symbols-outlined align-bottom">add</span>
+                            Add Reminder
+                        </div>
+                    </div>
+                    <div class="button">
+                        <div>
+                            <span class="material-symbols-outlined align-bottom">visibility</span>
+                            View All Reminders
+                        </div>
+                    </div>
+                </div>
             </li>
         </ul>
     </div>
@@ -21,5 +37,9 @@ let dueWorkItems = document.querySelectorAll('#component52396 .information-list 
 
 .reminder-button:hover {
     @apply text-gray-400
+}
+
+.button {
+    @apply w-full m-2 mt-0
 }
 </style>
