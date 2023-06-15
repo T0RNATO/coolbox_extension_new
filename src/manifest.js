@@ -4,7 +4,10 @@ const sharedManifest = {
   content_scripts: [
     {
       js: ["src/entries/contentScript/primary/main.js"],
-      css: ["public/css/icons.css"],
+      css: [
+          "public/css/icons.css",
+          "public/css/index.css",
+      ],
       matches: ["*://schoolbox.donvale.vic.edu.au/*"],
     },
   ],
