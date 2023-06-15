@@ -14,6 +14,7 @@
             <!-- Right Column -->
             <div class="px-4">
                 <UpcomingDueWork />
+                <NewsItems />
             </div>
         </div>
     </div>
@@ -26,6 +27,7 @@ import Tiles from "~/components/Tiles.vue";
 import CoolBoxMessage from "~/components/CoolBoxMessage.vue";
 import Timetable from "~/components/Timetable.vue";
 import TimeLeft from "~/components/TimeLeft.vue";
+import NewsItems from "~/components/NewsItems.vue";
 </script>
 
 <style>
