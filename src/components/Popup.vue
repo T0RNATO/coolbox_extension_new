@@ -7,7 +7,7 @@
             </div>
         </div>
         <form method="dialog" class="modal-backdrop">
-            <button class="all-unset">close</button>
+            <button class="[all:unset] hover:[all:unset]">close</button>
         </form>
     </dialog>
 </template>

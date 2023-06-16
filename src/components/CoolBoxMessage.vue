@@ -20,10 +20,10 @@ import browser from "webextension-polyfill";
 
 const show_feedback = ref(true)
 
-browser.storage.sync.get("feedback").then((result) => {
+browser.storage.local.get("feedback").then((result) => {
     show_feedback.value = !result.feedback
 });
-browser.storage.sync.onChanged.addListener((changes) => {
+browser.storage.local.onChanged.addListener((changes) => {
     if (changes.feedback) {
         show_feedback.value = !changes.feedback.newValue;
     }

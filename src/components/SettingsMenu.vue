@@ -5,13 +5,13 @@
         <input type="range" id="rgb-tiles" min="1" max="200" class="range" v-model="rgb">
 
         <span class="settings-label">Hide Profile Picture:</span>
-        <input type="checkbox" class="toggle" v-model="pfp_model" :hidden="pfp_model === undefined">
+        <input type="checkbox" class="toggle" v-model="pfp_model">
 
         <span class="settings-label">Hide Feedback Message:</span>
-        <input type="checkbox" class="toggle" v-model="feedback_model" :hidden="feedback_model === undefined">
+        <input type="checkbox" class="toggle" v-model="feedback_model">
 
         <span class="settings-label">Enable Theme:</span>
-        <input type="checkbox" class="toggle" v-model="theme_enabled_model" :hidden="theme_enabled_model === undefined">
+        <input type="checkbox" class="toggle" v-model="theme_enabled_model">
 
         <span class="settings-label">Theme:</span>
         <div>
@@ -34,23 +34,23 @@ let theme_enabled = ref(undefined);
 let theme = ref(false);
 
 
-browser.storage.sync.get("rgb_speed").then((result) => {
+browser.storage.local.get("rgb_speed").then((result) => {
   rgb_speed.value = result.rgb_speed;
 });
 
-browser.storage.sync.get("pfp").then((result) => {
+browser.storage.local.get("pfp").then((result) => {
   pfp.value = result.pfp;
 });
 
-browser.storage.sync.get("feedback").then((result) => {
+browser.storage.local.get("feedback").then((result) => {
   feedback.value = result.feedback;
 });
 
-browser.storage.sync.get("theme_enabled").then((result) => {
+browser.storage.local.get("theme_enabled").then((result) => {
   theme_enabled.value = result.theme_enabled;
 });
 
-browser.storage.sync.get("theme").then((result) => {
+browser.storage.local.get("theme").then((result) => {
   theme.value = result.theme;
 });
 
@@ -60,7 +60,8 @@ const rgb = computed({
         return rgb_speed.value;
     },
     set(value) {
-        browser.storage.sync.set({
+        console.log(value);
+        browser.storage.local.set({
             rgb_speed: value
         })
     }
@@ -71,7 +72,7 @@ const pfp_model = computed({
         return pfp.value;
     },
     set(value) {
-        browser.storage.sync.set({
+        browser.storage.local.set({
             pfp: value
         })
     }
@@ -82,7 +83,7 @@ const feedback_model = computed({
         return feedback.value;
     },
     set(value) {
-        browser.storage.sync.set({
+        browser.storage.local.set({
             feedback: value
         })
     }
@@ -93,7 +94,7 @@ const theme_enabled_model = computed({
         return theme_enabled.value;
     },
     set(value) {
-        browser.storage.sync.set({
+        browser.storage.local.set({
             theme_enabled: value
         })
     }
@@ -104,7 +105,7 @@ const theme_model = computed({
         return theme.value;
     },
     set(value) {
-        browser.storage.sync.set({
+        browser.storage.local.set({
             theme: value
         })
     }

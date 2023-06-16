@@ -16,7 +16,7 @@
             <NewsItems />
         </div>
     </div>
-    <Popup title="Ohio" open />
+    <Popup title="Ohio" />
 </template>
 
 <script setup>
