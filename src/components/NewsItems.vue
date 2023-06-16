@@ -1,6 +1,8 @@
 <template>
-    <h2 class="subheader">News</h2>
-    <div v-html="news" class="bg-white overflow-y-auto h-96"></div>
+    <div>
+        <h2 class="subheader">News</h2>
+        <div v-html="news" class="bg-white overflow-y-auto h-96"></div>
+    </div>
 </template>
 
 <script setup>

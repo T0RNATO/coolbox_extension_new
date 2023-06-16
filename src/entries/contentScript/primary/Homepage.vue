@@ -1,22 +1,46 @@
 <template>
-    <div class="grid grid-cols-[65%,35%]">
+    <div class="grid grid-cols-[65%,35%]" @click="clearSelectedComponent">
         <!-- Left Column -->
-        <div class="px-4">
-            <GreetingText />
+        <div class="px-4 relative">
+            <div class="absolute right-6 -top-2">
+                <div class="dui-tooltip bg-transparent" data-tip="Customise Homepage">
+                    <button class="cb-icon-button material-symbols-outlined" @click="editMode = !editMode">edit</button>
+                </div>
+            </div>
+            <GreetingText @click="selectComponent"/>
             <hr>
-            <Timetable />
-            <TimeLeft />
+            <Timetable @click="selectComponent"/>
+            <TimeLeft @click="selectComponent"/>
             <hr>
-            <Tiles />
-            <CoolBoxMessage/>
+            <Tiles @click="selectComponent"/>
+            <CoolBoxMessage @click="selectComponent"/>
         </div>
         <!-- Right Column -->
         <div class="px-4">
-            <UpcomingDueWork />
-            <NewsItems />
+            <UpcomingDueWork @click="selectComponent"/>
+            <NewsItems @click="selectComponent"/>
         </div>
     </div>
     <Popup title="Ohio" />
+    <!-- Page Editing Context Menu -->
+    <div class="dui-card dui-card-compact absolute shadow-xl bg-white p-0" :style="contextMenuStyles">
+        <div class="dui-tooltip bg-transparent [position:unset] p-0" data-tip="Customise Widget">
+            <button class="cb-icon-button material-symbols-outlined">settings</button>
+        </div>
+
+        <div class="dui-tooltip bg-transparent [position:unset] p-0" data-tip="Delete Widget">
+            <button class="cb-icon-button material-symbols-outlined">delete</button>
+        </div>
+    </div>
+    <!-- Page Editing Toast -->
+    <div class="dui-toast" v-if="editMode">
+        <div class="dui-alert bg-gray-400 p-2">
+            <span class="material-symbols-outlined">edit</span>
+            <span>You are in edit mode!<br>Click a widget to select it and edit it.</span>
+            <button class="dui-btn bg-gray-300"><span class="material-symbols-outlined">add</span>Add Widgets</button>
+            <button class="dui-btn bg-gray-300" @click="editMode = false"><span class="material-symbols-outlined">close</span>Exit</button>
+        </div>
+    </div>
 </template>
 
 <script setup>
@@ -28,7 +52,48 @@ import Timetable from "~/components/Timetable.vue";
 import TimeLeft from "~/components/TimeLeft.vue";
 import NewsItems from "~/components/NewsItems.vue";
 import Popup from "~/components/Popup.vue";
+import {ref} from "vue";
+
+const contextMenuStyles = ref({
+    left: "0px",
+    top: "0px",
+    display: "none"
+})
+
+let selectedElement;
+let editMode = ref(false);
+
+function selectComponent(event) {
+    if (editMode.value) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        const component = event.currentTarget;
+
+        selectedElement?.classList.remove("selected");
+        selectedElement = component;
+
+        component.classList.add("selected");
+        const boundingRect = component.getClientRects()[0];
+
+        contextMenuStyles.value["left"] = boundingRect.right - 80 + "px";
+        contextMenuStyles.value["top"] = boundingRect.top + "px";
+        contextMenuStyles.value["display"] = "block";
+    }
+}
+
+function clearSelectedComponent() {
+    selectedElement?.classList.remove("selected");
+    selectedElement = null;
+    contextMenuStyles.value["display"] = "none";
+}
 </script>
 
 <style>
+.cb-icon-button {
+    @apply bg-transparent border-0 text-2xl text-gray-800 hover:bg-gray-200 hover:text-gray-600 aspect-square rounded-md leading-6 m-0;
+}
+.selected {
+    @apply outline-blue-500 outline-2 outline outline-offset-2 rounded-sm;
+}
 </style>
