@@ -19,10 +19,15 @@
             </span>
         </div>
     </div>
+    <span v-else class="italic text-gray-500" v-if="editMode">(Period Time Left Widget)</span>
 </template>
 
 <script setup>
 import {computed} from "vue";
+
+defineProps({
+    "editMode": Boolean
+})
 
 // Create a list of the periods that are on the timetable
 const periods = [];

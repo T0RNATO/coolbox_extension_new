@@ -4,19 +4,19 @@
         <ul class="information-list bg-white">
             <li v-for="tile in dueWorkItems">
                 <div class="card" v-html="tile.innerHTML"></div>
-                <div class="cb-icon reminder-button">notification_add</div>
+                <div class="material-symbols-outlined reminder-button">notification_add</div>
             </li>
             <li>
                 <div class="card flex-row w-full">
                     <div class="button">
                         <div>
-                            <span class="cb-icon align-bottom">add</span>
+                            <span class="material-symbols-outlined align-bottom">add</span>
                             Add Reminder
                         </div>
                     </div>
                     <div class="button">
                         <div>
-                            <span class="cb-icon align-bottom">visibility</span>
+                            <span class="material-symbols-outlined align-bottom">visibility</span>
                             View All Reminders
                         </div>
                     </div>
