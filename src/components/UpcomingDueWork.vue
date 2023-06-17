@@ -1,13 +1,13 @@
 <template>
     <div>
-        <h2 class="subheader">Upcoming Due Work</h2>
+        <h2 class="subheader">Due Work</h2>
         <ul class="information-list bg-white">
             <li v-for="tile in dueWorkItems">
                 <div class="card" v-html="tile.innerHTML"></div>
                 <div class="material-symbols-outlined reminder-button">notification_add</div>
             </li>
             <li>
-                <div class="card flex-row w-full">
+                <div class="card flex-row w-full flex px-0">
                     <div class="button">
                         <div>
                             <span class="material-symbols-outlined align-bottom">add</span>

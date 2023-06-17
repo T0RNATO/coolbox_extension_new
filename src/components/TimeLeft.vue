@@ -19,7 +19,7 @@
             </span>
         </div>
     </div>
-    <span v-else class="italic text-gray-500" v-if="editMode">(Period Time Left Widget)</span>
+    <span class="italic text-gray-500" v-else-if="editMode">(Period Time Left Widget)</span>
 </template>
 
 <script setup>

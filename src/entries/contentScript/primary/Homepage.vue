@@ -1,6 +1,6 @@
 <template>
+    <!-- Edit Mode -->
     <div class="grid-layout" @click="clearSelectedComponent" v-if="editMode">
-        <!-- Edit Mode -->
         <!-- Left Column-->
         <Container group-name="homepage" data-col="leftCol"
                    @drop="(ev) => dropComponent('leftCol', ev)"
@@ -18,21 +18,23 @@
             </Draggable>
         </Container>
     </div>
-    <div class="grid-layout" v-else>
-        <!-- Left Column-->
-        <div class="relative">
-            <div class="absolute right-6 -top-2">
-                <div class="dui-tooltip bg-transparent" data-tip="Customise Homepage">
-                    <button class="cb-icon-button material-symbols-outlined" @click="editMode = !editMode">edit</button>
-                </div>
+    <!-- Normal Mode -->
+    <div class="grid-layout relative" v-else>
+        <div class="absolute right-0 -top-2">
+            <div class="dui-tooltip bg-transparent z-[1003] before:-translate-x-32" data-tip="Customise Homepage">
+                <button class="cb-icon-button material-symbols-outlined" @click="editMode = !editMode">edit</button>
             </div>
-            <component v-for="[i, el] in Object.entries(pageLayout['leftCol'])" :is="el" :key="i" @click="selectComponent"/>
+        </div>
+        <!-- Left Column-->
+        <div>
+            <component v-for="[i, el] in Object.entries(pageLayout['leftCol'])" :is="el" :key="i" @click="selectComponent" class="slide-in"/>
         </div>
         <!-- Right Column -->
         <div>
-            <component v-for="[i, el] in Object.entries(pageLayout['rightCol'])" :is="el" :key="i" @click="selectComponent"/>
+            <component v-for="[i, el] in Object.entries(pageLayout['rightCol'])" :is="el" :key="i" @click="selectComponent" class="slide-in"/>
         </div>
     </div>
+
     <Popup title="Ohio" />
 
     <!-- Page Editing Context Menu -->
@@ -48,7 +50,7 @@
 
     <!-- Page Editing Toast -->
     <div class="dui-toast" v-if="editMode">
-        <div class="dui-alert bg-gray-400 p-2">
+        <div class="dui-alert p-2 shadow-2xl shadow-black">
             <span class="material-symbols-outlined">edit</span>
 
             <span>You are in edit mode! Click a widget to<br>select it and edit it, or drag them around.</span>
@@ -58,11 +60,11 @@
                 Add Widgets
             </button>
 
-            <button class="dui-btn bg-gray-300" @click="() => {
+            <button class="dui-btn dui-btn-primary" @click="() => {
                 editMode = false; clearSelectedComponent();
             }">
-                <span class="material-symbols-outlined">close</span>
-                Exit
+                <span class="material-symbols-outlined">done</span>
+                Done
             </button>
         </div>
     </div>
@@ -141,7 +143,7 @@ function selectComponent(event) {
         const boundingRect = component.getClientRects()[0];
 
         contextMenuStyles.value["left"] = boundingRect.right - 80 + "px";
-        contextMenuStyles.value["top"] = boundingRect.top + "px";
+        contextMenuStyles.value["top"] = boundingRect.top + window.scrollY + "px";
         contextMenuStyles.value["display"] = "block";
     }
 }
@@ -168,6 +170,28 @@ function clearSelectedComponent() {
 }
 
 .smooth-dnd-draggable-wrapper {
-    @apply bg-white drop-shadow rounded-md mb-2 p-2;
+    @apply bg-white drop-shadow rounded-md mb-2 p-2 cursor-move animate-[slide-down_400ms_ease-out];
+}
+
+.slide-in {
+    @apply animate-[slide-up_200ms_ease-out];
+}
+
+@keyframes slide-down {
+    from {
+        transform: translateY(-20%);
+    }
+    to {
+        transform: translateY(0%);
+    }
+}
+
+@keyframes slide-up {
+    from {
+        transform: translateY(20%);
+    }
+    to {
+        transform: translateY(0%);
+    }
 }
 </style>

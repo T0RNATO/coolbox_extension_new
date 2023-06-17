@@ -13,7 +13,7 @@ module.exports = {
   },
   daisyui: {
     base: false,
-    themes: ["light", "dracula"],
+    themes: ["emerald", "dracula"],
     prefix: "dui-"
   }
 }
