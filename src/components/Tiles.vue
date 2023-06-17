@@ -1,17 +1,21 @@
 <template>
-  <ul id="tileList" class="tileList">
-    <li v-for="(tile, index) in tiles"
-        :class="tile.className"
-        :style="'--rotate: ' + getHueRotation(index)"
-        :id="tile.id"
-        v-html="tile.innerHTML">
-    </li>
-  </ul>
+    <ul id="tileList" class="tileList">
+        <li v-for="(tile, index) in tiles"
+            :class="tile.className"
+            :style="'--rotate: ' + getHueRotation(index)"
+            :id="tile.id"
+            v-html="tile.innerHTML"
+            @dragstart.prevent
+        >
+        </li>
+    </ul>
+    <EditingContextMenu @delete="$emit('delete')" settings="true"/>
 </template>
 
 <script setup>
 import {ref} from "vue";
 import browser from "webextension-polyfill";
+import EditingContextMenu from "~/components/EditingContextMenu.vue";
 
 let tiles = document.querySelector('#tileList-2248').getElementsByClassName('tile');
 

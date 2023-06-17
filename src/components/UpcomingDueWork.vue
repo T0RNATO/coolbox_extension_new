@@ -23,10 +23,13 @@
                 </div>
             </li>
         </ul>
+        <EditingContextMenu @delete="$emit('delete')"/>
     </div>
 </template>
 
 <script setup>
+import EditingContextMenu from "~/components/EditingContextMenu.vue";
+
 let dueWorkItems = document.querySelectorAll('#component52396 .information-list .card');
 </script>
 

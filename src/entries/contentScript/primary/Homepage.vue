@@ -2,19 +2,15 @@
     <!-- Edit Mode -->
     <div class="grid-layout" @click="clearSelectedComponent" v-if="editMode">
         <!-- Left Column-->
-        <Container group-name="homepage" data-col="leftCol"
-                   @drop="(ev) => dropComponent('leftCol', ev)"
-                   :get-child-payload="(ev) => getPayload('leftCol', ev)">
-            <Draggable v-for="[i, el] in Object.entries(pageLayout['leftCol'])" @click="selectComponent" :data-i="i">
-                <component :is="el" :key="i" :editMode="true"/>
-            </Draggable>
-        </Container>
-        <!-- Right Column -->
-        <Container group-name="homepage" data-col="rightCol"
-                   @drop="(ev) => dropComponent('rightCol', ev)"
-                   :get-child-payload="(ev) => getPayload('rightCol', ev)">
-            <Draggable v-for="[i, el] in Object.entries(pageLayout['rightCol'])" @click="selectComponent" :data-i="i">
-                <component :is="el" :key="i" :editMode="true"/>
+        <Container v-for="[column, components] in Object.entries(pageLayout)"
+                   group-name="homepage"
+                   :data-col="column"
+                   @drop="(ev) => dropComponent(column, ev)"
+                   :get-child-payload="(ev) => getPayload(column, ev)">
+            <Draggable v-for="[i, el] in Object.entries(components)"
+                       @click="selectComponent"
+                       :data-i="i" :key="'d' + i">
+                <component :is="el" :key="i" :editMode="true" @delete="deleteSelectedWidget"/>
             </Draggable>
         </Container>
     </div>
@@ -36,17 +32,6 @@
     </div>
 
     <Popup title="Ohio" />
-
-    <!-- Page Editing Context Menu -->
-    <div class="dui-card dui-card-compact absolute shadow-xl bg-white p-0" :style="contextMenuStyles">
-        <div class="dui-tooltip bg-transparent [position:unset] p-0" data-tip="Customise Widget">
-            <button class="cb-icon-button material-symbols-outlined">settings</button>
-        </div>
-
-        <div class="dui-tooltip bg-transparent [position:unset] p-0" data-tip="Delete Widget" @click="deleteSelectedWidget">
-            <button class="cb-icon-button material-symbols-outlined">delete</button>
-        </div>
-    </div>
 
     <!-- Page Editing Toast -->
     <div class="dui-toast" v-if="editMode">
@@ -110,7 +95,7 @@ function dropComponent(column, dropInfo) {
 
 function deleteSelectedWidget() {
     const column = selectedElement.parentElement.dataset.col;
-    const i = Number(selectedElement.dataset.i);
+    const i = selectedElement.dataset.i;
 
     pageLayout.value[column].splice(i, 1);
     clearSelectedComponent();
@@ -119,12 +104,6 @@ function deleteSelectedWidget() {
 function getPayload(col, index) {
     return pageLayout.value[col][index];
 }
-
-const contextMenuStyles = ref({
-    left: "0px",
-    top: "0px",
-    display: "none"
-})
 
 let selectedElement;
 let editMode = ref(false);
@@ -140,18 +119,12 @@ function selectComponent(event) {
         selectedElement = component;
 
         component.classList.add("selected");
-        const boundingRect = component.getClientRects()[0];
-
-        contextMenuStyles.value["left"] = boundingRect.right - 80 + "px";
-        contextMenuStyles.value["top"] = boundingRect.top + window.scrollY + "px";
-        contextMenuStyles.value["display"] = "block";
     }
 }
 
 function clearSelectedComponent() {
     selectedElement?.classList.remove("selected");
     selectedElement = null;
-    contextMenuStyles.value["display"] = "none";
 }
 </script>
 
@@ -170,7 +143,7 @@ function clearSelectedComponent() {
 }
 
 .smooth-dnd-draggable-wrapper {
-    @apply bg-white drop-shadow rounded-md mb-2 p-2 cursor-move animate-[slide-down_400ms_ease-out];
+    @apply bg-white drop-shadow rounded-md mb-2 p-2 cursor-move animate-[slide-down_400ms_ease-out] !overflow-visible;
 }
 
 .slide-in {

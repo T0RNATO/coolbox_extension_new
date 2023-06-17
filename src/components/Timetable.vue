@@ -3,9 +3,12 @@
         <div v-html="timetable.innerHTML" class="mb-3"></div>
     </div>
     <span class="italic text-gray-500" v-else-if="editMode">(Timetable Widget)</span>
+    <EditingContextMenu @delete="$emit('delete')"/>
 </template>
 
 <script setup>
+import EditingContextMenu from "~/components/EditingContextMenu.vue";
+
 const timetable = document.querySelector("div[data-timetable-container]");
 const show = Boolean(timetable);
 

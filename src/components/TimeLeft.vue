@@ -20,10 +20,12 @@
         </div>
     </div>
     <span class="italic text-gray-500" v-else-if="editMode">(Period Time Left Widget)</span>
+    <EditingContextMenu @delete="$emit('delete')"/>
 </template>
 
 <script setup>
 import {computed} from "vue";
+import EditingContextMenu from "~/components/EditingContextMenu.vue";
 
 defineProps({
     "editMode": Boolean

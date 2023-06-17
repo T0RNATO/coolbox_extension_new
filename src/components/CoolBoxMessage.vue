@@ -10,11 +10,13 @@
             CoolBox is not endorsed by or affiliated with Donvale Christian College or Schoolbox Pty Ltd.<br>
         </span>
     </div>
+    <EditingContextMenu @delete="$emit('delete')"/>
 </template>
 
 <script setup>
 import {ref} from "vue";
 import browser from "webextension-polyfill";
+import EditingContextMenu from "~/components/EditingContextMenu.vue";
 
 const show_feedback = ref(true)
 
