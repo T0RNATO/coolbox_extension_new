@@ -110,15 +110,19 @@ let editMode = ref(false);
 
 function selectComponent(event) {
     if (editMode.value) {
-        event.preventDefault();
-        event.stopPropagation();
+        if (!event.target.matches(".widget-settings *")) {
+            event.preventDefault();
+            event.stopPropagation();
 
-        const component = event.currentTarget;
+            const component = event.currentTarget;
 
-        selectedElement?.classList.remove("selected");
-        selectedElement = component;
+            selectedElement?.classList.remove("selected");
+            selectedElement = component;
 
-        component.classList.add("selected");
+            component.classList.add("selected");
+        } else {
+            event.stopPropagation();
+        }
     }
 }
 
@@ -128,12 +132,11 @@ function clearSelectedComponent() {
 }
 </script>
 
+<!--suppress CssUnusedSymbol -->
 <style>
 .cb-icon-button {
     @apply bg-transparent border-0 text-2xl text-gray-800 hover:bg-gray-200 hover:text-gray-600 aspect-square rounded-md leading-6 m-0 z-[1];
 }
-/* The selector is applied dynamically */
-/*noinspection CssUnusedSymbol*/
 .selected {
     @apply outline-blue-500 outline-2 outline outline-offset-2 rounded-sm;
 }
@@ -143,7 +146,7 @@ function clearSelectedComponent() {
 }
 
 .smooth-dnd-draggable-wrapper {
-    @apply bg-white drop-shadow rounded-md mb-2 p-2 cursor-move animate-[slide-down_400ms_ease-out] !overflow-visible;
+    @apply bg-white drop-shadow rounded-md mb-2 p-2 cursor-move animate-[slide-down_400ms_ease-out];
 }
 
 .slide-in {
@@ -166,5 +169,9 @@ function clearSelectedComponent() {
     to {
         transform: translateY(0%);
     }
+}
+
+.dui-radio {
+    @apply !dui-radio !static !opacity-100 border-gray-500 border-solid !m-0;
 }
 </style>

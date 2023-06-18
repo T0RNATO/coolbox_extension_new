@@ -1,26 +1,28 @@
 <template>
-    <div v-if="minutesRemaining !== null">
-        <div v-if="minutesRemaining[0]">
+    <div>
+        <div v-if="minutesRemaining !== null">
+            <div v-if="minutesRemaining[0]">
             <span v-if="isPlural(minutesRemaining[1])">
                 There are <strong>{{ minutesRemaining[1] }}</strong> minutes until your next period.
             </span>
 
-            <span v-else>
+                <span v-else>
                 There is <strong>1</strong> minute until your next period.
             </span>
-        </div>
-        <div v-else>
+            </div>
+            <div v-else>
             <span v-if="isPlural(minutesRemaining[1])">
                 There are <strong>{{ minutesRemaining[1] }}</strong> minutes left in the period.
             </span>
 
-            <span v-else>
+                <span v-else>
                 There is <strong>1</strong> minute left in the period.
             </span>
+            </div>
         </div>
+        <span class="italic text-gray-500" v-else-if="editMode">(Period Time Left Widget)</span>
+        <EditingContextMenu @delete="$emit('delete')"/>
     </div>
-    <span class="italic text-gray-500" v-else-if="editMode">(Period Time Left Widget)</span>
-    <EditingContextMenu @delete="$emit('delete')"/>
 </template>
 
 <script setup>

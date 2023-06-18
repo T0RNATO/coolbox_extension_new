@@ -1,9 +1,6 @@
 <template>
     <h1 class="w-full p-4 text-2xl text-white mb-0 bg-gradient-to-r from-[#ca88ce] to-[#50a9c2]">Coolbox Settings</h1>
     <div class="grid-cols-2 grid p-4">
-        <span class="settings-label">Tiles RGB Speed:</span>
-        <input type="range" id="rgb-tiles" min="1" max="200" class="dui-range" v-model="rgb">
-
         <span class="settings-label">Hide Profile Picture:</span>
         <input type="checkbox" class="dui-toggle" v-model="pfp_model">
 
@@ -27,16 +24,10 @@ import {computed, ref} from "vue";
 import browser from "webextension-polyfill";
 
 
-let rgb_speed = ref(0);
 let pfp = ref(undefined);
 let feedback = ref(undefined);
 let theme_enabled = ref(undefined);
 let theme = ref(false);
-
-
-browser.storage.local.get("rgb_speed").then((result) => {
-  rgb_speed.value = result.rgb_speed;
-});
 
 browser.storage.local.get("pfp").then((result) => {
   pfp.value = result.pfp;
@@ -53,19 +44,6 @@ browser.storage.local.get("theme_enabled").then((result) => {
 browser.storage.local.get("theme").then((result) => {
   theme.value = result.theme;
 });
-
-
-const rgb = computed({
-    get() {
-        return rgb_speed.value;
-    },
-    set(value) {
-        console.log(value);
-        browser.storage.local.set({
-            rgb_speed: value
-        })
-    }
-})
 
 const pfp_model = computed({
     get() {

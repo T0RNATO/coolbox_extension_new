@@ -1,9 +1,11 @@
 <template>
-    <div v-if="show">
-        <div v-html="timetable.innerHTML" class="mb-3"></div>
+    <div>
+        <div v-if="show">
+            <div v-html="timetable.innerHTML" class="mb-3"></div>
+        </div>
+        <span class="italic text-gray-500" v-else-if="editMode">(Timetable Widget)</span>
+        <EditingContextMenu @delete="$emit('delete')"/>
     </div>
-    <span class="italic text-gray-500" v-else-if="editMode">(Timetable Widget)</span>
-    <EditingContextMenu @delete="$emit('delete')"/>
 </template>
 
 <script setup>
