@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="bg-white rounded-md flex p-4 mt-3">
+        <div class="bg-white rounded-md flex p-4" :style="{mt: !editMode}">
             <div class="clockface">
                 <div class="line" v-for="i in [0,1,2,3,4,5]" :key="i" :style="`transform:rotate(${i*30}deg)`"/>
                 <div class="z-10 h-16 w-1 bg-black absolute left-1/2 origin-bottom top-4"
@@ -21,11 +21,17 @@
                 <span class="dui-countdown am"></span>
             </div>
         </div>
+        <EditingContextMenu @delete="$emit('delete')"/>
     </div>
 </template>
 
 <script setup>
 import {computed, ref} from "vue";
+import EditingContextMenu from "~/components/EditingContextMenu.vue";
+
+defineProps({
+    editMode: Boolean
+})
 
 const now = ref(new Date())
 setInterval(() => {

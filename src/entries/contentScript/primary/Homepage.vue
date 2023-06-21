@@ -76,6 +76,7 @@ import {markRaw, ref} from "vue";
 
 import { Container, Draggable } from "vue3-smooth-dnd";
 import AnalogClock from "~/components/AnalogClock.vue";
+import WeatherWidget from "~/components/WeatherWidget.vue";
 
 const currentPageLayout = ref({
     leftCol: [
@@ -99,7 +100,8 @@ const allWidgets = [
     markRaw(CoolBoxMessage),
     markRaw(UpcomingDueWork),
     markRaw(NewsItems),
-    markRaw(AnalogClock)
+    markRaw(AnalogClock),
+    markRaw(WeatherWidget),
 ]
 
 const drawerOpen = ref(false);
@@ -174,6 +176,10 @@ function clearSelectedComponent() {
 
 .slide-in {
     @apply animate-[slide-up_200ms_ease-out];
+}
+
+.mt {
+    @apply mt-3
 }
 
 @keyframes slide-down {

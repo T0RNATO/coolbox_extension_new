@@ -26,7 +26,6 @@ const pfp = useExtensionStorage("pfp", false);
 const feedback = useExtensionStorage("feedback", false);
 const theme_on = useExtensionStorage("theme_enabled", false);
 const theme = useExtensionStorage("theme", "dark");
-
 </script>
 
 <style>
