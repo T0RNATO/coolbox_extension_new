@@ -8,7 +8,7 @@
 import SettingsMenu from "~/components/SettingsMenu.vue";
 </script>
 
-<style>
+<style scoped>
 body {
     margin: -20px 0 0 0;
     padding: 0;

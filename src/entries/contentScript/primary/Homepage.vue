@@ -2,7 +2,7 @@
     <!-- Edit Mode -->
     <div class="grid-layout" @click="clearSelectedComponent" v-if="editMode">
         <!-- Left Column-->
-        <Container v-for="[column, components] in Object.entries(pageLayout)"
+        <Container v-for="[column, components] in Object.entries(currentPageLayout)"
                    group-name="homepage"
                    :data-col="column"
                    @drop="(ev) => dropComponent(column, ev)"
@@ -23,11 +23,11 @@
         </div>
         <!-- Left Column-->
         <div>
-            <component v-for="[i, el] in Object.entries(pageLayout['leftCol'])" :is="el" :key="i" @click="selectComponent" class="slide-in"/>
+            <component v-for="[i, el] in Object.entries(currentPageLayout['leftCol'])" :is="el" :key="i" @click="selectComponent" class="slide-in px-2"/>
         </div>
         <!-- Right Column -->
         <div>
-            <component v-for="[i, el] in Object.entries(pageLayout['rightCol'])" :is="el" :key="i" @click="selectComponent" class="slide-in"/>
+            <component v-for="[i, el] in Object.entries(currentPageLayout['rightCol'])" :is="el" :key="i" @click="selectComponent" class="slide-in px-2"/>
         </div>
     </div>
 
@@ -40,18 +40,26 @@
 
             <span>You are in edit mode! Click a widget to<br>select it and edit it, or drag them around.</span>
 
-            <button class="dui-btn bg-gray-300">
-                <span class="material-symbols-outlined">add</span>
-                Add Widgets
+            <button class="dui-btn bg-gray-300" @click="drawerOpen = !drawerOpen">
+                <span class="material-symbols-outlined">add</span>Add Widgets
             </button>
 
             <button class="dui-btn dui-btn-primary" @click="() => {
                 editMode = false; clearSelectedComponent();
             }">
-                <span class="material-symbols-outlined">done</span>
-                Done
+                <span class="material-symbols-outlined">done</span>Done
             </button>
         </div>
+    </div>
+
+    <!-- Widget Add Sidebar -->
+    <div :class="{'widget-sidebar': true, 'drawerOpen': drawerOpen}" v-if="editMode">
+        <h1>Add Widgets</h1>
+        <Container group-name="homepage" behaviour="copy" @drag-start="drawerOpen = false" :get-child-payload="(ev) => allWidgets[ev]">
+            <Draggable v-for="[i, el] in Object.entries(allWidgets)" :key="'d' + i">
+                <component :is="el" :key="i" :editMode="true"/>
+            </Draggable>
+        </Container>
     </div>
 </template>
 
@@ -67,8 +75,9 @@ import Popup from "~/components/Popup.vue";
 import {markRaw, ref} from "vue";
 
 import { Container, Draggable } from "vue3-smooth-dnd";
+import AnalogClock from "~/components/AnalogClock.vue";
 
-const pageLayout = ref({
+const currentPageLayout = ref({
     leftCol: [
         markRaw(GreetingText),
         markRaw(Timetable),
@@ -82,14 +91,27 @@ const pageLayout = ref({
     ]
 })
 
+const allWidgets = [
+    markRaw(GreetingText),
+    markRaw(Timetable),
+    markRaw(TimeLeft),
+    markRaw(Tiles),
+    markRaw(CoolBoxMessage),
+    markRaw(UpcomingDueWork),
+    markRaw(NewsItems),
+    markRaw(AnalogClock)
+]
+
+const drawerOpen = ref(false);
+
 function dropComponent(column, dropInfo) {
     // If there was an element removed, delete it from the page.
     if (dropInfo["removedIndex"] !== null) {
-        pageLayout.value[column].splice(dropInfo["removedIndex"], 1);
+        currentPageLayout.value[column].splice(dropInfo["removedIndex"], 1);
     }
     // If there was an element added, add it to the page.
     if (dropInfo["addedIndex"] !== null) {
-        pageLayout.value[column].splice(dropInfo["addedIndex"], 0, dropInfo["payload"]);
+        currentPageLayout.value[column].splice(dropInfo["addedIndex"], 0, dropInfo["payload"]);
     }
 }
 
@@ -97,12 +119,12 @@ function deleteSelectedWidget() {
     const column = selectedElement.parentElement.dataset.col;
     const i = selectedElement.dataset.i;
 
-    pageLayout.value[column].splice(i, 1);
+    currentPageLayout.value[column].splice(i, 1);
     clearSelectedComponent();
 }
 
 function getPayload(col, index) {
-    return pageLayout.value[col][index];
+    return currentPageLayout.value[col][index];
 }
 
 let selectedElement;
@@ -129,6 +151,7 @@ function selectComponent(event) {
 function clearSelectedComponent() {
     selectedElement?.classList.remove("selected");
     selectedElement = null;
+    drawerOpen.value = false;
 }
 </script>
 
@@ -171,7 +194,30 @@ function clearSelectedComponent() {
     }
 }
 
+@keyframes slide-x {
+    from {
+        transform: translateX(-100%);
+    }
+    to {
+        transform: translateX(0);
+    }
+}
+
+.widget-sidebar {
+    @apply absolute h-full w-96 bg-gray-200 left-0 top-0 shadow-2xl z-[1002] p-6 overflow-y-scroll -translate-x-full;
+}
+.drawerOpen {
+    animation: slide-x 500ms forwards;
+}
+.drawerClosed {
+    animation: slide-x 500ms reverse;
+}
+
 .dui-radio {
     @apply !dui-radio !static !opacity-100 border-gray-500 border-solid !m-0;
+}
+
+.right-off-canvas-menu {
+    z-index: 1004;
 }
 </style>
