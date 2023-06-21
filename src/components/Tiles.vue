@@ -21,13 +21,13 @@
 </template>
 
 <script setup>
-import {computed, ref} from "vue";
-import browser from "webextension-polyfill";
 import EditingContextMenu from "~/components/EditingContextMenu.vue";
-
-const tiles_settings = ref({type: "solid", hex1: "#3ae8d4"})
+import {useExtensionStorage} from "~/utils/utils.js"
 
 let tiles = document.querySelector('#tileList-2248').getElementsByClassName('tile');
+
+const ts_type = useExtensionStorage("tiles.type", "solid");
+const ts_hex1 = useExtensionStorage("tiles.hex1", "#3ae8d4");
 
 // Readable code stolen from https://stackoverflow.com/a/54070620/13102310
 function hexToHSV(hex) {
@@ -39,48 +39,15 @@ function hexToHSV(hex) {
     return [60*(h<0?h+6:h), v&&c/v, v];
 }
 
-function getFilter(i) {
-    if (tiles_settings.value.type === "solid") {
-        const hsv = hexToHSV(tiles_settings.value.hex1);
+function getFilter() {
+    if (ts_type.value === "solid") {
+        const hsv = hexToHSV(ts_hex1.value);
 
         return {filter: `hue-rotate(${hsv[0] + 180}deg) saturate(${hsv[1] * 200}%) brightness(${hsv[2] * 1.5})`};
-    } else if (tiles_settings.value.type === "default") {
+    } else if (ts_type.value === "default") {
         return "";
     }
 }
-
-const ts_type = computed({
-    get() {
-        return tiles_settings.value.type;
-    },
-    set(value) {
-        browser.storage.local.set({
-            tiles: {type: value, hex1: ts_hex1.value}
-        })
-    }
-})
-
-const ts_hex1 = computed({
-    get() {
-        return tiles_settings.value.hex1;
-    },
-    set(value) {
-        browser.storage.local.set({
-            tiles: {type: ts_type.value, hex1: value}
-        })
-    }
-})
-
-browser.storage.local.get("tiles").then((result) => {
-    if (result.tiles !== undefined) {
-        tiles_settings.value = result.tiles
-    }
-});
-browser.storage.local.onChanged.addListener((changes) => {
-    if (changes.tiles) {
-        tiles_settings.value = changes.tiles.newValue;
-    }
-})
 
 // function getHueRotation(index) {
 //   if (tiles_settings.value === 1) {

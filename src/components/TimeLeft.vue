@@ -1,6 +1,6 @@
 <template>
     <div>
-z        <div v-if="minutesRemaining !== null" class="mb-3">
+        <div v-if="minutesRemaining !== null" class="mb-3">
             <div v-if="minutesRemaining[0]">
             <span v-if="isPlural(minutesRemaining[1])">
                 There are <strong>{{ minutesRemaining[1] }}</strong> minutes until your next period.

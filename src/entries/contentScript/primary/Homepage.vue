@@ -214,7 +214,13 @@ function clearSelectedComponent() {
 }
 
 .dui-radio {
-    @apply !dui-radio !static !opacity-100 border-gray-500 border-solid !m-0;
+    @apply !dui-radio;
+}
+.dui-toggle {
+    @apply !dui-toggle;
+}
+.dui-radio, .dui-toggle {
+    @apply !static !opacity-100 border-solid border-gray-500 !m-0
 }
 
 .right-off-canvas-menu {

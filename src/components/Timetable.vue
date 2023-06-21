@@ -4,7 +4,9 @@
             <div v-html="timetable.innerHTML" class="mb-3"></div>
         </div>
         <span class="italic text-gray-500" v-else-if="editMode">(Timetable Widget)</span>
-        <EditingContextMenu @delete="$emit('delete')"/>
+        <EditingContextMenu @delete="$emit('delete')" :settings="true">
+            Nicer Subject Names: <input type="checkbox" class="dui-toggle">
+        </EditingContextMenu>
     </div>
 </template>
 
