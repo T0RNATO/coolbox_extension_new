@@ -1,14 +1,14 @@
 <template>
     <div>
-        <div class="bg-white rounded-md flex p-4" :style="{mt: !editMode}">
+        <div class="bg-white rounded-md flex p-4" :class="{mt: !editMode}">
             <div class="clockface">
                 <div class="line" v-for="i in [0,1,2,3,4,5]" :key="i" :style="`transform:rotate(${i*30}deg)`"/>
-                <div class="z-10 h-16 w-1 bg-black absolute left-1/2 origin-bottom top-4"
-                     :style="`transform:rotate(${(hours+minutes/60)*30}deg)`"></div>
-                <div class="z-10 h-12 w-0.5 bg-black absolute left-1/2 origin-bottom top-8"
-                     :style="`transform:rotate(${minutes*6}deg)`"></div>
+                <div class="z-10 h-12 w-1 bg-black absolute left-1/2 origin-bottom top-8"
+                     :style="`transform:rotate(${(hours+minutes/60)*30}deg) translateX(-25%)`"></div>
                 <div class="z-10 h-16 w-0.5 bg-black absolute left-1/2 origin-bottom top-4"
-                     :style="`transform:rotate(${seconds*6}deg)`"></div>
+                     :style="`transform:rotate(${minutes*6}deg) translateX(-25%)`"></div>
+                <div class="z-10 h-16 w-[1px] bg-black absolute left-1/2 origin-bottom top-4"
+                     :style="`transform:rotate(${seconds*6}deg) translateX(-25%)`"></div>
             </div>
             <div class="digital m-auto text-4xl font-semibold font-mono">
                 <span class="dui-countdown">

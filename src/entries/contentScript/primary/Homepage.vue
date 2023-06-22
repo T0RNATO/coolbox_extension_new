@@ -73,23 +73,47 @@ import TimeLeft from "~/components/TimeLeft.vue";
 import NewsItems from "~/components/NewsItems.vue";
 import Popup from "~/components/Popup.vue";
 import {markRaw, ref} from "vue";
+import browser from "webextension-polyfill";
 
 import { Container, Draggable } from "vue3-smooth-dnd";
 import AnalogClock from "~/components/AnalogClock.vue";
 import WeatherWidget from "~/components/WeatherWidget.vue";
 
+// Gets the homepage layout from storage, and if it exists, restores it (or defaults)
+browser.storage.local.get("homepageLayout").then(layout => {
+    if (layout.homepageLayout) {
+        currentPageLayout.value = {
+            leftCol: layout.homepageLayout.leftCol.map(
+                component => allWidgets.find(
+                    widget => widget.__name === component
+                )
+            ),
+            rightCol: layout.homepageLayout.rightCol.map(
+                component => allWidgets.find(
+                    widget => widget.__name === component
+                )
+            )
+        }
+    } else {
+        currentPageLayout.value = {
+            leftCol: [
+                markRaw(GreetingText),
+                markRaw(Timetable),
+                markRaw(TimeLeft),
+                markRaw(Tiles),
+                markRaw(CoolBoxMessage),
+            ],
+            rightCol: [
+                markRaw(UpcomingDueWork),
+                markRaw(NewsItems),
+            ]
+        }
+    }
+})
+
 const currentPageLayout = ref({
-    leftCol: [
-        markRaw(GreetingText),
-        markRaw(Timetable),
-        markRaw(TimeLeft),
-        markRaw(Tiles),
-        markRaw(CoolBoxMessage),
-    ],
-    rightCol: [
-        markRaw(UpcomingDueWork),
-        markRaw(NewsItems),
-    ]
+    leftCol: [],
+    rightCol: []
 })
 
 const allWidgets = [
@@ -106,6 +130,16 @@ const allWidgets = [
 
 const drawerOpen = ref(false);
 
+function saveLayout() {
+    const layout = {
+        leftCol: currentPageLayout.value.leftCol.map(el => el.__name),
+        rightCol: currentPageLayout.value.rightCol.map(el => el.__name),
+    }
+    browser.storage.local.set({
+        "homepageLayout": layout
+    });
+}
+
 function dropComponent(column, dropInfo) {
     // If there was an element removed, delete it from the page.
     if (dropInfo["removedIndex"] !== null) {
@@ -115,6 +149,7 @@ function dropComponent(column, dropInfo) {
     if (dropInfo["addedIndex"] !== null) {
         currentPageLayout.value[column].splice(dropInfo["addedIndex"], 0, dropInfo["payload"]);
     }
+    saveLayout();
 }
 
 function deleteSelectedWidget() {
@@ -123,6 +158,7 @@ function deleteSelectedWidget() {
 
     currentPageLayout.value[column].splice(i, 1);
     clearSelectedComponent();
+    saveLayout();
 }
 
 function getPayload(col, index) {
@@ -210,7 +246,7 @@ function clearSelectedComponent() {
 }
 
 .widget-sidebar {
-    @apply absolute h-full w-96 bg-gray-200 left-0 top-0 shadow-2xl z-[1002] p-6 overflow-y-scroll -translate-x-full;
+    @apply absolute h-full w-1/3 bg-gray-200 left-0 top-0 shadow-2xl z-[1002] p-6 overflow-y-scroll -translate-x-full;
 }
 .drawerOpen {
     animation: slide-x 500ms forwards;

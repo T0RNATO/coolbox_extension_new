@@ -1,29 +1,41 @@
 <template>
     <div>
-        <div class="bg-white rounded-md flex p-2" :style="{mt: !editMode}">
-            <div class="shadow w-1/3 rounded-md flex items-center flex-col border-solid border-gray-500 m-1" v-for="(day, i) in daily_data" :key="day.time">
+        <div class="bg-white rounded-md flex p-2 flex-wrap" :class="{mt: !editMode}">
+            <div class="shadow rounded-md flex items-center flex-col border-solid border-gray-500 m-1 w-[calc(33%-8px)]"
+                 v-for="(day, i) in daily_data" :key="day.time">
                 <span class="font-semibold">
                     {{
-                        i === 0 ? "Today" :
-                            i === 1 ? "Tomorrow":
-                                new Date(day.time * 1000).toLocaleDateString("en-US", {weekday: "long"})
+                        Number(i) === 0 ? `Today (${new Date(day.time * 1000).toLocaleDateString("en-US", {weekday: "short"})})` :
+                        Number(i) === 1 ? "Tomorrow":
+                        new Date(day.time * 1000).toLocaleDateString("en-US", {weekday: "long"})
                     }}
                 </span>
                 <div class="flex">
-                    <div class="flex flex-col items-center mr-4">
-                        <span class="material-symbols-outlined text-5xl text-blue-600">{{wmoCodes[day.weathercode].icon}}</span>
-                        <span class="text-sm">{{wmoCodes[day.weathercode].message}}</span>
+                    <div class="flex flex-col items-center mr-4 max-w-[60%]">
+                        <span class="material-symbols-outlined text-5xl text-blue-600">{{wmoCodes[day["weathercode"]]?.icon}}</span>
+                        <span class="text-xs">{{wmoCodes[day["weathercode"]]?.message || "Loading..."}}</span>
                     </div>
                     <div class="flex flex-col items-center">
-                        <span class="text-xl text-blue-600">{{day.temperature_2m_min}}°</span>
-                        <span class="text-xl text-red-600">{{day.temperature_2m_max}}°</span>
+                        <div class="dui-tooltip" data-tip="Minimum Temperature">
+                            <span class="text-xl text-blue-600">{{day["temperature_2m_min"]}}°</span>
+                        </div>
+                        <div class="dui-tooltip" data-tip="Maximum Temperature">
+                            <span class="text-xl text-red-600">{{day["temperature_2m_max"]}}°</span>
+                        </div>
                     </div>
                 </div>
                 <div class="flex mb-1">
-                    <span class="material-symbols-outlined text-xl mr-1">rainy</span>
-                    <span class="text-xl">{{day.precipitation_probability_mean}}%</span>
+                    <div class="dui-tooltip" data-tip="Rain Chance">
+                        <span class="material-symbols-outlined text-xl mr-1">rainy</span>
+                        <span class="text-xl mr-2">{{day["precipitation_probability_mean"]}}%</span>
+                    </div>
+                    <div class="dui-tooltip" data-tip="UV Index">
+                        <span class="material-symbols-outlined text-xl mr-1 text-yellow-500">sunny</span>
+                        <span class="text-xl text-yellow-500">{{Math.round(day["uv_index_max"])}}</span>
+                    </div>
                 </div>
             </div>
+            <span class="material-symbols-outlined text-gray-500">location_on</span> <span class="italic text-gray-500">Donvale</span>
         </div>
         <EditingContextMenu @delete="$emit('delete')"/>
     </div>
@@ -31,45 +43,35 @@
 
 <script setup>
 import EditingContextMenu from "~/components/EditingContextMenu.vue";
+import {ref} from "vue";
+import browser from "webextension-polyfill";
 
 defineProps({
     editMode: Boolean
 })
 
-let sample = {
-    "latitude": -37.75,
-    "longitude": 145.125,
-    "generationtime_ms": 1.206040382385254,
-    "utc_offset_seconds": 36000,
-    "timezone": "Australia/Melbourne",
-    "timezone_abbreviation": "AEST",
-    "elevation": 119.0,
-    "daily_units": {
-        "time": "unixtime",
-        "weathercode": "wmo code",
-        "temperature_2m_max": "°C",
-        "temperature_2m_min": "°C",
-        "uv_index_max": "",
-        "precipitation_probability_mean": "%"
-    },
-    "daily": {
-        "time": [1687269600, 1687356000, 1687442400],
-        "weathercode": [45, 61, 61],
-        "temperature_2m_max": [11.3, 13.1, 10.6],
-        "temperature_2m_min": [0.9, 5.3, 8.2],
-        "uv_index_max": [2.85, 2.80, 0.25],
-        "precipitation_probability_mean": [0, 90, 67]
+let daily_data = ref([{}, {}, {}]);
+
+browser.storage.local.get("weatherCache").then(data => {
+    // Check if there is any data cached, and if it's from today
+    if (data.weatherCache && new Date(data.weatherCache.time).getDate() === new Date().getDate()) {
+        daily_data.value = data.weatherCache.data;
+    } else {
+        fetch("https://api.open-meteo.com/v1/forecast?latitude=-37.79&longitude=145.17&daily=weathercode,temperature_2m_max,temperature_2m_min,uv_index_max,precipitation_probability_mean&forecast_days=3&timezone=Australia/Melbourne&timeformat=unixtime").then(response => response.json().then(data => {
+            for (const [key, value] of Object.entries(data["daily"])) {
+                daily_data.value[0][key] = value[0];
+                daily_data.value[1][key] = value[1];
+                daily_data.value[2][key] = value[2];
+            }
+            browser.storage.local.set({
+                weatherCache: {
+                    data: daily_data.value,
+                    time: Date.now()
+                }
+            })
+        }))
     }
-};
-
-let daily_data = [{}, {}, {}];
-for (const [key, value] of Object.entries(sample.daily)) {
-    daily_data[0][key] = value[0];
-    daily_data[1][key] = value[1];
-    daily_data[2][key] = value[2];
-}
-
-// Api: https://api.open-meteo.com/v1/forecast?latitude=-37.79&longitude=145.17&daily=weathercode,temperature_2m_max,temperature_2m_min,uv_index_max,precipitation_probability_mean&forecast_days=3&timezone=Australia/Melbourne&timeformat=unixtime
+})
 
 const wmoCodes = {
     0: {"message": "Clear sky", "icon": "clear_day"},
