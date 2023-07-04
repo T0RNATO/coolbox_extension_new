@@ -4,18 +4,7 @@
         <span class="settings-label">Hide Profile Picture:</span>
         <input type="checkbox" class="dui-toggle" v-model="pfp">
 
-        <span class="settings-label">Hide Feedback Message:</span>
-        <input type="checkbox" class="dui-toggle" v-model="feedback">
-
-        <span class="settings-label">Enable Theme:</span>
-        <input type="checkbox" class="dui-toggle" v-model="theme_on">
-
-        <span class="settings-label">Theme:</span>
-        <div>
-            <input type="radio" name="theme" value="dark" class="dui-radio !bg-[#302f33]" title="Dark" v-model="theme">
-            <input type="radio" name="theme" value="purple" class="dui-radio !bg-[#5438b3]" title="Purple" v-model="theme">
-            <input type="radio" name="theme" value="dark_blue" class="dui-radio !bg-[#080e3b]" title="Dark Blue" v-model="theme">
-        </div>
+        Looking for settings for a specific widget? Click the customise homepage button in the top right of Schoolbox, and edit widgets' settings or delete them.
     </div>
 </template>
 
@@ -23,9 +12,6 @@
 import {useExtensionStorage} from "~/utils/utils";
 
 const pfp = useExtensionStorage("pfp", false);
-const feedback = useExtensionStorage("feedback", false);
-const theme_on = useExtensionStorage("theme_enabled", false);
-const theme = useExtensionStorage("theme", "dark");
 </script>
 
 <style>

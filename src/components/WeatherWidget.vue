@@ -12,12 +12,12 @@
                 </span>
                 <div class="flex">
                     <div class="flex flex-col items-center mr-4 max-w-[60%]">
-                        <span class="material-symbols-outlined text-5xl text-blue-600">{{wmoCodes[day["weathercode"]]?.icon}}</span>
+                        <span class="material-symbols-outlined text-5xl text-blue-400">{{wmoCodes[day["weathercode"]]?.icon}}</span>
                         <span class="text-xs">{{wmoCodes[day["weathercode"]]?.message || "Loading..."}}</span>
                     </div>
                     <div class="flex flex-col items-center">
                         <div class="dui-tooltip" data-tip="Minimum Temperature">
-                            <span class="text-xl text-blue-600">{{day["temperature_2m_min"]}}°</span>
+                            <span class="text-xl text-blue-500">{{day["temperature_2m_min"]}}°</span>
                         </div>
                         <div class="dui-tooltip" data-tip="Maximum Temperature">
                             <span class="text-xl text-red-600">{{day["temperature_2m_max"]}}°</span>

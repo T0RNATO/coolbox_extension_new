@@ -1,6 +1,15 @@
 <template>
     <!-- Edit Mode -->
     <div class="grid-layout" @click="clearSelectedComponent" v-if="editMode">
+        <div class="absolute right-0 -top-2 z-10">
+            <span>Theme:</span>
+            <div>
+                <input type="radio" name="theme" value="light" class="!bg-white checked:!bg-gray-400">
+                <input type="radio" name="theme" value="dark" class="!bg-[#302f33] checked:!bg-[#302f33]">
+                <input type="radio" name="theme" value="purple" class="!bg-[#5438b3] checked:!bg-[#5438b3]">
+                <input type="radio" name="theme" value="dark_blue" class="!bg-[#080e3b] checked:!bg-[#080e3b]">
+            </div>
+        </div>
         <!-- Left Column-->
         <Container v-for="[column, components] in Object.entries(currentPageLayout)"
                    group-name="homepage"
@@ -78,8 +87,11 @@ import browser from "webextension-polyfill";
 import { Container, Draggable } from "vue3-smooth-dnd";
 import AnalogClock from "~/components/AnalogClock.vue";
 import WeatherWidget from "~/components/WeatherWidget.vue";
+import {useExtensionStorage} from "~/utils/utils";
 
-// Gets the homepage layout from storage, and if it exists, restores it (or defaults)
+const theme = useExtensionStorage("theme", "light")
+
+// Get the homepage layout from storage, and if it exists, restore it (or default)
 browser.storage.local.get("homepageLayout").then(layout => {
     if (layout.homepageLayout) {
         currentPageLayout.value = {
@@ -203,7 +215,7 @@ function clearSelectedComponent() {
 }
 
 .grid-layout {
-    @apply grid grid-cols-[65%,35%] gap-2;
+    @apply grid grid-cols-[65%,35%] gap-2 relative;
 }
 
 .smooth-dnd-draggable-wrapper {
@@ -255,8 +267,8 @@ function clearSelectedComponent() {
     animation: slide-x 500ms reverse;
 }
 
-.dui-radio {
-    @apply !dui-radio;
+input[type=radio] {
+    @apply !dui-radio mx-1 !static !opacity-100 border-solid border-gray-500;
 }
 .dui-toggle {
     @apply !dui-toggle;

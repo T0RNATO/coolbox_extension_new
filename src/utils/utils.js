@@ -3,7 +3,7 @@ import browser from "webextension-polyfill";
 
 /**
  * Returns a reactive reference to Chrome extension storage
- * @param {String} path - The fullstop-seperated path for the value to be stored, e.g `foo.bar.baz` is `foo:{bar:{baz:<value>>}}`
+ * @param {String} path - The fullstop-seperated path for the value to be stored, e.g `foo.bar.baz` is `foo:{bar:{baz:<value>}}`
  * @param {*} defaultV - The default for the value
  */
 export function useExtensionStorage(path, defaultV) {
@@ -19,8 +19,13 @@ export function useExtensionStorage(path, defaultV) {
         }
     })
     // Get the value from storage initially
-    browser.storage.local.get().then(data => {
-        storage.value = stringPath(data, path);
+    browser.storage.local.get().then(data=> {
+        try {
+            storage.value = stringPath(data, path);
+        } catch {
+            storage.value = defaultV;
+            setStorageValue(path, defaultV);
+        }
     })
     // Return a computed property that updates storage and returns the value
     return computed({
@@ -28,16 +33,27 @@ export function useExtensionStorage(path, defaultV) {
             return storage.value;
         },
         set(value) {
-            browser.storage.local.get().then(data => {
-                let out = data;
-                const layers = path.split(".");
-                for (const layer of layers.slice(0, -1)) {
-                    out = out[layer];
-                }
-                out[layers[layers.length - 1]] = value;
-                browser.storage.local.set(data)
-            })
+            setStorageValue(path, value);
         }
+    })
+}
+
+function setStorageValue(path, value) {
+    browser.storage.local.get().then(data => {
+        let out = data;
+        const layers = path.split(".");
+        for (const layer of layers.slice(0, -1)) {
+            const l = out[layer];
+            if (l !== undefined) {
+                out = l;
+            } else {
+                out[layer] = {};
+                out = out[layer];
+            }
+        }
+        console.log(out, layers, value);
+        out[layers[layers.length - 1]] = value;
+        browser.storage.local.set(data)
     })
 }
 
