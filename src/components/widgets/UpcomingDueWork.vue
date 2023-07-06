@@ -3,7 +3,7 @@
         <h2 class="subheader">Due Work</h2>
         <ul class="information-list bg-white" :class="{limitHeight: widgInfo['add']}">
             <li v-for="tile in dueWorkItems">
-                <div class="card" v-html="tile.innerHTML"></div>
+                <div class="card w-full" v-html="tile.innerHTML"></div>
                 <div class="material-symbols-outlined reminder-button">notification_add</div>
             </li>
             <li>

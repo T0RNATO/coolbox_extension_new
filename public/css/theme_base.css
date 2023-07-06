@@ -1,0 +1,204 @@
+:root {
+    --off-canvas-hover: var(--theme-accent) !important;
+    --off-canvas-background: var(--theme-generic) !important;
+    --form-border-color: var(--body-background) !important;
+    --form-bg-hover-color: var(--theme-accent) !important;
+}
+
+.smooth-dnd-draggable-wrapper {
+    background-color: var(--theme-accent) !important;
+}
+
+.timetable-subject {
+    filter: brightness(0.8);
+}
+
+body textarea {
+    background-color: var(--body-background);
+    color: var(--theme-text) !important;
+}
+
+.card {
+    background: var(--theme-generic);
+}
+
+:not(.timetable-subject) > a:not(#notification-toggle):not(.button) {
+    color: var(--link-colour) !important;
+}
+
+.timetable th, body .alert-box {
+    background-color: var(--theme-generic) !important;
+    color: var(--theme-text);
+}
+
+th.timetable-period-active, .timetable-day-active {
+    background-color: var(--theme-accent) !important;
+    color: var(--theme-text) !important;
+}
+
+.timetable-subject a {
+    color: #085ba5;
+}
+
+#news-component li {
+    background: var(--theme-generic);
+}
+
+.component-action section {
+    background-color: var(--theme-generic) !important;
+}
+
+#msgs {
+    background: var(--theme-generic);
+}
+
+.island section {
+    background-color: var(--theme-generic) !important;
+}
+
+.content {
+    background: var(--theme-generic);
+    color: var(--theme-text);
+}
+
+li.actions-small-1 {
+    background: var(--theme-generic);
+}
+
+.empty-state {
+    background-color: var(--theme-generic) !important;
+}
+
+ul.grid {
+    background: var(--theme-generic);
+}
+
+.filter-dropdown .filter-component > span.open {
+    background: var(--theme-generic);
+}
+
+.f-dropdown.content.open {
+    background: #3d3d40;
+}
+
+#calendar th, #calendar td {
+    background: var(--theme-generic);
+}
+
+dl.tabs {
+    background: var(--theme-accent);
+}
+
+dd.active a {
+    color: var(--link-colour) !important;
+}
+
+[role="menuitem"] a {
+    color: var(--link-colour) !important;
+}
+
+.side-nav {
+    background-color: var(--theme-accent) !important;
+}
+
+li.tile {
+    filter: hue-rotate(calc(var(--rotate) * 1deg)) brightness(1.35) contrast(1.3);
+}
+
+#left-menu {
+    background: var(--theme-generic);
+}
+
+body blockquote {
+    background-color: var(--body-background);
+    color: var(--theme-text);
+    border-left-color: var(--theme-accent);
+}
+
+body blockquote::before {
+    color: var(--theme-accent);
+}
+
+.rubric-wrap th, .rubric-wrap td, .markable th, .markable td {
+    background-color: var(--theme-generic);
+    color: var(--theme-text) !important;
+    border: 1px solid var(--theme-text) !important;
+}
+
+.rb-selected {
+    background-color: var(--theme-accent) !important;
+}
+
+.fc-col-header-cell-cushion {
+    color: var(--theme-text) !important;
+}
+
+#attachment-browser-panel-container, #attachment-browser-filesystems {
+    background-color: var(--theme-generic);
+}
+
+.active.tab-title a {
+    background: var(--theme-accent) !important;
+    color: var(--theme-text) !important;
+}
+
+.dz-default.dz-message {
+    background-color: var(--theme-accent);
+    color: var(--link-colour);
+}
+
+body .button, body button {
+    background-color: var(--theme-accent);
+    color: var(--link-colour)
+}
+
+body .button:hover, body button:hover {
+    filter: brightness(1.2);
+    background-color: var(--theme-accent);
+    color: var(--link-colour)
+}
+
+div#account-content {
+    background-color: var(--theme-generic);
+}
+
+rect.highcharts-background {
+    fill: var(--body-background);
+}
+
+.popup {
+    background-color: var(--theme-generic);
+    color: var(--theme-text);
+    filter: drop-shadow(black 2px 4px 6px);
+}
+
+.popup input {
+    background-color: var(--body-background) !important;
+    color: var(--theme-text) !important;
+}
+
+label:not(.button),
+.account-drop .separator,
+ul.off-canvas-list *,
+body h1,
+dd a,
+:not(a) > h3 {
+    color: var(--theme-text) !important;
+}
+
+.error-state div.row,
+.error-state div.row h2,
+article, #cb-settings,
+.checkbox-label,
+span[data-assessment-status-text],
+#timeLeft,
+.list-item,
+.checklist.item,
+.option-list label,
+.content h2,
+.message,
+.content table td,
+.content table th,
+#fc-dom-1 {
+    color: var(--theme-text);
+}

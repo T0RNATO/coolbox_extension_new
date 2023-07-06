@@ -14,7 +14,7 @@
                         >
                     </div>
                     <div class="dui-tooltip" data-tip="Custom Theme">
-                        <input type="radio" name="theme" id="custom_theme" class="hidden mx-1" v-model="themeStore">
+                        <input type="radio" name="theme" id="custom_theme" class="hidden mx-1 cursor-pointer" v-model="themeStore" value="custom">
                         <label for="custom_theme">
                             <span class="material-symbols-outlined">palette</span>
                         </label>
@@ -97,22 +97,20 @@ import Timetable from "~/components/widgets/Timetable.vue";
 import TimeLeft from "~/components/widgets/TimeLeft.vue";
 import NewsItems from "~/components/widgets/NewsItems.vue";
 import Popup from "~/components/Popup.vue";
-import {markRaw, ref} from "vue";
+import {markRaw, ref, watch} from "vue";
 import browser from "webextension-polyfill";
 
 import { Container, Draggable } from "vue3-smooth-dnd";
 import AnalogClock from "~/components/widgets/AnalogClock.vue";
 import WeatherWidget from "~/components/widgets/WeatherWidget.vue";
 import {defaultSheets, useExtensionStorage} from "~/utils/utils";
+import {possibleThemes} from "~/utils/themes";
 import {ShadowRoot, ShadowStyle} from "vue-shadow-dom";
 
-const possibleThemes = [
-    {display: "Light", value: "light", hex: "#ddd"},
-    {display: "Dark", value: "dark", hex: "#302f33"},
-    {display: "Purple", value: "purple", hex: "#5438b3"},
-    {display: "Dark Blue", value: "dark_blue", hex: "#080e3b"}
-]
-const themeStore = useExtensionStorage("theme", "light");
+const currentPageLayout = ref({
+    leftCol: [],
+    rightCol: []
+})
 
 // Get the homepage layout from storage, and if it exists, restore it (or default)
 browser.storage.local.get("homepageLayout").then(layout => {
@@ -146,10 +144,7 @@ browser.storage.local.get("homepageLayout").then(layout => {
     }
 })
 
-const currentPageLayout = ref({
-    leftCol: [],
-    rightCol: []
-})
+const themeStore = useExtensionStorage("theme", "light");
 
 const allWidgets = [
     markRaw(GreetingText),
@@ -162,7 +157,6 @@ const allWidgets = [
     markRaw(AnalogClock),
     markRaw(WeatherWidget),
 ]
-
 const drawerOpen = ref(false);
 
 function saveLayout() {

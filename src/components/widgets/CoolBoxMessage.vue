@@ -16,7 +16,3 @@
 <script setup>
 import EditingContextMenu from "~/components/EditingContextMenu.vue";
 </script>
-
-<style scoped>
-
-</style>

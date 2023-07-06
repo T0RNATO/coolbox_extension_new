@@ -34,8 +34,8 @@ function hexToHSV(hex) {
     let r = parseInt(hex.substring(1,3),16)/255;
     let g = parseInt(hex.substring(3,5),16)/255;
     let b = parseInt(hex.substring(5,7),16)/255;
-    let v=Math.max(r,g,b), c=v-Math.min(r,g,b);
-    let h= c && ((v===r) ? (g-b)/c : ((v===g) ? 2+(b-r)/c : 4+(r-g)/c));
+    let v = Math.max(r,g,b), c=v-Math.min(r,g,b);
+    let h = c && ((v===r)?(g-b)/c:((v===g)?2+(b-r)/c:4+(r-g)/c));
     return [60*(h<0?h+6:h), v&&c/v, v];
 }
 

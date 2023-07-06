@@ -10,6 +10,11 @@ const sharedManifest = {
             ],
             matches: ["*://schoolbox.donvale.vic.edu.au/*"],
         },
+        {
+            js: ["src/entries/contentScript/homepage/beforePageLoad.js"],
+            matches: ["*://schoolbox.donvale.vic.edu.au/*"],
+            run_at: "document_start",
+        },
     ],
     icons: {
         64: "icons/icon.png"
@@ -19,7 +24,8 @@ const sharedManifest = {
         open_in_tab: true,
     },
     permissions: [
-        "storage"
+        "storage",
+        "scripting",
     ],
 };
 
