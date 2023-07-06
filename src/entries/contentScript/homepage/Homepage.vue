@@ -146,6 +146,16 @@ browser.storage.local.get("homepageLayout").then(layout => {
 
 const themeStore = useExtensionStorage("theme", "light");
 
+browser.storage.local.onChanged.addListener((changes) => {
+    if (changes.theme) {
+        browser.runtime.sendMessage({
+            type: "updateTheme",
+            new: changes.theme.newValue,
+            old: changes.theme.oldValue
+        });
+    }
+})
+
 const allWidgets = [
     markRaw(GreetingText),
     markRaw(Timetable),
