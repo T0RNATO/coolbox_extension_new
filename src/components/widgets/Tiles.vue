@@ -45,7 +45,7 @@ function getFilter() {
 
         return {filter: `hue-rotate(${hsv[0] + 180}deg) saturate(${hsv[1] * 200}%) brightness(${hsv[2] * 1.5})`};
     } else if (ts_type.value === "default") {
-        return "";
+        return {};
     }
 }
 

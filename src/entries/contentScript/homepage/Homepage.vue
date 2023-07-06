@@ -6,16 +6,15 @@
                 <span>Theme:</span>
                 <div>
                     <div class="dui-tooltip" :data-tip="theme.display" v-for="theme in possibleThemes">
-                        <input type="radio"
-                               name="theme"
-                               :value="theme.value"
+                        <input type="radio" name="theme"
                                class="mx-1 border-solid dui-radio"
-                               :style="{backgroundColor: theme.hex}"
                                v-model="themeStore"
+                               :value="theme.value"
+                               :style="{backgroundColor: theme.hex}"
                         >
                     </div>
                     <div class="dui-tooltip" data-tip="Custom Theme">
-                        <input type="radio" name="theme" id="custom_theme" class="hidden mx-1">
+                        <input type="radio" name="theme" id="custom_theme" class="hidden mx-1" v-model="themeStore">
                         <label for="custom_theme">
                             <span class="material-symbols-outlined">palette</span>
                         </label>
@@ -30,7 +29,6 @@
                 </shadow-style>
             </shadow-root>
         </div>
-        <!-- Left Column-->
         <Container v-for="[column, components] in Object.entries(currentPageLayout)"
                    group-name="homepage"
                    :data-col="column"
@@ -56,16 +54,6 @@
                        :widg-info="{edit: false, col: column, add: false}"
             />
         </div>
-
-
-        <!-- Left Column-->
-<!--        <div>-->
-<!--            <component v-for="[i, el] in Object.entries(currentPageLayout['leftCol'])" :is="el" :key="i" @click="selectComponent" class="slide-in px-2"/>-->
-<!--        </div>-->
-<!--        &lt;!&ndash; Right Column &ndash;&gt;-->
-<!--        <div>-->
-<!--            <component v-for="[i, el] in Object.entries(currentPageLayout['rightCol'])" :is="el" :key="i" @click="selectComponent" class="slide-in px-2"/>-->
-<!--        </div>-->
     </div>
 
     <Popup title="Ohio" />
