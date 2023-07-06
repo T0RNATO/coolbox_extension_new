@@ -20,6 +20,10 @@
                         </label>
                     </div>
                 </div>
+                <div v-if="themeStore === 'custom'">
+                    Custom Theme Colour:<br>
+                    <input type="color" v-model="customTheme">
+                </div>
                 <!--language=CSS-->
                 <shadow-style>
                     input#custom_theme:checked + label > span {
@@ -144,7 +148,8 @@ browser.storage.local.get("homepageLayout").then(layout => {
     }
 })
 
-const themeStore = useExtensionStorage("theme", "light");
+const themeStore = useExtensionStorage("theme.setting", "light");
+const customTheme = useExtensionStorage("theme.custom", "#096790");
 
 browser.storage.local.onChanged.addListener((changes) => {
     if (changes.theme) {

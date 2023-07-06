@@ -8,27 +8,27 @@ browser.runtime.onInstalled.addListener(() => {
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message === "applyTheme") {
         browser.storage.local.get("theme").then(result => {
-            if (result.theme !== "light") {
-                applyTheme(sender, result.theme);
+            if (result.theme.setting !== "light") {
+                applyTheme(sender, result.theme.setting);
             }
         })
     } else if (message?.type === "updateTheme") {
+        console.log(message);
         // Remove the base styling, because apparently it can be added multiple times to the same page and cause issues
         browser.scripting.removeCSS({
             target: { tabId: sender.tab.id },
             files: ["/css/theme_base.css"]
         }).then(() => {
             // Remove the previous theme's styling (if it had any)
-            if (message.old !== "light") {
+            if (message.old.setting !== "light") {
                 browser.scripting.removeCSS({
-                    target: { tabId: sender.tab.id },
-                    css: generateThemeCss(message.old)
-                }).then(() => {
-                    // And then if there's a new theme to add, add it
-                    if (message.new !== "light") {
-                        applyTheme(sender, message.new);
-                    }
+                    target: {tabId: sender.tab.id},
+                    css: generateThemeCss(message.old.setting)
                 })
+            }
+            // And then if there's a new theme to add, add it
+            if (message.new.setting !== "light") {
+                applyTheme(sender, message.new.setting);
             }
         })
     }
