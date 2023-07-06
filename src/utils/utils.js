@@ -60,7 +60,6 @@ function setStorageValue(path, value) {
                 out = out[layer];
             }
         }
-        console.log(out, layers, value);
         out[layers[layers.length - 1]] = value;
         browser.storage.local.set(data)
     })

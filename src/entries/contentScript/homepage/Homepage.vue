@@ -22,7 +22,12 @@
                 </div>
                 <div v-if="themeStore === 'custom'">
                     Custom Theme Colour:<br>
-                    <input type="color" v-model="customTheme">
+                    <input type="color" v-model="customTheme" @change="manuallyUpdateCustomTheme"><br>
+                    Theme Style:
+                    <input type="radio" name="themeStyle" value="light" id="theme_style_light" v-model="customThemeStyle">
+                    <label for="theme_style_light">Light</label>
+                    <input type="radio" name="themeStyle" value="dark" id="theme_style_dark" v-model="customThemeStyle">
+                    <label for="theme_style_dark">Dark</label>
                 </div>
                 <!--language=CSS-->
                 <shadow-style>
@@ -150,9 +155,21 @@ browser.storage.local.get("homepageLayout").then(layout => {
 
 const themeStore = useExtensionStorage("theme.setting", "light");
 const customTheme = useExtensionStorage("theme.custom", "#096790");
+const customThemeStyle = useExtensionStorage("theme.style", "dark");
+
+let mostRecentStorageChanges = null;
+
+function manuallyUpdateCustomTheme() {
+    browser.runtime.sendMessage({
+        type: "updateTheme",
+        new: mostRecentStorageChanges.theme.newValue,
+        old: mostRecentStorageChanges.theme.oldValue
+    });
+}
 
 browser.storage.local.onChanged.addListener((changes) => {
-    if (changes.theme) {
+    mostRecentStorageChanges = changes;
+    if (changes.theme && changes.theme.newValue.custom === changes.theme.oldValue.custom) {
         browser.runtime.sendMessage({
             type: "updateTheme",
             new: changes.theme.newValue,
