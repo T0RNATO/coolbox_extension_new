@@ -60,6 +60,10 @@ function getFilter() {
 //       return 0;
 //   }
 // }
+
+defineProps({
+    widgInfo: Object
+})
 </script>
 
 <style scoped>

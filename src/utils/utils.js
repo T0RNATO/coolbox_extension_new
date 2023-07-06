@@ -1,5 +1,7 @@
 import {computed, ref} from "vue";
 import browser from "webextension-polyfill";
+import tailwind from "tailwindcss/tailwind.css?inline"
+import icons from "~/../public/css/icons.css?inline"
 
 /**
  * Returns a reactive reference to Chrome extension storage
@@ -9,19 +11,24 @@ import browser from "webextension-polyfill";
 export function useExtensionStorage(path, defaultV) {
     // The value that's being stored
     const storage = ref(defaultV)
+
+    let internalStorageChange = false;
     // Check for when the actual storage changes, and update the ref
     browser.storage.local.onChanged.addListener((changes) => {
+        // Get the first section of the path
         const p = path.split(".");
         const change = changes[p[0]];
 
-        if (change) {
-            storage.value = stringPath(change.newValue, p.slice(1).join("."));
+        if (change && !internalStorageChange) {
+            storage.value = objValueFromStringPath(change.newValue, p.slice(1).join("."));
+        } else if (internalStorageChange) {
+            internalStorageChange = false;
         }
     })
     // Get the value from storage initially
     browser.storage.local.get().then(data=> {
         try {
-            storage.value = stringPath(data, path);
+            storage.value = objValueFromStringPath(data, path);
         } catch {
             storage.value = defaultV;
             setStorageValue(path, defaultV);
@@ -33,6 +40,8 @@ export function useExtensionStorage(path, defaultV) {
             return storage.value;
         },
         set(value) {
+            storage.value = value;
+            internalStorageChange = true;
             setStorageValue(path, value);
         }
     })
@@ -57,7 +66,7 @@ function setStorageValue(path, value) {
     })
 }
 
-function stringPath(obj, path) {
+function objValueFromStringPath(obj, path) {
     const p = path.split(".");
     let out = obj;
     for (const section of p) {
@@ -65,3 +74,9 @@ function stringPath(obj, path) {
     }
     return out;
 }
+
+const twStyleSheet = new CSSStyleSheet();
+const iconsStyleSheet = new CSSStyleSheet();
+twStyleSheet.replaceSync(tailwind);
+iconsStyleSheet.replaceSync(icons);
+export const defaultSheets= [twStyleSheet, iconsStyleSheet];

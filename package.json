@@ -1,9 +1,9 @@
 {
-  "name": "vite-web-extension",
+  "name": "coolbox",
   "version": "1.0.0",
-  "displayName": "Vite Web Extension",
-  "author": "@samrum/vite-plugin-web-extension",
-  "description": "A @samrum/vite-plugin-web-extension web extension",
+  "displayName": "Coolbox",
+  "author": "TorNato & SleepyStew",
+  "description": "An extension to extend and customise Schoolbox.",
   "scripts": {
     "build": "vite build",
     "watch": "vite build --watch --mode development --minify false",
@@ -26,6 +26,7 @@
   },
   "dependencies": {
     "vue": "^3.2.47",
+    "vue-shadow-dom": "^4.2.0",
     "vue3-smooth-dnd": "^0.0.5",
     "webextension-polyfill": "^0.10.0"
   }

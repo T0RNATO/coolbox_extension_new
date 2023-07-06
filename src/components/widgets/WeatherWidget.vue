@@ -1,7 +1,7 @@
 <template>
     <div>
-        <div class="bg-white rounded-md flex p-2 flex-wrap" :class="{mt: !editMode}">
-            <div class="shadow rounded-md flex items-center flex-col border-solid border-gray-500 m-1 w-[calc(33%-8px)]"
+        <div class="bg-white rounded-md flex p-2 flex-wrap" :class="{mt: !widgInfo['edit']}">
+            <div class="shadow rounded-md flex items-center flex-col border-solid border-gray-500 m-1 w-[calc(33%-8px)] justify-between"
                  v-for="(day, i) in daily_data" :key="day.time">
                 <span class="font-semibold">
                     {{
@@ -10,10 +10,12 @@
                         new Date(day.time * 1000).toLocaleDateString("en-US", {weekday: "long"})
                     }}
                 </span>
-                <div class="flex">
+                <div class="flex min-w-[80%] max-w-[95%] justify-center">
                     <div class="flex flex-col items-center mr-4 max-w-[60%]">
                         <span class="material-symbols-outlined text-5xl text-blue-400">{{wmoCodes[day["weathercode"]]?.icon}}</span>
-                        <span class="text-xs">{{wmoCodes[day["weathercode"]]?.message || "Loading..."}}</span>
+                        <span class="text-xs text-center px-1" :class="{fontL: widgInfo['col'] === 'leftCol'}">
+                            {{wmoCodes[day["weathercode"]]?.message || "Loading..."}}
+                        </span>
                     </div>
                     <div class="flex flex-col items-center">
                         <div class="dui-tooltip" data-tip="Minimum Temperature">
@@ -45,10 +47,6 @@
 import EditingContextMenu from "~/components/EditingContextMenu.vue";
 import {ref} from "vue";
 import browser from "webextension-polyfill";
-
-defineProps({
-    editMode: Boolean
-})
 
 let daily_data = ref([{}, {}, {}]);
 
@@ -95,8 +93,8 @@ const wmoCodes = {
     82: {"message": "Heavy showers", "icon": "rain_heavy"},
     95: {"message": "Thundering", "icon": "thunderstorm"},
     97: {"message": "Heavily thundering", "icon": "thunderstorm"},
-    96: {"message": "Thundering with light hail", "icon": "thunderstorm"},
-    99: {"message": "Thundering with heavy hail", "icon": "thunderstorm"},
+    96: {"message": "Thundering & light hail", "icon": "thunderstorm"},
+    99: {"message": "Thundering & heavy hail", "icon": "thunderstorm"},
     // We ain't gonna need these, but its documented
     71: {"message": "Slight snow", "icon": ""},
     73: {"message": "Moderate snow", "icon": ""},
@@ -104,8 +102,14 @@ const wmoCodes = {
     85: {"message": "Light snow showers", "icon": ""},
     86: {"message": "Heavy snow showers", "icon": ""},
 }
+
+defineProps({
+    widgInfo: Object
+})
 </script>
 
 <style scoped>
-
+.fontL {
+    @apply text-sm
+}
 </style>

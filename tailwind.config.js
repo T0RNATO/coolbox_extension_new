@@ -14,6 +14,7 @@ module.exports = {
   daisyui: {
     base: false,
     themes: ["emerald", "dracula"],
-    prefix: "dui-"
+    prefix: "dui-",
+    logs: false,
   }
 }

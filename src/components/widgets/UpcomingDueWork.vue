@@ -1,7 +1,7 @@
 <template>
     <div>
         <h2 class="subheader">Due Work</h2>
-        <ul class="information-list bg-white">
+        <ul class="information-list bg-white" :class="{limitHeight: widgInfo['add']}">
             <li v-for="tile in dueWorkItems">
                 <div class="card" v-html="tile.innerHTML"></div>
                 <div class="material-symbols-outlined reminder-button">notification_add</div>
@@ -31,6 +31,10 @@
 import EditingContextMenu from "~/components/EditingContextMenu.vue";
 
 let dueWorkItems = document.querySelectorAll('#component52396 .information-list .card');
+
+defineProps({
+    widgInfo: Object
+})
 </script>
 
 <style scoped>
@@ -44,5 +48,9 @@ let dueWorkItems = document.querySelectorAll('#component52396 .information-list 
 
 .button {
     @apply w-full m-2 mt-0
+}
+
+.limitHeight {
+    max-height: 240px;
 }
 </style>

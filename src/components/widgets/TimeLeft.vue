@@ -20,7 +20,7 @@
             </span>
             </div>
         </div>
-        <span class="italic text-gray-500" v-else-if="editMode">(Period Time Left Widget)</span>
+        <span class="italic text-gray-500" v-else-if="widgInfo['edit']">(Period Time Left Widget)</span>
         <EditingContextMenu @delete="$emit('delete')"/>
     </div>
 </template>
@@ -30,7 +30,7 @@ import {computed} from "vue";
 import EditingContextMenu from "~/components/EditingContextMenu.vue";
 
 defineProps({
-    "editMode": Boolean
+    widgInfo: Object
 })
 
 // Create a list of the periods that are on the timetable

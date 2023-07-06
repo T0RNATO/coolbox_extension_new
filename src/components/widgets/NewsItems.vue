@@ -10,4 +10,7 @@
 import EditingContextMenu from "~/components/EditingContextMenu.vue";
 
 const news = document.querySelector("#news-component .tabs-content").innerHTML;
+defineProps({
+    widgInfo: Object
+})
 </script>

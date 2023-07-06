@@ -1,14 +1,34 @@
 <template>
     <!-- Edit Mode -->
     <div class="grid-layout" @click="clearSelectedComponent" v-if="editMode">
-        <div class="absolute right-0 -top-2 z-10">
-            <span>Theme:</span>
-            <div>
-                <input type="radio" name="theme" value="light" class="!bg-white checked:!bg-gray-400">
-                <input type="radio" name="theme" value="dark" class="!bg-[#302f33] checked:!bg-[#302f33]">
-                <input type="radio" name="theme" value="purple" class="!bg-[#5438b3] checked:!bg-[#5438b3]">
-                <input type="radio" name="theme" value="dark_blue" class="!bg-[#080e3b] checked:!bg-[#080e3b]">
-            </div>
+        <div class="fixed left-0 bottom-0 z-10 bg-white rounded-tr-md p-2">
+            <shadow-root :adopted-style-sheets="defaultSheets">
+                <span>Theme:</span>
+                <div>
+                    <div class="dui-tooltip" :data-tip="theme.display" v-for="theme in possibleThemes">
+                        <input type="radio"
+                               name="theme"
+                               :value="theme.value"
+                               class="mx-1 border-solid dui-radio"
+                               :style="{backgroundColor: theme.hex}"
+                               v-model="themeStore"
+                        >
+                    </div>
+                    <div class="dui-tooltip" data-tip="Custom Theme">
+                        <input type="radio" name="theme" id="custom_theme" class="hidden mx-1">
+                        <label for="custom_theme">
+                            <span class="material-symbols-outlined">palette</span>
+                        </label>
+                    </div>
+                </div>
+                <!--language=CSS-->
+                <shadow-style>
+                    input#custom_theme:checked + label > span {
+                        border-radius: 50%;
+                        outline: 1px solid black;
+                    }
+                </shadow-style>
+            </shadow-root>
         </div>
         <!-- Left Column-->
         <Container v-for="[column, components] in Object.entries(currentPageLayout)"
@@ -19,7 +39,7 @@
             <Draggable v-for="[i, el] in Object.entries(components)"
                        @click="selectComponent"
                        :data-i="i" :key="'d' + i">
-                <component :is="el" :key="i" :editMode="true" @delete="deleteSelectedWidget"/>
+                <component :is="el" :key="i" :widg-info="{edit: true, col: column, add: false}" @delete="deleteSelectedWidget"/>
             </Draggable>
         </Container>
     </div>
@@ -30,14 +50,22 @@
                 <button class="cb-icon-button material-symbols-outlined" @click="editMode = !editMode">edit</button>
             </div>
         </div>
+        <div v-for="[column, components] in Object.entries(currentPageLayout)">
+            <component v-for="[i, el] in Object.entries(components)"
+                       :is="el" :key="i" class="slide-in px-2"
+                       :widg-info="{edit: false, col: column, add: false}"
+            />
+        </div>
+
+
         <!-- Left Column-->
-        <div>
-            <component v-for="[i, el] in Object.entries(currentPageLayout['leftCol'])" :is="el" :key="i" @click="selectComponent" class="slide-in px-2"/>
-        </div>
-        <!-- Right Column -->
-        <div>
-            <component v-for="[i, el] in Object.entries(currentPageLayout['rightCol'])" :is="el" :key="i" @click="selectComponent" class="slide-in px-2"/>
-        </div>
+<!--        <div>-->
+<!--            <component v-for="[i, el] in Object.entries(currentPageLayout['leftCol'])" :is="el" :key="i" @click="selectComponent" class="slide-in px-2"/>-->
+<!--        </div>-->
+<!--        &lt;!&ndash; Right Column &ndash;&gt;-->
+<!--        <div>-->
+<!--            <component v-for="[i, el] in Object.entries(currentPageLayout['rightCol'])" :is="el" :key="i" @click="selectComponent" class="slide-in px-2"/>-->
+<!--        </div>-->
     </div>
 
     <Popup title="Ohio" />
@@ -66,30 +94,37 @@
         <h1>Add Widgets</h1>
         <Container group-name="homepage" behaviour="copy" @drag-start="drawerOpen = false" :get-child-payload="(ev) => allWidgets[ev]">
             <Draggable v-for="[i, el] in Object.entries(allWidgets)" :key="'d' + i">
-                <component :is="el" :key="i" :editMode="true"/>
+                <component :is="el" :key="i" :widg-info="{edit: true, col: null, add: true}"/>
             </Draggable>
         </Container>
     </div>
 </template>
 
 <script setup>
-import GreetingText from "~/components/GreetingText.vue";
-import UpcomingDueWork from "~/components/UpcomingDueWork.vue";
-import Tiles from "~/components/Tiles.vue";
-import CoolBoxMessage from "~/components/CoolBoxMessage.vue";
-import Timetable from "~/components/Timetable.vue";
-import TimeLeft from "~/components/TimeLeft.vue";
-import NewsItems from "~/components/NewsItems.vue";
+import GreetingText from "~/components/widgets/GreetingText.vue";
+import UpcomingDueWork from "~/components/widgets/UpcomingDueWork.vue";
+import Tiles from "~/components/widgets/Tiles.vue";
+import CoolBoxMessage from "~/components/widgets/CoolBoxMessage.vue";
+import Timetable from "~/components/widgets/Timetable.vue";
+import TimeLeft from "~/components/widgets/TimeLeft.vue";
+import NewsItems from "~/components/widgets/NewsItems.vue";
 import Popup from "~/components/Popup.vue";
 import {markRaw, ref} from "vue";
 import browser from "webextension-polyfill";
 
 import { Container, Draggable } from "vue3-smooth-dnd";
-import AnalogClock from "~/components/AnalogClock.vue";
-import WeatherWidget from "~/components/WeatherWidget.vue";
-import {useExtensionStorage} from "~/utils/utils";
+import AnalogClock from "~/components/widgets/AnalogClock.vue";
+import WeatherWidget from "~/components/widgets/WeatherWidget.vue";
+import {defaultSheets, useExtensionStorage} from "~/utils/utils";
+import {ShadowRoot, ShadowStyle} from "vue-shadow-dom";
 
-const theme = useExtensionStorage("theme", "light")
+const possibleThemes = [
+    {display: "Light", value: "light", hex: "#ddd"},
+    {display: "Dark", value: "dark", hex: "#302f33"},
+    {display: "Purple", value: "purple", hex: "#5438b3"},
+    {display: "Dark Blue", value: "dark_blue", hex: "#080e3b"}
+]
+const themeStore = useExtensionStorage("theme", "light");
 
 // Get the homepage layout from storage, and if it exists, restore it (or default)
 browser.storage.local.get("homepageLayout").then(layout => {
@@ -223,7 +258,7 @@ function clearSelectedComponent() {
 }
 
 .slide-in {
-    @apply animate-[slide-up_200ms_ease-out];
+    @apply animate-[slide-up_300ms_ease-out];
 }
 
 .mt {
@@ -265,10 +300,6 @@ function clearSelectedComponent() {
 }
 .drawerClosed {
     animation: slide-x 500ms reverse;
-}
-
-input[type=radio] {
-    @apply !dui-radio mx-1 !static !opacity-100 border-solid border-gray-500;
 }
 .dui-toggle {
     @apply !dui-toggle;
