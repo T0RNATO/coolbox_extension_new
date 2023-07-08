@@ -1,7 +1,7 @@
-import {computed, ref} from "vue";
 import browser from "webextension-polyfill";
-import tailwind from "tailwindcss/tailwind.css?inline"
-import icons from "~/../public/css/icons.css?inline"
+import {computed, ref} from "vue";
+import tailwind from "tailwindcss/tailwind.css?inline";
+import icons from "/public/css/icons.css?inline";
 
 /**
  * Returns a reactive reference to Chrome extension storage
@@ -26,7 +26,7 @@ export function useExtensionStorage(path, defaultV) {
         }
     })
     // Get the value from storage initially
-    browser.storage.local.get().then(data=> {
+    browser.storage.local.get().then(data => {
         try {
             storage.value = objValueFromStringPath(data, path);
         } catch {
@@ -74,8 +74,14 @@ function objValueFromStringPath(obj, path) {
     return out;
 }
 
-const twStyleSheet = new CSSStyleSheet();
-const iconsStyleSheet = new CSSStyleSheet();
+export const twStyleSheet = new CSSStyleSheet();
+export const iconsStyleSheet = new CSSStyleSheet();
+export const otherStyling = new CSSStyleSheet();
 twStyleSheet.replaceSync(tailwind);
 iconsStyleSheet.replaceSync(icons);
-export const defaultSheets= [twStyleSheet, iconsStyleSheet];
+// language=CSS
+otherStyling.replaceSync(`
+    .dui-radio {
+        border: 1px solid rgb(107 114 128);
+    }`)
+export const defaultSheets = [twStyleSheet, iconsStyleSheet, otherStyling];

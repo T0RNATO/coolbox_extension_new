@@ -11,23 +11,35 @@
             </li>
         </ul>
         <EditingContextMenu @delete="$emit('delete')" settings="true">
-            <span>Colour:</span><br>
-            <input type="radio" name="colour" value="solid" class="dui-radio" v-model="ts_type"><label for="solid">Solid Colour</label>
-            <input type="radio" name="colour" value="gradient" class="dui-radio" v-model="ts_type"><label for="gradient">Gradient</label>
-            <input type="radio" name="colour" value="default" class="dui-radio" v-model="ts_type"><label for="gradient">Default Colour</label>
-            <input type="color" v-model="ts_hex1" v-if="ts_type !== 'default'">
+            <shadow-root :adopted-style-sheets="defaultSheets">
+                <div class="flex items-center mb-1">
+                    <input type="radio" name="ts_type" id="solid" value="solid" v-model="ts_type" class="dui-radio">
+                    <label for="solid" class="ml-1">Solid Colour</label>
+                </div>
+                <div class="flex items-center mb-1">
+                    <input type="radio" name="ts_type" id="gradient" value="gradient" v-model="ts_type" class="dui-radio">
+                    <label for="gradient" class="ml-1">Gradient</label>
+                </div>
+                <div class="flex items-center mb-1">
+                    <input type="radio" name="ts_type" id="default" value="default" v-model="ts_type" class="dui-radio">
+                    <label for="default" class="ml-1">Default Colour</label>
+                </div>
+                <input type="color" v-model="ts_hex1" v-if="ts_type !== 'default'">
+                <input type="color" v-model="ts_hex2" v-if="ts_type === 'gradient'">
+            </shadow-root>
         </EditingContextMenu>
     </div>
 </template>
 
 <script setup>
 import EditingContextMenu from "~/components/EditingContextMenu.vue";
-import {useExtensionStorage} from "~/utils/utils.js"
+import {defaultSheets, useExtensionStorage} from "~/utils/componentUtils";
 
 let tiles = document.querySelector('#tileList-2248').getElementsByClassName('tile');
 
 const ts_type = useExtensionStorage("tiles.type", "solid");
 const ts_hex1 = useExtensionStorage("tiles.hex1", "#3ae8d4");
+const ts_hex2 = useExtensionStorage("tiles.hex2", "#10739a");
 
 // Readable code stolen from https://stackoverflow.com/a/54070620/13102310
 function hexToHSV(hex) {
@@ -43,7 +55,7 @@ function getFilter() {
     if (ts_type.value === "solid") {
         const hsv = hexToHSV(ts_hex1.value);
 
-        return {filter: `hue-rotate(${hsv[0] + 180}deg) saturate(${hsv[1] * 200}%) brightness(${hsv[2] * 1.5})`};
+        return {filter: `hue-rotate(${hsv[0] + 180}deg) saturate(${hsv[1] * 300}%) brightness(${hsv[2] * 1.5})`};
     } else if (ts_type.value === "default") {
         return {};
     }

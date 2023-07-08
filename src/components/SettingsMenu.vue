@@ -9,7 +9,8 @@
 </template>
 
 <script setup>
-import {useExtensionStorage} from "~/utils/utils";
+
+import {useExtensionStorage} from "~/utils/componentUtils";
 
 const pfp = useExtensionStorage("pfp", false);
 </script>

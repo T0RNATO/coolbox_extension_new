@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="bg-white rounded-md flex p-2 flex-wrap" :class="{mt: !widgInfo['edit']}">
+        <div class="bg-primary rounded-md flex p-2 flex-wrap text-themeText" :class="{mt: !widgInfo['edit']}">
             <div class="shadow rounded-md flex items-center flex-col border-solid border-gray-500 m-1 w-[calc(33%-8px)] justify-between"
                  v-for="(day, i) in daily_data" :key="day.time">
                 <span class="font-semibold">
@@ -17,7 +17,7 @@
                             {{wmoCodes[day["weathercode"]]?.message || "Loading..."}}
                         </span>
                     </div>
-                    <div class="flex flex-col items-center">
+                    <div class="flex flex-col justify-center">
                         <div class="dui-tooltip" data-tip="Minimum Temperature">
                             <span class="text-xl text-blue-500">{{day["temperature_2m_min"]}}°</span>
                         </div>

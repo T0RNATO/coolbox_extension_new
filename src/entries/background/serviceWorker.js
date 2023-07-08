@@ -1,5 +1,6 @@
 import browser from "webextension-polyfill";
 import {possibleThemes} from "~/utils/themes.js";
+import {shadeHexColor} from "~/utils/utilFunctions";
 
 browser.runtime.onInstalled.addListener(() => {
     console.log("Extension installed");
@@ -30,6 +31,11 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
                 applyTheme(sender, message.new);
             }
         })
+    } else if (message === "getCookie") {
+        browser.cookies.get({"url": "https://schoolbox.donvale.vic.edu.au/", "name": "PHPSESSID"}).then(cookie => {
+            sendResponse(cookie.value);
+        })
+        return true;
     }
 })
 
@@ -43,12 +49,6 @@ function applyTheme(sender, theme) {
             css: generateThemeCss(theme)
         })
     })
-}
-
-// Code from https://github.com/PimpTrizkit/PJs/wiki/12.-Shade,-Blend-and-Convert-a-Web-Color-(pSBC.js)
-function shadeHexColor(color, percent) {
-    let f=parseInt(color.slice(1),16),t=percent<0?0:255,p=percent<0?percent*-1:percent,R=f>>16,G=f>>8&0x00FF,B=f&0x0000FF;
-    return "#"+(0x1000000+(Math.round((t-R)*p)+R)*0x10000+(Math.round((t-G)*p)+G)*0x100+(Math.round((t-B)*p)+B)).toString(16).slice(1);
 }
 
 function generateThemeCss(themeObject) {

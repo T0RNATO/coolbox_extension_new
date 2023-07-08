@@ -2,6 +2,8 @@
     <!-- Edit Mode -->
     <div class="grid-layout" @click="clearSelectedComponent" v-if="editMode">
         <div class="fixed left-0 bottom-0 z-10 bg-white rounded-tr-md p-2">
+            <!--Theme picker box-->
+            <!--Shadow root to prevent dumb radio input styling-->
             <shadow-root :adopted-style-sheets="defaultSheets">
                 <span>Theme:</span>
                 <div>
@@ -54,35 +56,47 @@
     <div class="grid-layout relative" v-else>
         <div class="absolute right-0 -top-2">
             <div class="dui-tooltip bg-transparent z-[1003] before:-translate-x-32" data-tip="Customise Homepage">
-                <button class="cb-icon-button material-symbols-outlined" @click="editMode = !editMode">edit</button>
+                <button class="cb-icon-button material-symbols-outlined text-themeText" @click="editMode = !editMode">edit</button>
             </div>
         </div>
         <div v-for="[column, components] in Object.entries(currentPageLayout)">
             <component v-for="[i, el] in Object.entries(components)"
                        :is="el" :key="i" class="slide-in px-2"
                        :widg-info="{edit: false, col: column, add: false}"
+                       @open-reminder="(rem) => {openCreateReminderPopup(rem)}"
             />
         </div>
     </div>
 
-    <Popup title="Ohio" />
+    <ReminderPopup :edit="false" ref="createReminderPopup"/>
 
     <!-- Page Editing Toast -->
     <div class="dui-toast" v-if="editMode">
         <div class="dui-alert p-2 shadow-2xl shadow-black">
             <span class="material-symbols-outlined">edit</span>
-
             <span>You are in edit mode! Click a widget to<br>select it and edit it, or drag them around.</span>
-
             <button class="dui-btn bg-gray-300" @click="drawerOpen = !drawerOpen">
                 <span class="material-symbols-outlined">add</span>Add Widgets
             </button>
-
-            <button class="dui-btn dui-btn-primary" @click="() => {
-                editMode = false; clearSelectedComponent();
-            }">
+            <button class="dui-btn dui-btn-primary" @click="editMode = false; clearSelectedComponent();">
                 <span class="material-symbols-outlined">done</span>Done
             </button>
+        </div>
+    </div>
+
+    <!-- Generic Success Toast -->
+    <div class="dui-toast -right-1/4" id="toast-success">
+        <div class="dui-alert p-2 shadow-2xl shadow-black bg-primary text-themeText border-green-500 border-solid">
+            <span class="material-symbols-outlined text-green-500">check</span>
+            <span class="content"></span>
+        </div>
+    </div>
+
+    <!-- Generic Failure Toast -->
+    <div class="dui-toast -right-1/4" id="toast-failure">
+        <div class="dui-alert p-2 pr-4 shadow-2xl shadow-black bg-primary text-themeText border-red-400 border-solid">
+            <span class="material-symbols-outlined text-red-400">close</span>
+            <span class="content"></span>
         </div>
     </div>
 
@@ -105,21 +119,27 @@ import CoolBoxMessage from "~/components/widgets/CoolBoxMessage.vue";
 import Timetable from "~/components/widgets/Timetable.vue";
 import TimeLeft from "~/components/widgets/TimeLeft.vue";
 import NewsItems from "~/components/widgets/NewsItems.vue";
-import Popup from "~/components/Popup.vue";
-import {markRaw, ref, watch} from "vue";
+import {markRaw, ref} from "vue";
 import browser from "webextension-polyfill";
 
 import { Container, Draggable } from "vue3-smooth-dnd";
 import AnalogClock from "~/components/widgets/AnalogClock.vue";
 import WeatherWidget from "~/components/widgets/WeatherWidget.vue";
-import {defaultSheets, useExtensionStorage} from "~/utils/utils";
 import {possibleThemes} from "~/utils/themes";
 import {ShadowRoot, ShadowStyle} from "vue-shadow-dom";
+import '@vuepic/vue-datepicker/dist/main.css'
+import {defaultSheets, useExtensionStorage} from "~/utils/componentUtils";
+import ReminderPopup from "~/components/widgets/ReminderPopup.vue";
 
 const currentPageLayout = ref({
     leftCol: [],
     rightCol: []
 })
+
+const createReminderPopup = ref(null);
+function openCreateReminderPopup(reminder) {
+    createReminderPopup.value.openPopup(reminder);
+}
 
 // Get the homepage layout from storage, and if it exists, restore it (or default)
 browser.storage.local.get("homepageLayout").then(layout => {
@@ -307,7 +327,7 @@ function clearSelectedComponent() {
 }
 
 .widget-sidebar {
-    @apply absolute h-full w-1/3 bg-gray-200 left-0 top-0 shadow-2xl z-[1002] p-6 overflow-y-scroll -translate-x-full;
+    @apply absolute h-full w-1/3 bg-primary left-0 top-0 shadow-2xl z-[1002] p-6 overflow-y-scroll -translate-x-full;
 }
 .drawerOpen {
     animation: slide-x 500ms forwards;
@@ -316,13 +336,12 @@ function clearSelectedComponent() {
     animation: slide-x 500ms reverse;
 }
 .dui-toggle {
-    @apply !dui-toggle;
+    @apply !dui-toggle !static !opacity-100 border-solid border-gray-500 !m-0
 }
-.dui-radio, .dui-toggle {
-    @apply !static !opacity-100 border-solid border-gray-500 !m-0
-}
-
 .right-off-canvas-menu {
     z-index: 1004;
+}
+.dp__input_icon_pad {
+    padding-left: var(--dp-input-icon-padding) !important;
 }
 </style>

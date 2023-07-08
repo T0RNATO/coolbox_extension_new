@@ -1,0 +1,10 @@
+body {
+    @apply overflow-y-scroll;
+}
+
+:root {
+    --theme-generic: #fff;
+    --body-background: #F8F8F8;
+    --theme-accent: #F8F8F8;
+    --theme-text: #000;
+}
