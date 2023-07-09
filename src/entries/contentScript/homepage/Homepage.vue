@@ -64,11 +64,14 @@
                        :is="el" :key="i" class="slide-in px-2"
                        :widg-info="{edit: false, col: column, add: false}"
                        @open-reminder="(rem) => {openCreateReminderPopup(rem)}"
+                       @view-reminders="viewRemindersPopup.openPopup()"
             />
         </div>
     </div>
 
     <ReminderPopup :edit="false" ref="createReminderPopup"/>
+    <ReminderPopup :edit="true" ref="editReminderPopup"/>
+    <ViewRemindersPopup ref="viewRemindersPopup" @edit-reminder="(rem) => {editReminderPopup.openPopup(rem)}"/>
 
     <!-- Page Editing Toast -->
     <div class="dui-toast" v-if="editMode">
@@ -129,7 +132,8 @@ import {possibleThemes} from "~/utils/themes";
 import {ShadowRoot, ShadowStyle} from "vue-shadow-dom";
 import '@vuepic/vue-datepicker/dist/main.css'
 import {defaultSheets, useExtensionStorage} from "~/utils/componentUtils";
-import ReminderPopup from "~/components/widgets/ReminderPopup.vue";
+import ReminderPopup from "~/components/popups/ReminderPopup.vue";
+import ViewRemindersPopup from "~/components/popups/ViewRemindersPopup.vue";
 
 const currentPageLayout = ref({
     leftCol: [],
@@ -137,6 +141,8 @@ const currentPageLayout = ref({
 })
 
 const createReminderPopup = ref(null);
+const editReminderPopup = ref(null);
+const viewRemindersPopup = ref(null);
 function openCreateReminderPopup(reminder) {
     createReminderPopup.value.openPopup(reminder);
 }

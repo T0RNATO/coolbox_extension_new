@@ -44,28 +44,33 @@ function animateToast(el) {
     }, 1200)})
 }
 
-export function apiSend(method, path, body, callbackOrMessage, errorMessage) {
-        fetch(`https://api.coolbox.lol/${path}`, {
-            method: method,
-            headers: headers,
-            body: JSON.stringify(body)
-        }).then(response => {
-            if (response.ok) {
-                if (typeof callbackOrMessage === "function") {
-                    response.json().then(callbackOrMessage).catch(() => {});
-                } else if (typeof callbackOrMessage === "string") {
-                    const successToast = document.querySelector("#toast-success");
-                    successToast.querySelector(".content").textContent = callbackOrMessage;
-                    animateToast(successToast);
-                }
-            } else {
-                if (errorMessage) {
-                    const errorToast = document.querySelector("#toast-failure");
-                    errorToast.querySelector(".content").textContent = errorMessage;
-                    animateToast(errorToast);
-                }
+export function apiSend(method, path, body, successMessage, errorMessage, callback) {
+    fetch(`https://api.coolbox.lol/${path}`, {
+        method: method,
+        headers: headers,
+        body: JSON.stringify(body)
+    }).then(response => {
+        if (response.ok) {
+            if (callback) {
+                response.json().then(callback).catch((err) => {
+                    if (err.message.includes("JSON")) {
+                        callback();
+                    }
+                });
             }
-        }).catch(error => {
-            console.error("API error:", error);
-        })
+            if (successMessage) {
+                const successToast = document.querySelector("#toast-success");
+                successToast.querySelector(".content").textContent = successMessage;
+                animateToast(successToast);
+            }
+        } else {
+            if (errorMessage) {
+                const errorToast = document.querySelector("#toast-failure");
+                errorToast.querySelector(".content").textContent = errorMessage;
+                animateToast(errorToast);
+            }
+        }
+    }).catch(error => {
+        console.error("API error:", error);
+    })
 }

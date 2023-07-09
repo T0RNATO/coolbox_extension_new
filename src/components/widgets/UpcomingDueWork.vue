@@ -5,21 +5,19 @@
             <li v-for="tile in dueWorkItems">
                 <div class="card w-full" v-html="tile.innerHTML"></div>
                 <div class="material-symbols-outlined reminder-button"
-                     @click="createReminder">
+                     @click="createReminder(true, $event)">
                     notification_add
                 </div>
             </li>
             <li>
                 <div class="card flex-row w-full flex px-0">
-                    <div class="button">
-                        <div>
-                            <span class="material-symbols-outlined align-bottom">add</span>Add Reminder
-                        </div>
+                    <div class="button" @click="createReminder(false)">
+                        <span class="material-symbols-outlined align-bottom">add</span>
+                        Add Reminder
                     </div>
-                    <div class="button">
-                        <div>
-                            <span class="material-symbols-outlined align-bottom">visibility</span>View All Reminders
-                        </div>
+                    <div class="button" @click="$emit('viewReminders')">
+                        <span class="material-symbols-outlined align-bottom">visibility</span>
+                        View All Reminders
                     </div>
                 </div>
             </li>
@@ -37,14 +35,18 @@ defineProps({
     widgInfo: Object
 })
 
-const emit = defineEmits(['openReminder', 'delete']);
+const emit = defineEmits(['openReminder', 'delete', 'viewReminders']);
 
-function createReminder(ev) {
-    // Extracts the assessment ID from the link
-    const h3 = ev.target.previousElementSibling.firstElementChild;
-    const linkSections = h3.firstElementChild.href.split("/");
-    const assessment = Number(linkSections[linkSections.length - 2]);
-    emit('openReminder', {assessment: assessment, method: 'desktop', title: h3.innerText})
+function createReminder(assessmentReminder, ev) {
+    if (assessmentReminder) {
+        // Extracts the assessment ID from the link
+        const h3 = ev.target.previousElementSibling.firstElementChild;
+        const linkSections = h3.firstElementChild.href.split("/");
+        const assessment = Number(linkSections[linkSections.length - 2]);
+        emit('openReminder', {assessment: assessment, method: 'desktop', title: h3.innerText})
+    } else {
+        emit('openReminder', {});
+    }
 }
 </script>
 
