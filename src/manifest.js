@@ -19,14 +19,12 @@ const sharedManifest = {
     icons: {
         64: "icons/icon.png"
     },
-    options_ui: {
-        page: "src/entries/options/index.html",
-        open_in_tab: true,
-    },
     permissions: [
         "storage",
         "scripting",
         "cookies",
+        "notifications",
+        "alarms",
     ],
 };
 

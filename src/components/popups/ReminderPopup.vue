@@ -5,6 +5,7 @@ import {defaultSheets} from "~/utils/componentUtils";
 import {ref} from "vue";
 import {apiSend} from "~/utils/apiUtils";
 import PopupBase from "~/components/popups/PopupBase.vue";
+import browser from "webextension-polyfill";
 
 defineProps({
     edit: Boolean
@@ -30,16 +31,31 @@ function validateReminder(ev) {
 
 function createReminder(ev) {
     if (validateReminder(ev)) {
-        apiSend("POST", "reminders", rem.value, "Reminder created successfully", "Failed to create reminder");
+        apiSend("POST", "reminders", rem.value,
+            "Reminder created successfully",
+            "Failed to create reminder", () => {
+                browser.runtime.sendMessage("createNotifications");
+            }
+        );
     }
 }
 function saveReminder(ev) {
     if (validateReminder(ev)) {
-        apiSend("PATCH", "reminders", rem.value, "Reminder updated successfully", "Failed to update reminder");
+        apiSend("PATCH", "reminders", rem.value,
+            "Reminder updated successfully",
+            "Failed to update reminder", () => {
+                browser.runtime.sendMessage("createNotifications");
+            }
+        );
     }
 }
 function deleteReminder() {
-    apiSend("DELETE", "reminders", rem.value, "Reminder deleted successfully", "Failed to delete reminder")
+    apiSend("DELETE", "reminders", rem.value,
+        "Reminder deleted successfully",
+        "Failed to delete reminder", () => {
+            browser.runtime.sendMessage("createNotifications");
+        }
+    );
 }
 
 defineExpose({openPopup});
@@ -62,7 +78,7 @@ defineExpose({openPopup});
                 both: 'Both'
             }">
                 <input type="radio" name="notification_method" :id="value" :value="value" class="dui-radio" v-model="rem.method">
-                <label for="desktop" class="ml-1">{{display}}</label>
+                <label :for="value" class="ml-1">{{display}}</label>
             </div>
         </shadow-root>
         <form method="dialog">
