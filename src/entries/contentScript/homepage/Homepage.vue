@@ -74,18 +74,29 @@
     <ViewRemindersPopup ref="viewRemindersPopup" @edit-reminder="(rem) => {editReminderPopup.openPopup(rem)}"/>
 
     <!-- Page Editing Toast -->
-    <div class="dui-toast" v-if="editMode">
-        <div class="dui-alert p-2 shadow-2xl shadow-black">
-            <span class="material-symbols-outlined">edit</span>
-            <span>You are in edit mode! Click a widget to<br>select it and edit it, or drag them around.</span>
-            <button class="dui-btn bg-gray-300" @click="drawerOpen = !drawerOpen">
-                <span class="material-symbols-outlined">add</span>Add Widgets
-            </button>
-            <button class="dui-btn dui-btn-primary" @click="editMode = false; clearSelectedComponent();">
-                <span class="material-symbols-outlined">done</span>Done
-            </button>
+    <shadow-root :adopted-style-sheets="defaultSheets">
+        <div class="dui-toast" v-if="editMode">
+            <div class="dui-alert p-2 shadow-2xl shadow-black">
+                <span class="material-symbols-outlined">edit</span>
+                <span>You are in edit mode! Click a widget to<br>select it and edit it, or drag them around.</span>
+                <div class="dui-tooltip" data-tip="Reset Layout">
+                    <button class="dui-btn bg-gray-300" @click="resetPageLayout">
+                        <span class="material-symbols-outlined">restart_alt</span>
+                    </button>
+                </div>
+                <div class="dui-tooltip" data-tip="Add Widgets">
+                    <button class="dui-btn dui-btn-secondary" @click="drawerOpen = !drawerOpen">
+                        <span class="material-symbols-outlined">add</span>
+                    </button>
+                </div>
+                <div class="dui-tooltip" data-tip="Done">
+                    <button class="dui-btn dui-btn-primary" @click="editMode = false; clearSelectedComponent();">
+                        <span class="material-symbols-outlined">done</span>
+                    </button>
+                </div>
+            </div>
         </div>
-    </div>
+    </shadow-root>
 
     <!-- Generic Success Toast -->
     <div class="dui-toast -right-1/4" id="toast-success">
@@ -178,6 +189,23 @@ browser.storage.local.get("homepageLayout").then(layout => {
         }
     }
 })
+
+function resetPageLayout() {
+    currentPageLayout.value = {
+        leftCol: [
+            markRaw(GreetingText),
+            markRaw(Timetable),
+            markRaw(TimeLeft),
+            markRaw(Tiles),
+            markRaw(CoolBoxMessage),
+        ],
+        rightCol: [
+            markRaw(UpcomingDueWork),
+            markRaw(NewsItems),
+        ]
+    }
+    saveLayout();
+}
 
 const themeStore = useExtensionStorage("theme.setting", "light");
 const customTheme = useExtensionStorage("theme.custom", "#096790");

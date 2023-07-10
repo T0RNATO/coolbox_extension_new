@@ -2,7 +2,8 @@ import browser from "webextension-polyfill";
 
 let headers = null;
 
-browser.runtime.sendMessage("getCookie").then(cookie => {
+export const cookieFetched = browser.runtime.sendMessage("getCookie");
+cookieFetched.then(cookie => {
     headers = new Headers({
         "Authorization": `Bearer ${cookie}`,
         "Content-Type": "application/json"
