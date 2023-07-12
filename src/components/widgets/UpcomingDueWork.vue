@@ -1,12 +1,13 @@
 <template>
     <div>
         <h2 class="subheader">Due Work</h2>
-        <ul class="information-list bg-white" :class="{limitHeight: widgInfo['add']}">
-            <li v-for="tile in dueWorkItems">
-                <div class="card w-full" v-html="tile.innerHTML"></div>
+        <ul class="information-list bg-white" id="due-work" :class="{limitHeight: widgInfo['add']}">
+            <li v-for="workItem in dueWorkItems">
+                <div class="card w-full" v-html="workItem.innerHTML"></div>
                 <div class="material-symbols-outlined reminder-button"
-                     @click="createReminder(true, $event)">
-                    notification_add
+                     @click="reminderButtonClick(workItem)"
+                >
+                    {{reminderExists(workItem) ? 'notifications_active' : 'notification_add'}}
                 </div>
             </li>
             <li>
@@ -31,21 +32,38 @@ import EditingContextMenu from "~/components/EditingContextMenu.vue";
 
 let dueWorkItems = document.querySelectorAll('#component52396 .information-list .card');
 
-defineProps({
+const props = defineProps({
     widgInfo: Object
 })
 
-const emit = defineEmits(['openReminder', 'delete', 'viewReminders']);
+const emit = defineEmits(['openReminder', 'delete', 'viewReminders', 'editReminder']);
 
-function createReminder(assessmentReminder, ev) {
+function createReminder(assessmentReminder, workItem) {
     if (assessmentReminder) {
-        // Extracts the assessment ID from the link
-        const h3 = ev.target.previousElementSibling.firstElementChild;
-        const linkSections = h3.firstElementChild.href.split("/");
-        const assessment = Number(linkSections[linkSections.length - 2]);
-        emit('openReminder', {assessment: assessment, method: 'desktop', title: h3.innerText})
+        const assessmentId = getAssessmentId(workItem);
+        const title = workItem.querySelector('h3').innerText;
+        emit('openReminder', {assessment: assessmentId, title: title})
     } else {
         emit('openReminder', {});
+    }
+}
+
+function reminderExists(workItem) {
+    if (props.widgInfo['reminders']) {
+        return props.widgInfo['reminders'].some(reminder => reminder.assessment === getAssessmentId(workItem));
+    }
+    return false;
+}
+
+function getAssessmentId(workItem) {
+    return Number(workItem.querySelector('h3 a').href.split('/').slice(-2, -1)[0]);
+}
+
+function reminderButtonClick(workItem) {
+    if (reminderExists(workItem)) {
+        emit('editReminder', props.widgInfo['reminders'].find(reminder => reminder.assessment === getAssessmentId(workItem)));
+    } else {
+        createReminder(true, workItem);
     }
 }
 </script>
@@ -65,5 +83,11 @@ function createReminder(assessmentReminder, ev) {
 
 .limitHeight {
     max-height: 240px;
+}
+</style>
+
+<style>
+#due-work h3 {
+    @apply w-[95%]
 }
 </style>

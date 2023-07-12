@@ -1,12 +1,21 @@
 import browser from "webextension-polyfill";
+import {ref} from "vue";
 
 let headers = null;
+
+export const criticalMessage = ref("");
+export const infoMessage = ref("");
 
 export const cookieFetched = browser.runtime.sendMessage("getCookie");
 cookieFetched.then(cookie => {
     headers = new Headers({
         "Authorization": `Bearer ${cookie}`,
         "Content-Type": "application/json"
+    })
+
+    apiGet("stats/message", (status) => {
+        criticalMessage.value = status.critical;
+        infoMessage.value = status.info;
     })
 })
 

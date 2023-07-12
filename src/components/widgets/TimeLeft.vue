@@ -1,23 +1,21 @@
 <template>
-    <div>
+    <div class="text-themeText">
         <div v-if="minutesRemaining !== null" class="mb-3">
             <div v-if="minutesRemaining[0]">
-            <span v-if="isPlural(minutesRemaining[1])">
-                There are <strong>{{ minutesRemaining[1] }}</strong> minutes until your next period.
-            </span>
-
+                <span v-if="isPlural(minutesRemaining[1])">
+                    There are <strong>{{ minutesRemaining[1] }}</strong> minutes until your next period.
+                </span>
                 <span v-else>
-                There is <strong>1</strong> minute until your next period.
-            </span>
+                    There is <strong>1</strong> minute until your next period.
+                </span>
             </div>
             <div v-else>
-            <span v-if="isPlural(minutesRemaining[1])">
-                There are <strong>{{ minutesRemaining[1] }}</strong> minutes left in the period.
-            </span>
-
+                <span v-if="isPlural(minutesRemaining[1])">
+                    There are <strong>{{ minutesRemaining[1] }}</strong> minutes left in the period.
+                </span>
                 <span v-else>
-                There is <strong>1</strong> minute left in the period.
-            </span>
+                    There is <strong>1</strong> minute left in the period.
+                </span>
             </div>
         </div>
         <span class="italic text-gray-500" v-else-if="widgInfo['edit']">(Period Time Left Widget)</span>

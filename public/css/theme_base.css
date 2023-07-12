@@ -9,6 +9,10 @@
     background-color: var(--theme-accent) !important;
 }
 
+.card p.body {
+    color: var(--theme-text);
+}
+
 .timetable-subject {
     filter: brightness(0.8);
 }

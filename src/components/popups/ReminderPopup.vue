@@ -10,6 +10,7 @@ import browser from "webextension-polyfill";
 defineProps({
     edit: Boolean
 })
+const emit = defineEmits(['updateDueWork'])
 
 const rem = ref({});
 const popupComponent = ref(null);
@@ -35,6 +36,7 @@ function createReminder(ev) {
             "Reminder created successfully",
             "Failed to create reminder", () => {
                 browser.runtime.sendMessage("createNotifications");
+                emit('updateDueWork');
             }
         );
     }
@@ -54,6 +56,7 @@ function deleteReminder() {
         "Reminder deleted successfully",
         "Failed to delete reminder", () => {
             browser.runtime.sendMessage("createNotifications");
+            emit('updateDueWork');
         }
     );
 }

@@ -10,6 +10,9 @@
             >
             </li>
         </ul>
+
+        <span class="text-themeText">{{infoMessage}}</span>
+
         <EditingContextMenu @delete="$emit('delete')" settings="true">
             <shadow-root :adopted-style-sheets="defaultSheets">
                 <div class="flex items-center mb-1">
@@ -34,6 +37,7 @@
 <script setup>
 import EditingContextMenu from "~/components/EditingContextMenu.vue";
 import {defaultSheets, useExtensionStorage} from "~/utils/componentUtils";
+import {infoMessage} from "~/utils/apiUtils";
 
 let tiles = document.querySelector('#tileList-2248').getElementsByClassName('tile');
 

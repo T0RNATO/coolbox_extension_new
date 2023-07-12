@@ -62,15 +62,16 @@
         <div v-for="[column, components] in Object.entries(currentPageLayout)">
             <component v-for="[i, el] in Object.entries(components)"
                        :is="el" :key="i" class="slide-in px-2"
-                       :widg-info="{edit: false, col: column, add: false}"
+                       :widg-info="{edit: false, col: column, add: false, reminders: reminders}"
                        @open-reminder="(rem) => {openCreateReminderPopup(rem)}"
                        @view-reminders="viewRemindersPopup.openPopup()"
+                       @edit-reminder="(rem) => {editReminderPopup.openPopup(rem)}"
             />
         </div>
     </div>
 
-    <ReminderPopup :edit="false" ref="createReminderPopup"/>
-    <ReminderPopup :edit="true" ref="editReminderPopup"/>
+    <ReminderPopup :edit="false" ref="createReminderPopup" @update-due-work="updateDueWork"/>
+    <ReminderPopup :edit="true" ref="editReminderPopup" @update-due-work="updateDueWork"/>
     <ViewRemindersPopup ref="viewRemindersPopup" @edit-reminder="(rem) => {editReminderPopup.openPopup(rem)}"/>
 
     <!-- Page Editing Toast -->
@@ -145,6 +146,7 @@ import '@vuepic/vue-datepicker/dist/main.css'
 import {defaultSheets, useExtensionStorage} from "~/utils/componentUtils";
 import ReminderPopup from "~/components/popups/ReminderPopup.vue";
 import ViewRemindersPopup from "~/components/popups/ViewRemindersPopup.vue";
+import {apiGet} from "~/utils/apiUtils";
 
 const currentPageLayout = ref({
     leftCol: [],
@@ -247,13 +249,21 @@ const drawerOpen = ref(false);
 
 function saveLayout() {
     const layout = {
-        leftCol: currentPageLayout.value.leftCol.map(el => el.__name),
-        rightCol: currentPageLayout.value.rightCol.map(el => el.__name),
+        leftCol: currentPageLayout.value.leftCol.map(el => el['__name']),
+        rightCol: currentPageLayout.value.rightCol.map(el => el['__name']),
     }
     browser.storage.local.set({
         "homepageLayout": layout
     });
 }
+
+const reminders = ref([])
+function updateDueWork() {
+    apiGet("reminders", (data) => {
+        reminders.value = data;
+    })
+}
+updateDueWork();
 
 function dropComponent(column, dropInfo) {
     // If there was an element removed, delete it from the page.
