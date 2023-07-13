@@ -1,7 +1,8 @@
 <template>
     <div class="mb-4">
         <div v-if="show">
-            <div v-html="timetable.innerHTML" class="mb-3"></div>
+            <h2 class="subheader">{{dayTitle}}</h2>
+            <div v-html="timetable.outerHTML" class="mb-3"></div>
         </div>
         <span class="italic text-gray-500" v-else-if="widgInfo['edit']">(Timetable Widget)</span>
 
@@ -17,10 +18,18 @@
 import EditingContextMenu from "~/components/EditingContextMenu.vue";
 import {criticalMessage} from "~/utils/apiUtils";
 
-const timetable = document.querySelector("div[data-timetable-container]");
+const timetable = document.querySelector(".timetable");
+const dayTitle = document.querySelector("[data-timetable-header]").textContent;
+
 const show = Boolean(timetable);
 
 defineProps({
     widgInfo: Object
 })
 </script>
+
+<style>
+.timetable-subject {
+    height: 100% !important;
+}
+</style>

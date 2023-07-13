@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="bg-primary rounded-md flex p-4" :class="{mt: !editMode}">
+        <div class="bg-primary rounded-md flex flex-col items-center xl:flex-row p-4" :class="{mt: !editMode}">
             <div class="clockface">
                 <div class="line" v-for="i in [0,1,2,3,4,5]" :key="i" :style="`transform:rotate(${i*30}deg)`"/>
                 <div class="z-10 h-12 w-1 bg-black absolute left-1/2 origin-bottom top-8"

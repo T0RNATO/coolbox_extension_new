@@ -1,0 +1,62 @@
+@media only screen and (max-width: 64em) {
+    .grid-layout {
+        grid-template-columns: 50% 50% !important;
+    }
+
+    body li.tile {
+        width: 32% !important;
+        aspect-ratio: 1/1;
+    }
+
+    ul.tileList {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .timetable {
+        width: min-content;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-areas:
+        "head body";
+    }
+
+    .timetable thead {
+        grid-area: head;
+        display: flex;
+        min-width: min-content;
+    }
+
+    .timetable tbody {
+        grid-area: body;
+        display: flex;
+    }
+
+    .timetable tr {
+        display: flex;
+        flex-direction: column;
+        min-width: min-content;
+    }
+
+    .timetable td, .timetable th {
+        display: block;
+    }
+
+    .timetable td {
+        height: auto;
+        width: calc(100% + 30px) !important;
+    }
+
+    .timetable th {
+        height: 20%;
+        width: 100% !important;
+    }
+
+    .timetable-subject {
+        height: 20% !important;
+    }
+}
+
+body .timetable-small {
+    display: none !important;
+}

@@ -6,7 +6,7 @@ const sharedManifest = {
             js: ["src/entries/contentScript/homepage/main.js"],
             css: [
                 "public/css/icons.css",
-                "public/css/index.css",
+                "public/css/all_pages.css",
             ],
             matches: ["*://schoolbox.donvale.vic.edu.au/*"],
         },
@@ -14,6 +14,10 @@ const sharedManifest = {
             js: ["src/entries/contentScript/homepage/beforePageLoad.js"],
             matches: ["*://schoolbox.donvale.vic.edu.au/*"],
             run_at: "document_start",
+        },
+        {
+            css: ["public/css/homepage.css"],
+            matches: ["*://schoolbox.donvale.vic.edu.au/"],
         },
     ],
     icons: {

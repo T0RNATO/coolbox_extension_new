@@ -50,7 +50,11 @@ function setPrettySubjectNames(names) {
     }
 
     for (const timetableItem of document.querySelectorAll(".timetable-subject a")) {
-        const subject = names.filter(name => name.name === timetableItem.nextElementSibling.textContent.replace(/\(|\)/g, ""))[0];
+        // Extracts the text inside brackets (the subject name)
+        const subject = names.find(name =>
+            name.name === timetableItem.nextElementSibling.textContent
+                .match(/\(([^)]+)\)/)[1]);
+
         if (subject) {
             timetableItem.textContent = subject.pretty;
         }

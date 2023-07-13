@@ -1,7 +1,9 @@
 <template>
     <div>
-        <div class="bg-primary rounded-md flex p-2 flex-wrap text-themeText" :class="{mt: !widgInfo['edit']}">
-            <div class="shadow rounded-md flex items-center flex-col border-solid border-gray-500 m-1 w-[calc(33%-8px)] justify-between"
+        <div class="bg-primary rounded-md flex p-2 flex-wrap text-themeText flex-col lg:flex-row" :class="{mt: !widgInfo['edit']}">
+            <div class="shadow rounded-md flex items-center flex-col
+                        border-solid border-gray-500 m-1 w-full lg:w-[calc(33%-8px)]
+                        justify-between"
                  v-for="(day, i) in daily_data" :key="i">
                 <span class="font-semibold">
                     {{day.time}}
@@ -33,7 +35,6 @@
                     </div>
                 </div>
             </div>
-            <span class="material-symbols-outlined text-gray-500">location_on</span> <span class="italic text-gray-500">Donvale</span>
         </div>
         <EditingContextMenu @delete="$emit('delete')"/>
     </div>
