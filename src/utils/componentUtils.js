@@ -10,7 +10,7 @@ import icons from "/public/css/icons.css?inline";
  */
 export function useExtensionStorage(path, defaultV) {
     // The value that's being stored
-    const storage = ref(defaultV)
+    const storage = ref(defaultV);
 
     let internalStorageChange = false;
     // Check for when the actual storage changes, and update the ref
@@ -20,7 +20,7 @@ export function useExtensionStorage(path, defaultV) {
         const change = changes[p[0]];
 
         if (change && !internalStorageChange) {
-            storage.value = objValueFromStringPath(change.newValue, p.slice(1).join("."));
+            storage.value = objValueFromStringPath(change.newValue, p.slice(1).join("."), defaultV);
         } else if (internalStorageChange) {
             internalStorageChange = false;
         }
@@ -28,7 +28,7 @@ export function useExtensionStorage(path, defaultV) {
     // Get the value from storage initially
     browser.storage.local.get().then(data => {
         try {
-            storage.value = objValueFromStringPath(data, path);
+            storage.value = objValueFromStringPath(data, path, defaultV);
         } catch {
             storage.value = defaultV;
             setStorageValue(path, defaultV);
@@ -65,11 +65,14 @@ function setStorageValue(path, value) {
     })
 }
 
-function objValueFromStringPath(obj, path) {
+function objValueFromStringPath(obj, path, optionalDefault) {
     const p = path.split(".");
     let out = obj;
     for (const section of p) {
         out = out[section];
+    }
+    if (out === undefined && optionalDefault) {
+        out = optionalDefault;
     }
     return out;
 }

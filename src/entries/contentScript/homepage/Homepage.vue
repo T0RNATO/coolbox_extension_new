@@ -225,7 +225,7 @@ function manuallyUpdateCustomTheme() {
 
 browser.storage.local.onChanged.addListener((changes) => {
     mostRecentStorageChanges = changes;
-    if (changes.theme && changes.theme.newValue.custom === changes.theme.oldValue.custom) {
+    if (changes.theme && changes.theme.newValue.custom && changes.theme.newValue.custom === changes.theme.oldValue.custom) {
         browser.runtime.sendMessage({
             type: "updateTheme",
             new: changes.theme.newValue,

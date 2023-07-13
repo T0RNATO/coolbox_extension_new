@@ -4,7 +4,7 @@ import App from "./Homepage.vue";
 import "tailwindcss/tailwind.css";
 import shadow from 'vue-shadow-dom'
 import browser from "webextension-polyfill";
-import {apiSend} from "~/utils/apiUtils";
+import {apiSend, cookieFetched} from "~/utils/apiUtils";
 
 if (location.pathname === "/") {
     renderContent(import.meta.PLUGIN_WEB_EXT_CHUNK_CSS_PATHS, (appRoot) => {
@@ -15,18 +15,20 @@ if (location.pathname === "/") {
 }
 
 browser.storage.local.get(["pfp", "subjects"]).then(data => {
-    if (data.pfp) {
-        document.body.classList.add("hide-pfp");
-    }
-    if (data.subjects) {
-        if (data.subjects.time + 1000 * 60 * 60 * 24 > Date.now()) {
-            setPrettySubjectNames(data.subjects.value);
+    cookieFetched.then(() => {
+        if (data.pfp) {
+            document.body.classList.add("hide-pfp");
+        }
+        if (data.subjects) {
+            if (data.subjects.time + 1000 * 60 * 60 * 24 > Date.now()) {
+                setPrettySubjectNames(data.subjects.value);
+            } else {
+                fetchPrettySubjectNames();
+            }
         } else {
             fetchPrettySubjectNames();
         }
-    } else {
-        fetchPrettySubjectNames();
-    }
+    })
 })
 
 function fetchPrettySubjectNames() {
