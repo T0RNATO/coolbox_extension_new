@@ -146,7 +146,7 @@ import '@vuepic/vue-datepicker/dist/main.css'
 import {defaultSheets, useExtensionStorage} from "~/utils/componentUtils";
 import ReminderPopup from "~/components/popups/ReminderPopup.vue";
 import ViewRemindersPopup from "~/components/popups/ViewRemindersPopup.vue";
-import {apiGet} from "~/utils/apiUtils";
+import {apiGet, cookieFetched} from "~/utils/apiUtils";
 
 const currentPageLayout = ref({
     leftCol: [],
@@ -225,12 +225,24 @@ function manuallyUpdateCustomTheme() {
 
 browser.storage.local.onChanged.addListener((changes) => {
     mostRecentStorageChanges = changes;
-    if (changes.theme && changes.theme.newValue.custom && changes.theme.newValue.custom === changes.theme.oldValue.custom) {
-        browser.runtime.sendMessage({
-            type: "updateTheme",
-            new: changes.theme.newValue,
-            old: changes.theme.oldValue
-        });
+    console.log(changes);
+    if (changes.theme) {
+        if (changes.theme.newValue.custom) {
+            // Prevent spam-updating theme every single time the colour is changed
+            if (changes.theme.newValue.custom === changes.theme.oldValue.custom) {
+                browser.runtime.sendMessage({
+                    type: "updateTheme",
+                    new: changes.theme.newValue,
+                    old: changes.theme.oldValue
+                });
+            }
+        } else {
+            browser.runtime.sendMessage({
+                type: "updateTheme",
+                new: changes.theme.newValue,
+                old: changes.theme.oldValue
+            });
+        }
     }
 })
 
@@ -263,7 +275,9 @@ function updateDueWork() {
         reminders.value = data;
     })
 }
-updateDueWork();
+cookieFetched.then(() => {
+    updateDueWork();
+})
 
 function dropComponent(column, dropInfo) {
     // If there was an element removed, delete it from the page.

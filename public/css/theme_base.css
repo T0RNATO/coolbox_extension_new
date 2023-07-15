@@ -13,10 +13,6 @@
     color: var(--theme-text);
 }
 
-.timetable-subject {
-    filter: brightness(0.8);
-}
-
 body textarea {
     background-color: var(--body-background);
     color: var(--theme-text) !important;
@@ -26,22 +22,8 @@ body textarea {
     background: var(--theme-generic);
 }
 
-:not(.timetable-subject) > a:not(#notification-toggle):not(.button) {
+:not(.cb-subject) > a:not(#notification-toggle):not(.button) {
     color: var(--link-colour) !important;
-}
-
-.timetable th, body .alert-box {
-    background-color: var(--theme-generic) !important;
-    color: var(--theme-text);
-}
-
-th.timetable-period-active, .timetable-day-active {
-    background-color: var(--theme-accent) !important;
-    color: var(--theme-text) !important;
-}
-
-.timetable-subject a {
-    color: #085ba5;
 }
 
 #news-component li {
