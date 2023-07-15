@@ -64,7 +64,7 @@
                        :is="el" :key="i" class="slide-in px-2"
                        :widg-info="{edit: false, col: column, add: false, reminders: reminders}"
                        @open-reminder="(rem) => {openCreateReminderPopup(rem)}"
-                       @view-reminders="viewRemindersPopup.openPopup()"
+                       @view-reminders="viewReminderPopup.openPopup()"
                        @edit-reminder="(rem) => {editReminderPopup.openPopup(rem)}"
             />
         </div>
@@ -72,7 +72,7 @@
 
     <ReminderPopup :edit="false" ref="createReminderPopup" @update-due-work="updateDueWork"/>
     <ReminderPopup :edit="true" ref="editReminderPopup" @update-due-work="updateDueWork"/>
-    <ViewRemindersPopup ref="viewRemindersPopup" @edit-reminder="(rem) => {editReminderPopup.openPopup(rem)}"/>
+    <ViewRemindersPopup ref="viewReminderPopup" @edit-reminder="(rem) => {editReminderPopup.openPopup(rem)}"/>
 
     <!-- Page Editing Toast -->
     <shadow-root :adopted-style-sheets="defaultSheets">
@@ -155,7 +155,7 @@ const currentPageLayout = ref({
 
 const createReminderPopup = ref(null);
 const editReminderPopup = ref(null);
-const viewRemindersPopup = ref(null);
+const viewReminderPopup = ref(null);
 function openCreateReminderPopup(reminder) {
     createReminderPopup.value.openPopup(reminder);
 }

@@ -21,13 +21,23 @@
                 <span class="dui-countdown am"></span>
             </div>
         </div>
-        <EditingContextMenu @delete="$emit('delete')"/>
+        <EditingContextMenu @delete="$emit('delete')" :settings="true">
+            <shadow-root :adopted-style-sheets="defaultSheets">
+                <div class="flex items-center p-1">
+                    <span>24-Hour Mode:</span>
+                    <input type="checkbox" class="ml-2 dui-checkbox border-solid border-gray-500 dui-checkbox-sm" v-model="is24Hour"/>
+                </div>
+            </shadow-root>
+        </EditingContextMenu>
     </div>
 </template>
 
 <script setup>
 import {computed, ref} from "vue";
 import EditingContextMenu from "~/components/EditingContextMenu.vue";
+import {defaultSheets, useExtensionStorage} from "~/utils/componentUtils";
+
+const is24Hour = useExtensionStorage("clock.24", false);
 
 defineProps({
     editMode: Boolean
@@ -39,7 +49,10 @@ setInterval(() => {
 }, 200)
 
 const hours = computed(() => {
-    return now.value.getHours();
+    if (is24Hour.value) return now.value.getHours();
+    else {
+        return now.value.getHours() % 12 || 12;
+    }
 })
 const minutes = computed(() => {
     return now.value.getMinutes();
