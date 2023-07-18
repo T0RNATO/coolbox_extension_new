@@ -225,7 +225,6 @@ function manuallyUpdateCustomTheme() {
 
 browser.storage.local.onChanged.addListener((changes) => {
     mostRecentStorageChanges = changes;
-    console.log(changes);
     if (changes.theme) {
         if (changes.theme.newValue.custom) {
             // Prevent spam-updating theme every single time the colour is changed
