@@ -11,8 +11,6 @@ browser.runtime.onInstalled.addListener(() => {
         }
         if (oldSettings.theme) {
             browser.storage.local.set({theme: {setting: oldSettings.theme}});
-        } else {
-            browser.storage.local.set({theme: {setting: "light"}});
         }
     })
 });

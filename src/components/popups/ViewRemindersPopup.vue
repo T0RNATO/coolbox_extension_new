@@ -45,7 +45,3 @@ defineExpose({openPopup});
         </div>
     </PopupBase>
 </template>
-
-<style scoped>
-
-</style>

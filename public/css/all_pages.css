@@ -8,3 +8,11 @@ body {
     --theme-accent: #F8F8F8;
     --theme-text: #000;
 }
+
+.hide-pfp #profile-drop {
+    display: none;
+}
+
+.hide-pfp #search {
+    right: 4.5rem !important;
+}
