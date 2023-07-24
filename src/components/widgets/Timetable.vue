@@ -6,6 +6,7 @@
                 <div class="flex">
                     <div v-for="head in timetableHeaders"
                          class="p-3 w-1/5 text-sm bg-primary text-themeText"
+                         :class="{'head-active': head.classList.contains('timetable-period-active')}"
                     >
                         {{head.firstChild.textContent}}
                         <div v-html="head.firstElementChild.outerHTML"></div>
@@ -17,7 +18,7 @@
                          class="p-4 w-1/5 text-sm cb-subject"
                          :data-change="c = changes?.find(
                             change => change['class_name'] ===
-                                sub.children[1].textContent.match(/\(([^)]+)\)/)[1]
+                                sub.children[1].textContent.slice(1, -1)
                          )"
                     >
                         <a :href="sub.firstElementChild.href">{{
@@ -86,11 +87,14 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .cb-subject a {
     color: #085ba5;
 }
 .strike {
     @apply line-through text-red-500;
+}
+.head-active {
+    @apply bg-accent;
 }
 </style>

@@ -8,6 +8,7 @@ export const infoMessage = ref("");
 
 export const cookieFetched = browser.runtime.sendMessage("getCookie");
 cookieFetched.then(cookie => {
+    console.log(headers);
     headers = new Headers({
         "Authorization": `Bearer ${cookie}`,
         "Content-Type": "application/json"

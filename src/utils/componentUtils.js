@@ -84,7 +84,7 @@ twStyleSheet.replaceSync(tailwind);
 iconsStyleSheet.replaceSync(icons);
 // language=CSS
 otherStyling.replaceSync(`
-    .dui-radio {
+    .dui-radio, .dui-checkbox {
         border: 1px solid rgb(107 114 128);
     }`)
 export const defaultSheets = [twStyleSheet, iconsStyleSheet, otherStyling];

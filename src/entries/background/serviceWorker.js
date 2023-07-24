@@ -4,12 +4,23 @@ import {shadeHexColor} from "~/utils/utilFunctions";
 
 browser.runtime.onInstalled.addListener(() => {
     console.log("Extension installed");
+    browser.storage.sync.get().then((oldSettings) => {
+        browser.storage.sync.clear();
+        if (oldSettings.pfp) {
+            browser.storage.local.set({pfp: true});
+        }
+        if (oldSettings.theme) {
+            browser.storage.local.set({theme: {setting: oldSettings.theme}});
+        } else {
+            browser.storage.local.set({theme: {setting: "light"}});
+        }
+    })
 });
 
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message === "applyTheme") {
         browser.storage.local.get("theme").then(result => {
-            if (result.theme.setting !== "light") {
+            if (result.theme.setting && result.theme.setting !== "light") {
                 applyTheme(sender, result.theme);
             }
         })
