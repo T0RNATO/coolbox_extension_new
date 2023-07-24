@@ -8,7 +8,6 @@ export const infoMessage = ref("");
 
 export const cookieFetched = browser.runtime.sendMessage("getCookie");
 cookieFetched.then(cookie => {
-    console.log(headers);
     headers = new Headers({
         "Authorization": `Bearer ${cookie}`,
         "Content-Type": "application/json"
@@ -18,6 +17,10 @@ cookieFetched.then(cookie => {
         criticalMessage.value = status.critical;
         infoMessage.value = status.info;
     })
+
+    apiGet("room-changes", (info) => {
+        roomChanges.value = info['room_changes'];
+    });
 })
 
 export function apiGet(path, callback) {
@@ -85,3 +88,5 @@ export function apiSend(method, path, body, successMessage, errorMessage, callba
         console.error("API error:", error);
     })
 }
+
+export const roomChanges = ref();

@@ -16,7 +16,7 @@
                     <div v-for="sub in timetableSubjects"
                          :style="{backgroundColor: sub.style.getPropertyValue('background-color')}"
                          class="p-4 w-1/5 text-sm cb-subject"
-                         :data-change="c = changes?.find(
+                         :data-change="c = roomChanges?.find(
                             change => change['class_name'] ===
                                 sub.children[1].textContent.slice(1, -1)
                          )"
@@ -46,45 +46,25 @@
 
 <script setup>
 import EditingContextMenu from "~/components/EditingContextMenu.vue";
-import {criticalMessage} from "~/utils/apiUtils";
+import {criticalMessage, roomChanges} from "~/utils/apiUtils";
+import {ref} from "vue";
+import browser from "webextension-polyfill";
+
+const pretty = ref();
+browser.storage.local.get("subjects").then(data => {
+    pretty.value = data.subjects.value;
+})
 
 const timetableSubjects = document.querySelectorAll(".timetable .timetable-subject");
 
 const show = Boolean(timetableSubjects.length);
+
 const timetableHeaders = document.querySelectorAll(".timetable th");
 const dayTitle = document.querySelector("[data-timetable-header]")?.textContent;
 
 defineProps({
     widgInfo: Object
 })
-</script>
-
-<script>
-import {apiGet, cookieFetched} from "~/utils/apiUtils";
-import {computed} from "vue";
-import browser from "webextension-polyfill";
-
-let roomChanges = [];
-let prettyNames = [];
-
-cookieFetched.then(() => {
-    apiGet("room-changes", (info) => {
-        roomChanges = info['room_changes'];
-    });
-    browser.storage.local.get("subjects").then(data => {
-        prettyNames = data.subjects.value;
-    })
-})
-
-export default {
-    setup() {
-        const changes = computed(() => {return roomChanges})
-        const pretty = computed(() => {return prettyNames})
-        return {
-            changes, pretty
-        }
-    }
-}
 </script>
 
 <style scoped>
