@@ -14,15 +14,17 @@
         <span class="text-themeText">{{infoMessage}}</span>
 
         <EditingContextMenu @delete="$emit('delete')" settings="true">
-            <shadow-root :adopted-style-sheets="defaultSheets">
+            <shadow-root :adopted-style-sheets="defaultSheets" class="no-drag">
                 <div class="flex items-center mb-1">
                     <input type="radio" name="ts_type" id="solid" value="solid" v-model="ts_type" class="dui-radio">
                     <label for="solid" class="ml-1">Solid Colour</label>
                 </div>
-                <div class="flex items-center mb-1">
+                <!--TODO: make this work-->
+                <div class="items-center mb-1 hidden">
                     <input type="radio" name="ts_type" id="gradient" value="gradient" v-model="ts_type" class="dui-radio">
                     <label for="gradient" class="ml-1">Gradient</label>
                 </div>
+                <!---->
                 <div class="flex items-center mb-1">
                     <input type="radio" name="ts_type" id="default" value="default" v-model="ts_type" class="dui-radio">
                     <label for="default" class="ml-1">Default Colour</label>
@@ -33,10 +35,14 @@
                 </div>
                 <div class="flex items-center mb-1">
                     <input type="radio" name="ts_type" id="legacy_anim" value="legacy_anim" v-model="ts_type" class="dui-radio">
-                    <label for="legacy_anim" class="ml-1">Legacy Animated Gradient</label>
+                    <label for="legacy_anim" class="ml-1">RGB</label>
                 </div>
                 <input type="color" v-model="ts_hex1" v-if="ts_type === 'solid' || ts_type === 'gradient'">
                 <input type="color" v-model="ts_hex2" v-if="ts_type === 'gradient'">
+                
+<!--                <div v-if="ts_type === 'legacy_anim'">-->
+<!--                    RGB Speed:<input type="range" min="1" max="1400" class="dui-range" v-model="speed">-->
+<!--                </div>-->
             </shadow-root>
         </EditingContextMenu>
     </div>
@@ -46,13 +52,14 @@
 import EditingContextMenu from "~/components/EditingContextMenu.vue";
 import {defaultSheets, useExtensionStorage} from "~/utils/componentUtils";
 import {infoMessage} from "~/utils/apiUtils";
-import {onBeforeUnmount} from "vue";
 
 let tiles = document.querySelector('#tileList-2248').getElementsByClassName('tile');
 
 const ts_type = useExtensionStorage("tiles.type", "legacy");
 const ts_hex1 = useExtensionStorage("tiles.hex1", "#3ae8d4");
 const ts_hex2 = useExtensionStorage("tiles.hex2", "#10739a");
+
+const speed = useExtensionStorage("tiles.speed", 1000);
 
 // Readable code stolen from https://stackoverflow.com/a/54070620/13102310
 function hexToHSV(hex) {
@@ -73,14 +80,11 @@ function getFilter(i) {
     } else if (ts_type.value === "legacy") {
         return {filter: `hue-rotate(${getHueRotation(i)}deg) brightness(1.5) contrast(1.3)`};
     } else if (ts_type.value === "legacy_anim") {
-        // TODO
-        // if (!rgbInterval) {
-        //     setInterval(() => {
-        //
-        //     })
-        // }
-        //
-        // return {filter: `hue-rotate(${}deg) brightness(1.5) contrast(1.3)`};
+        // const animTime = 2000 - speed.value;
+        const distanceFromTopLeft = i%5+Math.floor(i/5);
+        return {
+            animation: `rgb 2s linear infinite -${distanceFromTopLeft*200}ms`
+        }
     }
 }
 
@@ -92,18 +96,12 @@ function getHueRotation(index) {
   return index * 24;
 }
 
-let rgbInterval;
-
-onBeforeUnmount(() => {
-    clearInterval(rgbInterval);
-})
-
 defineProps({
     widgInfo: Object
 })
 </script>
 
-<style scoped>
+<style>
 #tileList.tileList .tile {
     width: 17%;
     margin: 1.5%;
@@ -118,5 +116,13 @@ li.tile {
 li.tile:hover {
     transform: scale(1.05);
     transition: all 0.05s ease-in-out;
+}
+@keyframes rgb {
+    from {
+        filter: hue-rotate(0deg) brightness(1.5) contrast(1.3);
+    }
+    to {
+        filter: hue-rotate(360deg) brightness(1.5) contrast(1.3);
+    }
 }
 </style>

@@ -44,7 +44,9 @@
                    group-name="homepage"
                    :data-col="column"
                    @drop="(ev) => dropComponent(column, ev)"
-                   :get-child-payload="(ev) => getPayload(column, ev)">
+                   :get-child-payload="(ev) => getPayload(column, ev)"
+                   non-drag-area-selector=".no-drag"
+        >
             <Draggable v-for="[i, el] in Object.entries(components)"
                        @click="selectComponent"
                        :data-i="i" :key="'d' + i">
