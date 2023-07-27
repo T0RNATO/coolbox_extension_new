@@ -2,20 +2,20 @@
     <div class="mb-4">
         <div v-if="show">
             <h2 class="subheader">{{dayTitle}}</h2>
-            <div>
-                <div class="flex">
+            <div class="flex sm:flex-row lg:flex-col">
+                <div class="flex lg:flex-row sm:flex-col">
                     <div v-for="head in timetableHeaders"
-                         class="p-3 w-1/5 text-sm bg-primary text-themeText"
+                         class="cb-header"
                          :class="{'head-active': head.classList.contains('timetable-period-active')}"
                     >
                         {{head.firstChild.textContent}}
                         <div v-html="head.firstElementChild.outerHTML"></div>
                     </div>
                 </div>
-                <div class="flex">
+                <div class="flex lg:flex-row sm:flex-col">
                     <div v-for="sub in timetableSubjects"
                          :style="{backgroundColor: sub.style.getPropertyValue('background-color')}"
-                         class="p-4 w-1/5 text-sm cb-subject"
+                         class="cb-subject"
                          :data-change="c = roomChanges?.find(
                             change => change['class_name'] ===
                                 sub.children[1].textContent.slice(1, -1)
@@ -70,6 +70,12 @@ defineProps({
 <style scoped>
 .cb-subject a {
     color: #085ba5;
+}
+.cb-subject {
+    @apply p-4 lg:w-1/5 text-sm sm:w-full;
+}
+.cb-header {
+    @apply p-3 lg:w-1/5 text-sm bg-primary text-themeText sm:w-full sm:h-full;
 }
 .strike {
     @apply line-through text-red-500;
