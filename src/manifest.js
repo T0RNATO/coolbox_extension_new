@@ -42,7 +42,7 @@ const browserAction = {
 const ManifestV2 = {
     ...sharedManifest,
     background: {
-        scripts: ["src/entries/background/script.js"],
+        scripts: ["src/entries/background/serviceWorker.js"],
         persistent: true,
     },
     browser_action: browserAction,
