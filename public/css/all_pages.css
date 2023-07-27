@@ -16,3 +16,7 @@ body {
 .hide-pfp #search {
     right: 4.5rem !important;
 }
+
+.dui-modal-backdrop > button {
+    border: none;
+}
