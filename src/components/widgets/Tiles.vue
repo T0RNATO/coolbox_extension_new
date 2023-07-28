@@ -80,10 +80,9 @@ function getFilter(i) {
     } else if (ts_type.value === "legacy") {
         return {filter: `hue-rotate(${getHueRotation(i)}deg) brightness(1.5) contrast(1.3)`};
     } else if (ts_type.value === "legacy_anim") {
-        // const animTime = 2000 - speed.value;
-        const distanceFromTopLeft = i%5+Math.floor(i/5);
+        const distanceFromBottomRight = (i%5+Math.floor(i/5)) * -1 + 15;
         return {
-            animation: `rgb 2s linear infinite -${distanceFromTopLeft*200}ms`
+            animation: `rgb 4s linear reverse infinite -${distanceFromBottomRight*150}ms`
         }
     }
 }
