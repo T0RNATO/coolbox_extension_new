@@ -386,7 +386,7 @@ function clearSelectedComponent() {
 }
 
 .widget-sidebar {
-    @apply absolute h-full w-1/3 bg-primary left-0 top-0 shadow-2xl z-[1002] p-6 overflow-y-scroll -translate-x-full;
+    @apply fixed h-[100vh] w-1/3 bg-primary left-0 top-0 shadow-2xl z-[1002] p-6 overflow-y-scroll -translate-x-full;
 }
 .drawerOpen {
     animation: slide-x 500ms forwards;
