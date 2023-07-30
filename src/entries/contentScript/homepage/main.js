@@ -45,7 +45,12 @@ function setPrettySubjectNames(names) {
     for (const sidebarItem of document.querySelectorAll("#side-menu-mysubjects li a")) {
         const subject = names.filter(name => name.name === sidebarItem.textContent)[0];
         if (subject) {
+            let content = sidebarItem.textContent;
+            let lastChar = content.charAt(content.length - 1);
             sidebarItem.textContent = subject.pretty;
+            if (lastChar === lastChar.toUpperCase()) {
+                sidebarItem.textContent += ` (${lastChar})`;
+            }
         }
     }
 
