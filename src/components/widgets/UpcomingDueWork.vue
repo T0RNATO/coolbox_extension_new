@@ -11,7 +11,7 @@
                 </div>
             </li>
             <li>
-                <div class="card flex-row w-full flex px-0">
+                <div class="card flex-row w-full flex px-0 text-sm">
                     <div class="button" @click="createReminder(false)">
                         <span class="material-symbols-outlined align-bottom">add</span>
                         Add Reminder
