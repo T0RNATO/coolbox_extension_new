@@ -25,7 +25,8 @@
             <shadow-root :adopted-style-sheets="defaultSheets">
                 <div class="flex items-center p-1">
                     <span>24-Hour Mode:</span>
-                    <input type="checkbox" class="ml-2 dui-checkbox border-solid border-gray-500 dui-checkbox-sm" v-model="is24Hour"/>
+                    <input type="checkbox" class="ml-2 dui-checkbox border-solid border-gray-500 dui-checkbox-sm"
+                           :value="is24Hour === 'HH'" @input="is24Hour = $event.target.checked ? 'HH' : 'hh'"/>
                 </div>
             </shadow-root>
         </EditingContextMenu>
@@ -37,10 +38,10 @@ import EditingContextMenu from "~/components/EditingContextMenu.vue";
 import {defaultSheets, useExtensionStorage} from "~/utils/componentUtils";
 import {useDateFormat, useNow, useToNumber} from "@vueuse/core";
 
-const is24Hour = useExtensionStorage("clock.24", false);
+const is24Hour = useExtensionStorage("clock.24", "hh");
 
 const now = useNow({interval: 200});
-const hours = useToNumber(useDateFormat(now, is24Hour.value ? "HH" : "hh"));
+const hours = useToNumber(useDateFormat(now, is24Hour));
 const minutes = useDateFormat(now, "mm");
 const seconds = useDateFormat(now, "ss");
 defineProps({

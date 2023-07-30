@@ -18,7 +18,7 @@
                     <div class="dui-tooltip" data-tip="Custom Theme">
                         <input type="radio" name="theme" id="custom_theme" class="hidden mx-1 cursor-pointer" v-model="themeStore" value="custom">
                         <label for="custom_theme">
-                            <span class="material-symbols-outlined">palette</span>
+                            <span class="material-symbols-outlined text-2xl">palette</span>
                         </label>
                     </div>
                 </div>
@@ -82,21 +82,21 @@
     <shadow-root :adopted-style-sheets="defaultSheets">
         <div class="dui-toast" v-if="editMode">
             <div class="dui-alert p-2 shadow-2xl shadow-black">
-                <span class="material-symbols-outlined">edit</span>
+                <span class="material-symbols-outlined text-lg">edit</span>
                 <span>You are in edit mode! Click a widget to<br>select it and edit it, or drag them around.</span>
                 <div class="dui-tooltip" data-tip="Reset Layout">
                     <button class="dui-btn bg-gray-300" @click="resetPageLayout">
-                        <span class="material-symbols-outlined">restart_alt</span>
+                        <span class="material-symbols-outlined text-lg">restart_alt</span>
                     </button>
                 </div>
                 <div class="dui-tooltip" data-tip="Add Widgets">
                     <button class="dui-btn dui-btn-secondary" @click="drawerOpen = !drawerOpen">
-                        <span class="material-symbols-outlined">add</span>
+                        <span class="material-symbols-outlined text-lg">add</span>
                     </button>
                 </div>
                 <div class="dui-tooltip" data-tip="Done">
                     <button class="dui-btn dui-btn-primary" @click="editMode = false; clearSelectedComponent();">
-                        <span class="material-symbols-outlined">done</span>
+                        <span class="material-symbols-outlined text-lg">done</span>
                     </button>
                 </div>
             </div>
