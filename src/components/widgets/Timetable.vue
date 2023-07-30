@@ -26,12 +26,14 @@
                             || sub.firstElementChild.textContent
                         }}</a><br>
                         <span>{{sub.children[1].textContent}}</span><br>
-                        <span>
+                        <div>
                             <span :class="{strike: c}">{{sub.children[2].textContent}}</span>
-                            <span v-if="c" class="font-semibold">
-                                → {{c}}
-                            </span>
-                        </span>
+                            <div class="dui-tooltip ml-1" data-tip='Room Change' v-if="c">
+                                <span class="font-semibold">
+                                    → {{c.assigned_room}}
+                                </span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
