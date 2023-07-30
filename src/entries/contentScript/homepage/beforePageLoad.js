@@ -1,3 +1,7 @@
 import browser from "webextension-polyfill";
 
-browser.runtime.sendMessage("applyTheme");
+browser.storage.local.get("theme").then(result => {
+    if (result) {
+        browser.runtime.sendMessage("applyTheme");
+    }
+})

@@ -18,7 +18,7 @@ body textarea {
     color: var(--theme-text) !important;
 }
 
-.card {
+.card:not(.eportfolio > .card) {
     background: var(--theme-generic);
 }
 

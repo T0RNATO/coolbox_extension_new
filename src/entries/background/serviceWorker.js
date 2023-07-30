@@ -18,7 +18,7 @@ browser.runtime.onInstalled.addListener(() => {
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message === "applyTheme") {
         browser.storage.local.get("theme").then(result => {
-            if (result.theme.setting && result.theme.setting !== "light") {
+            if (result.theme?.setting && result.theme?.setting !== "light") {
                 applyTheme(sender, result.theme);
             }
         })
@@ -29,14 +29,14 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
             files: ["/css/theme_base.css"]
         }).then(() => {
             // Remove the previous theme's styling (if it had any)
-            if (message.old.setting !== "light") {
+            if (message.old?.setting !== "light") {
                 browser.scripting.removeCSS({
                     target: {tabId: sender.tab.id},
                     css: generateThemeCss(message.old)
                 })
             }
             // And then if there's a new theme to add, add it
-            if (message.new.setting !== "light") {
+            if (message.new?.setting !== "light") {
                 applyTheme(sender, message.new);
             }
         })
@@ -118,21 +118,23 @@ function checkReminders() {
 }
 
 function applyTheme(sender, theme) {
-    browser.scripting.insertCSS({
-        target: { tabId: sender.tab.id },
-        files: ["/css/theme_base.css"]
-    }).then(() => {
+    if (theme) {
         browser.scripting.insertCSS({
             target: { tabId: sender.tab.id },
-            css: generateThemeCss(theme)
+            files: ["/css/theme_base.css"]
+        }).then(() => {
+            browser.scripting.insertCSS({
+                target: { tabId: sender.tab.id },
+                css: generateThemeCss(theme)
+            })
         })
-    })
+    }
 }
 
 function generateThemeCss(themeObject) {
     let variables;
     if (themeObject.setting !== "custom") {
-        variables = possibleThemes.find(theme => theme.value === themeObject.setting).vars;
+        variables = possibleThemes.find(theme => theme.value === themeObject.setting)?.vars;
     } else {
         const colour = themeObject.custom;
         if (themeObject.style === "dark") {
@@ -153,9 +155,11 @@ function generateThemeCss(themeObject) {
             }
         }
     }
-    let currentThemeCss = ":root {"
-    for (const [name, value] of Object.entries(variables)) {
-        currentThemeCss += `--${name}: ${value} !important;`;
+    if (variables) {
+        let currentThemeCss = ":root {"
+        for (const [name, value] of Object.entries(variables)) {
+            currentThemeCss += `--${name}: ${value} !important;`;
+        }
+        return currentThemeCss + "}";
     }
-    return currentThemeCss + "}";
 }

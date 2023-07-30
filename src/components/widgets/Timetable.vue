@@ -52,7 +52,7 @@ import browser from "webextension-polyfill";
 
 const pretty = ref();
 browser.storage.local.get("subjects").then(data => {
-    pretty.value = data.subjects.value;
+    pretty.value = data.subjects?.value;
 })
 
 const timetableSubjects = document.querySelectorAll(".timetable .timetable-subject");

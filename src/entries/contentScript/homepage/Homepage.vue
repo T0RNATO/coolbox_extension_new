@@ -227,27 +227,29 @@ function manuallyUpdateCustomTheme() {
     });
 }
 
-browser.storage.local.onChanged.addListener((changes) => {
-    mostRecentStorageChanges = changes;
-    if (changes.theme) {
-        if (changes.theme.newValue.custom) {
-            // Prevent spam-updating theme every single time the colour is changed
-            if (changes.theme.newValue.custom === changes.theme.oldValue.custom) {
+setTimeout(() => {
+    browser.storage.local.onChanged.addListener((changes) => {
+        mostRecentStorageChanges = changes;
+        if (changes.theme) {
+            if (changes.theme.newValue.custom) {
+                // Prevent spam-updating theme every single time the colour is changed
+                if (changes.theme.newValue.custom === changes.theme.oldValue.custom) {
+                    browser.runtime.sendMessage({
+                        type: "updateTheme",
+                        new: changes.theme.newValue,
+                        old: changes.theme.oldValue
+                    });
+                }
+            } else {
                 browser.runtime.sendMessage({
                     type: "updateTheme",
                     new: changes.theme.newValue,
                     old: changes.theme.oldValue
                 });
             }
-        } else {
-            browser.runtime.sendMessage({
-                type: "updateTheme",
-                new: changes.theme.newValue,
-                old: changes.theme.oldValue
-            });
         }
-    }
-})
+    })
+}, 500);
 
 const allWidgets = [
     markRaw(GreetingText),
