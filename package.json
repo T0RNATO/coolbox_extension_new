@@ -26,6 +26,8 @@
   },
   "dependencies": {
     "@vuepic/vue-datepicker": "^5.4.0",
+    "@vueuse/components": "^10.2.1",
+    "@vueuse/core": "^10.2.1",
     "vue": "^3.2.47",
     "vue-shadow-dom": "^4.2.0",
     "vue3-smooth-dnd": "^0.0.5",
