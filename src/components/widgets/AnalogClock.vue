@@ -33,32 +33,18 @@
 </template>
 
 <script setup>
-import {computed, ref} from "vue";
 import EditingContextMenu from "~/components/EditingContextMenu.vue";
 import {defaultSheets, useExtensionStorage} from "~/utils/componentUtils";
+import {useDateFormat, useNow, useToNumber} from "@vueuse/core";
 
 const is24Hour = useExtensionStorage("clock.24", false);
 
+const now = useNow({interval: 200});
+const hours = useToNumber(useDateFormat(now, is24Hour.value ? "HH" : "hh"));
+const minutes = useDateFormat(now, "mm");
+const seconds = useDateFormat(now, "ss");
 defineProps({
     editMode: Boolean
-})
-
-const now = ref(new Date())
-setInterval(() => {
-    now.value = new Date()
-}, 200)
-
-const hours = computed(() => {
-    if (is24Hour.value) return now.value.getHours();
-    else {
-        return now.value.getHours() % 12 || 12;
-    }
-})
-const minutes = computed(() => {
-    return now.value.getMinutes();
-})
-const seconds = computed(() => {
-    return now.value.getSeconds();
 })
 </script>
 

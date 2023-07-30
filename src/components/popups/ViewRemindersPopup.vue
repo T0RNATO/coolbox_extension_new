@@ -2,6 +2,7 @@
 import PopupBase from "~/components/popups/PopupBase.vue";
 import {ref} from "vue";
 import {apiGet} from "~/utils/apiUtils";
+import {formatDate, formatTimeAgo} from "@vueuse/core";
 
 const popupComponent = ref(null);
 const reminders = ref(null);
@@ -29,18 +30,23 @@ defineExpose({openPopup});
         </div>
         <div v-else-if="reminders.length === 0">You have no reminders</div>
         <div v-else v-for="(reminder, i) in reminders" :key="i" class="border-solid border-themeText mb-2 p-2 relative">
-            <span class="inline-flex items-center">
+            <div class="inline-flex items-center">
                 {{reminder['title']}}
-                <span class="text-gray-500">
-                    <span class="material-symbols-outlined mx-1 text-sm">schedule</span>
-                    {{new Date(reminder['due']).toLocaleString("en-AU", {timeStyle: "short", dateStyle: "short"})}}
-                </span>
-            </span>
+                <div class="dui-tooltip ml-1" :data-tip="formatDate(new Date(reminder['due']), 'ddd D MMM h:mm a')">
+                    <span class="text-gray-500">{{formatTimeAgo(reminder['due'])}}</span>
+                </div>
+            </div>
             <br>
-            <span class="text-sm text-gray-500">
+            <div class="inline-flex items-center">
+                <span class="text-sm text-gray-500">
                 Notification on {{reminder.method.charAt(0).toUpperCase() + reminder.method.slice(1)}}
-            </span>
-            <!--TODO? have a link to the reminder assessment, if any-->
+                </span>
+                <div v-if="reminder['assessment']" class="inline ml-2 dui-tooltip" data-tip="Linked to assessment">
+                    <a :href="'https://schoolbox.donvale.vic.edu.au/learning/assessments/' + reminder['assessment']">
+                        <span class="material-symbols-outlined inline-block">attachment</span>
+                    </a>
+                </div>
+            </div>
             <span class="material-symbols-outlined text-[20px] absolute top-0 right-0 m-2 text-gray-500 cursor-pointer" @click="editReminder(reminder)">edit</span>
         </div>
     </PopupBase>
