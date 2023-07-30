@@ -72,9 +72,11 @@
         </div>
     </div>
 
-    <ReminderPopup :edit="false" ref="createReminderPopup" @update-due-work="updateDueWork"/>
-    <ReminderPopup :edit="true" ref="editReminderPopup" @update-due-work="updateDueWork"/>
-    <ViewRemindersPopup ref="viewReminderPopup" @edit-reminder="(rem) => {editReminderPopup.openPopup(rem)}"/>
+    <teleport to="body">
+        <ReminderPopup :edit="false" ref="createReminderPopup" @update-due-work="updateDueWork"/>
+        <ReminderPopup :edit="true" ref="editReminderPopup" @update-due-work="updateDueWork"/>
+        <ViewRemindersPopup ref="viewReminderPopup" @edit-reminder="(rem) => {editReminderPopup.openPopup(rem)}"/>
+    </teleport>
 
     <!-- Page Editing Toast -->
     <shadow-root :adopted-style-sheets="defaultSheets">
