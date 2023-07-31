@@ -71,7 +71,7 @@ ul.grid {
     background: var(--theme-generic);
 }
 
-dl.tabs {
+dl.tabs, .content table td {
     background: var(--theme-accent);
 }
 
