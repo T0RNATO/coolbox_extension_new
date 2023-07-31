@@ -46,14 +46,13 @@ import VueDatePicker from "@vuepic/vue-datepicker"
 import {ShadowRoot} from "vue-shadow-dom";
 import {defaultSheets} from "~/utils/componentUtils";
 import {ref} from "vue";
-import {apiSend, cookieFetched, discordLinked} from "~/utils/apiUtils";
+import {apiSend, cookieFetched, discordLinked, updateReminders} from "~/utils/apiUtils";
 import PopupBase from "~/components/popups/PopupBase.vue";
 import browser from "webextension-polyfill";
 
 defineProps({
     edit: Boolean
 })
-const emit = defineEmits(['updateDueWork'])
 
 const authLink = ref();
 cookieFetched.then(cookie => {
@@ -84,7 +83,7 @@ function createReminder(ev) {
             "Reminder created successfully",
             "Failed to create reminder", () => {
                 browser.runtime.sendMessage("createNotifications");
-                emit('updateDueWork');
+                updateReminders();
             }
         );
     }
@@ -104,7 +103,7 @@ function deleteReminder() {
         "Reminder deleted successfully",
         "Failed to delete reminder", () => {
             browser.runtime.sendMessage("createNotifications");
-            emit('updateDueWork');
+            updateReminders();
         }
     );
 }

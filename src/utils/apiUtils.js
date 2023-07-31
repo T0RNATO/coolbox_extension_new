@@ -3,9 +3,8 @@ import {ref} from "vue";
 
 let headers = null;
 
-export const criticalMessage = ref("");
-export const infoMessage = ref("");
-export const discordLinked = ref("");
+export const statusMessages = ref({});
+export const discordLinked = ref(false);
 export const weather = ref([]);
 export const roomChanges = ref([]);
 export const reminders = ref([]);
@@ -22,10 +21,8 @@ cookieFetched.then(cookie => {
         "Authorization": `Bearer ${cookie}`,
         "Content-Type": "application/json"
     })
-
     apiGet("start", (data) => {
-        criticalMessage.value = data.status.critical;
-        infoMessage.value = data.status.info;
+        statusMessages.value = data.status;
         discordLinked.value = data.user.discord.linked;
         weather.value = data.weather.forecast;
         roomChanges.value = data.room_changes;

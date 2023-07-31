@@ -11,7 +11,7 @@
             </li>
         </ul>
 
-        <span class="text-themeText">{{infoMessage}}</span>
+        <span class="text-themeText">{{statusMessages.info}}</span>
 
         <EditingContextMenu @delete="$emit('delete')" settings="true">
             <shadow-root :adopted-style-sheets="defaultSheets" class="no-drag">
@@ -51,7 +51,7 @@
 <script setup>
 import EditingContextMenu from "~/components/EditingContextMenu.vue";
 import {defaultSheets, useExtensionStorage} from "~/utils/componentUtils";
-import {infoMessage} from "~/utils/apiUtils";
+import {statusMessages} from "~/utils/apiUtils";
 
 let tiles = document.querySelector('#tileList-2248').getElementsByClassName('tile');
 

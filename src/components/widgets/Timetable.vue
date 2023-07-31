@@ -40,7 +40,7 @@
         </div>
         <span class="italic text-gray-500" v-else-if="widgInfo['edit']">(Timetable Widget)</span>
 
-        <span class="text-red-500 text-2xl">{{criticalMessage}}</span>
+        <span class="text-red-500 text-2xl">{{statusMessages.critical}}</span>
 
         <EditingContextMenu @delete="$emit('delete')"/>
     </div>
@@ -48,7 +48,7 @@
 
 <script setup>
 import EditingContextMenu from "~/components/EditingContextMenu.vue";
-import {criticalMessage, roomChanges} from "~/utils/apiUtils";
+import {statusMessages, roomChanges} from "~/utils/apiUtils";
 import {ref} from "vue";
 import browser from "webextension-polyfill";
 

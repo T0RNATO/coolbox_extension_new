@@ -73,8 +73,8 @@
     </div>
 
     <teleport to="body">
-        <ReminderPopup :edit="false" ref="createReminderPopup" @update-due-work="updateReminders"/>
-        <ReminderPopup :edit="true" ref="editReminderPopup" @update-due-work="updateReminders"/>
+        <ReminderPopup :edit="false" ref="createReminderPopup"/>
+        <ReminderPopup :edit="true" ref="editReminderPopup"/>
         <ViewRemindersPopup ref="viewReminderPopup" @edit-reminder="(rem) => {editReminderPopup.openPopup(rem)}"/>
     </teleport>
 
@@ -150,7 +150,7 @@ import '@vuepic/vue-datepicker/dist/main.css'
 import {defaultSheets, useExtensionStorage} from "~/utils/componentUtils";
 import ReminderPopup from "~/components/popups/ReminderPopup.vue";
 import ViewRemindersPopup from "~/components/popups/ViewRemindersPopup.vue";
-import {reminders, updateReminders} from "~/utils/apiUtils";
+import {reminders} from "~/utils/apiUtils";
 
 const currentPageLayout = ref({
     leftCol: [],
