@@ -33,7 +33,7 @@ cookieFetched.then(cookie => {
     })
 })
 
-export function apiGet(path, callback) {
+function apiGet(path, callback) {
     fetch(`https://api.coolbox.lol/${path}`, {
         method: "GET",
         headers: headers

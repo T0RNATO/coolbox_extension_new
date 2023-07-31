@@ -1,17 +1,14 @@
 <script setup>
 import PopupBase from "~/components/popups/PopupBase.vue";
 import {ref} from "vue";
-import {apiGet} from "~/utils/apiUtils";
+import {reminders, updateReminders} from "~/utils/apiUtils";
 import {formatDate, formatTimeAgo} from "@vueuse/core";
 
 const popupComponent = ref(null);
-const reminders = ref(null);
 function openPopup() {
     reminders.value = null;
     popupComponent.value.$el.showModal();
-    apiGet("reminders", (data) => {
-        reminders.value = data;
-    })
+    updateReminders();
 }
 
 const emit = defineEmits(['editReminder'])
