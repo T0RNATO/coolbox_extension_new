@@ -5,6 +5,9 @@ let headers = null;
 
 export const criticalMessage = ref("");
 export const infoMessage = ref("");
+export const discordLinked = ref("");
+export const weather = ref([]);
+export const roomChanges = ref([]);
 
 export const cookieFetched = browser.runtime.sendMessage("getCookie");
 cookieFetched.then(cookie => {
@@ -13,14 +16,22 @@ cookieFetched.then(cookie => {
         "Content-Type": "application/json"
     })
 
-    apiGet("stats/message", (status) => {
-        criticalMessage.value = status.critical;
-        infoMessage.value = status.info;
+    apiGet("start", (data) => {
+        criticalMessage.value = data.status.critical;
+        infoMessage.value = data.status.info;
+        discordLinked.value = data.user.discord.linked;
+        weather.value = data.weather.forecast;
+        roomChanges.value = data.room_changes;
     })
 
-    apiGet("room-changes", (info) => {
-        roomChanges.value = info['room_changes'];
-    });
+    // apiGet("stats/message", (status) => {
+    //     criticalMessage.value = status.critical;
+    //     infoMessage.value = status.info;
+    // })
+    //
+    // apiGet("room-changes", (info) => {
+    //     roomChanges.value = info['room_changes'];
+    // });
 })
 
 export function apiGet(path, callback) {
@@ -88,5 +99,3 @@ export function apiSend(method, path, body, successMessage, errorMessage, callba
         console.error("API error:", error);
     })
 }
-
-export const roomChanges = ref();

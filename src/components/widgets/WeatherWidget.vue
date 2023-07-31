@@ -4,7 +4,7 @@
             <div class="shadow rounded-md flex items-center flex-col
                         border-solid border-gray-500 m-1 w-full lg:w-[calc(33%-8px)]
                         justify-between"
-                 v-for="(day, i) in daily_data" :key="i">
+                 v-for="(day, i) in weather" :key="i">
                 <span class="font-semibold">
                     {{day.time}}
                 </span>
@@ -42,16 +42,7 @@
 
 <script setup>
 import EditingContextMenu from "~/components/EditingContextMenu.vue";
-import {ref} from "vue";
-import {apiGet, cookieFetched} from "~/utils/apiUtils";
-
-let daily_data = ref([{}, {}, {}]);
-
-cookieFetched.then(() => {
-    apiGet("weather", (data) => {
-        daily_data.value = data['forecast'];
-    })
-})
+import {weather} from "~/utils/apiUtils";
 
 defineProps({
     widgInfo: Object

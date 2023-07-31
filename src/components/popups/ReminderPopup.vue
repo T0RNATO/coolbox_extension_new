@@ -46,7 +46,7 @@ import VueDatePicker from "@vuepic/vue-datepicker"
 import {ShadowRoot} from "vue-shadow-dom";
 import {defaultSheets} from "~/utils/componentUtils";
 import {ref} from "vue";
-import {apiSend} from "~/utils/apiUtils";
+import {apiSend, cookieFetched, discordLinked} from "~/utils/apiUtils";
 import PopupBase from "~/components/popups/PopupBase.vue";
 import browser from "webextension-polyfill";
 
@@ -110,30 +110,6 @@ function deleteReminder() {
 }
 
 defineExpose({openPopup});
-</script>
-
-<script>
-import {apiGet, cookieFetched} from "~/utils/apiUtils";
-import {computed} from "vue";
-
-let discordLinked = false;
-
-cookieFetched.then(() => {
-    apiGet("user", (info) => {
-        discordLinked = info.discord.linked
-    })
-})
-
-export default {
-    setup() {
-        const linked = computed(() => {
-            return discordLinked;
-        })
-        return {
-            linked
-        }
-    }
-}
 </script>
 
 <style>
