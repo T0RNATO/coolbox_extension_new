@@ -8,6 +8,13 @@ export const infoMessage = ref("");
 export const discordLinked = ref("");
 export const weather = ref([]);
 export const roomChanges = ref([]);
+export const reminders = ref([]);
+
+export function updateReminders() {
+    apiGet("reminders", (data) => {
+        reminders.value = data;
+    })
+}
 
 export const cookieFetched = browser.runtime.sendMessage("getCookie");
 cookieFetched.then(cookie => {
@@ -22,16 +29,8 @@ cookieFetched.then(cookie => {
         discordLinked.value = data.user.discord.linked;
         weather.value = data.weather.forecast;
         roomChanges.value = data.room_changes;
+        reminders.value = data.reminders;
     })
-
-    // apiGet("stats/message", (status) => {
-    //     criticalMessage.value = status.critical;
-    //     infoMessage.value = status.info;
-    // })
-    //
-    // apiGet("room-changes", (info) => {
-    //     roomChanges.value = info['room_changes'];
-    // });
 })
 
 export function apiGet(path, callback) {

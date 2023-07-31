@@ -73,8 +73,8 @@
     </div>
 
     <teleport to="body">
-        <ReminderPopup :edit="false" ref="createReminderPopup" @update-due-work="updateDueWork"/>
-        <ReminderPopup :edit="true" ref="editReminderPopup" @update-due-work="updateDueWork"/>
+        <ReminderPopup :edit="false" ref="createReminderPopup" @update-due-work="updateReminders"/>
+        <ReminderPopup :edit="true" ref="editReminderPopup" @update-due-work="updateReminders"/>
         <ViewRemindersPopup ref="viewReminderPopup" @edit-reminder="(rem) => {editReminderPopup.openPopup(rem)}"/>
     </teleport>
 
@@ -141,7 +141,7 @@ import NewsItems from "~/components/widgets/NewsItems.vue";
 import {markRaw, ref} from "vue";
 import browser from "webextension-polyfill";
 
-import { Container, Draggable } from "vue3-smooth-dnd";
+import {Container, Draggable} from "vue3-smooth-dnd";
 import AnalogClock from "~/components/widgets/AnalogClock.vue";
 import WeatherWidget from "~/components/widgets/WeatherWidget.vue";
 import {possibleThemes} from "~/utils/themes";
@@ -150,7 +150,7 @@ import '@vuepic/vue-datepicker/dist/main.css'
 import {defaultSheets, useExtensionStorage} from "~/utils/componentUtils";
 import ReminderPopup from "~/components/popups/ReminderPopup.vue";
 import ViewRemindersPopup from "~/components/popups/ViewRemindersPopup.vue";
-import {apiGet, cookieFetched} from "~/utils/apiUtils";
+import {reminders, updateReminders} from "~/utils/apiUtils";
 
 const currentPageLayout = ref({
     leftCol: [],
@@ -273,16 +273,6 @@ function saveLayout() {
         "homepageLayout": layout
     });
 }
-
-const reminders = ref([])
-function updateDueWork() {
-    apiGet("reminders", (data) => {
-        reminders.value = data;
-    })
-}
-cookieFetched.then(() => {
-    updateDueWork();
-})
 
 function dropComponent(column, dropInfo) {
     // If there was an element removed, delete it from the page.
