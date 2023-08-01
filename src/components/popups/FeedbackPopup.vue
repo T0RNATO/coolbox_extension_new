@@ -7,18 +7,23 @@ import PopupBase from "~/components/popups/PopupBase.vue";
 const popup = ref();
 const body = ref();
 const anon = ref();
+const send = ref();
 
 function sendFeedback() {
+    send.value.disabled = true;
+    popup.value.$el.close();
     apiSend("POST", "feedback", {
         content: body.value.value,
-        origin: "schoolbox",
-        // origin: "test",
+        // origin: "schoolbox",
+        origin: "test",
         anonymous: anon.value.checked
     }, "Feedback Sent!", "Failed to send feedback - you may be banned or not have internet.")
 }
 
 function openPopup() {
     popup.value.$el.showModal();
+    send.value.disabled = false;
+    body.value.value = "";
 }
 
 defineExpose({openPopup});
@@ -39,7 +44,7 @@ defineExpose({openPopup});
         </span>
         <form method="dialog">
             <button class="w-[calc(50%-0.5rem)] mr-2">Cancel</button>
-            <button class="!w-[calc(50%-0.5rem)] ml-2 submit" @click="sendFeedback">Send Feedback</button>
+            <button class="!w-[calc(50%-0.5rem)] ml-2 submit" @click="sendFeedback" ref="send">Send Feedback</button>
         </form>
     </PopupBase>
 </template>
