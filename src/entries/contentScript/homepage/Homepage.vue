@@ -1,7 +1,7 @@
 <template>
     <!-- Edit Mode -->
     <div class="grid-layout" @click="clearSelectedComponent" v-if="editMode">
-        <div class="fixed left-0 bottom-0 z-10 bg-white rounded-tr-md p-2">
+        <div class="fixed left-0 bottom-0 z-[1003] bg-white rounded-tr-md p-2">
             <!--Theme picker box-->
             <!--Shadow root to prevent dumb radio input styling-->
             <shadow-root :adopted-style-sheets="defaultSheets">

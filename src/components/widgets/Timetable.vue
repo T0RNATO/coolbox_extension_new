@@ -19,24 +19,24 @@
                          class="cb-subject"
                          :data-change="c = roomChanges?.find(
                             change => change['class_name'] ===
-                                timetableSubject.children[1].textContent.slice(1, -1)
+                                timetableSubject.children[1]?.textContent.slice(1, -1)
                          )">
                         <!--The title of the subject-->
-                        <a :href="timetableSubject.firstElementChild['href']">
+                        <a :href="timetableSubject.firstElementChild?.href">
                             {{
                                 prettySubjects?.find(
-                                    subject => subject['name'] === timetableSubject.children[1].textContent.slice(1,-1)
+                                    subject => subject['name'] === timetableSubject.children[1]?.textContent.slice(1,-1)
                                 )?.pretty
-                                || timetableSubject.firstElementChild.textContent
+                                || timetableSubject.firstElementChild?.textContent
                             }}
                         </a>
                         <br>
                         <!--The id of the subject-->
-                        <span>{{timetableSubject.children[1].textContent}}</span><br>
+                        <span>{{timetableSubject.children[1]?.textContent}}</span><br>
                         <!--The room of the subject-->
                         <div>
                             <!--The normal room, struck through if a roomchange exists-->
-                            <span :class="{strike: c}">{{timetableSubject.children[2].textContent}}</span>
+                            <span :class="{strike: c}">{{timetableSubject.children[2]?.textContent}}</span>
                             <!--The room change, if applicable-->
                             <div class="dui-tooltip ml-1" data-tip='Room Change' v-if="c">
                                 <span class="font-semibold">
