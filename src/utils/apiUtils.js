@@ -16,19 +16,22 @@ export function updateReminders() {
 }
 
 export const cookieFetched = browser.runtime.sendMessage("getCookie");
-cookieFetched.then(cookie => {
-    headers = new Headers({
-        "Authorization": `Bearer ${cookie}`,
-        "Content-Type": "application/json"
-    })
-    apiGet("start", (data) => {
-        statusMessages.value = data.status;
-        discordLinked.value = data.user.discord.linked;
-        weather.value = data.weather.forecast;
-        roomChanges.value = data.room_changes;
-        reminders.value = data.reminders;
-    })
-})
+
+if (location.pathname === "/") {
+    cookieFetched.then(cookie => {
+        headers = new Headers({
+            "Authorization": `Bearer ${cookie}`,
+            "Content-Type": "application/json"
+        });
+        apiGet("start", (data) => {
+            statusMessages.value = data.status;
+            discordLinked.value = data.user.discord.linked;
+            weather.value = data.weather.forecast;
+            roomChanges.value = data.room_changes;
+            reminders.value = data.reminders;
+        });
+    });
+}
 
 function apiGet(path, callback) {
     fetch(`https://api.coolbox.lol/${path}`, {
