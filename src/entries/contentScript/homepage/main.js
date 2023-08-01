@@ -32,9 +32,11 @@ browser.storage.local.get(["pfp", "subjects"]).then(data => {
 })
 
 function fetchPrettySubjectNames() {
-    apiSend("POST", "subjects",
-        Array.from(document.querySelectorAll("#side-menu-mysubjects li a")).map(el => {return {name: el.textContent}}),
-        null, null, (data) => {
+    const subjectNames = Array.from(document.querySelectorAll("#side-menu-mysubjects li a"))
+    const mappedSubjects = subjectNames.map(el => {return {name: el.textContent}})
+
+    apiSend("POST", "subjects", mappedSubjects, null, null,
+        (data) => {
             browser.storage.local.set({subjects: {value: data, time: Date.now()}});
             setPrettySubjectNames(data);
         }
@@ -51,17 +53,6 @@ function setPrettySubjectNames(names) {
             if (lastChar === lastChar.toUpperCase()) {
                 sidebarItem.textContent += ` (${lastChar})`;
             }
-        }
-    }
-
-    for (const timetableItem of document.querySelectorAll(".timetable-subject a")) {
-        // Extracts the text inside brackets (the subject name)
-        const subject = names.find(name =>
-            name.name === timetableItem.nextElementSibling.textContent
-                .match(/\(([^)]+)\)/)[1]);
-
-        if (subject) {
-            timetableItem.textContent = subject.pretty;
         }
     }
 }

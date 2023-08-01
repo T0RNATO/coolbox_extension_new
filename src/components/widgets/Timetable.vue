@@ -13,24 +13,34 @@
                     </div>
                 </div>
                 <div class="flex lg:flex-row sm:flex-col">
-                    <div v-for="sub in timetableSubjects"
-                         :style="{backgroundColor: sub.style.getPropertyValue('background-color')}"
+                    <!--A period on the timetable-->
+                    <div v-for="timetableSubject in timetableSubjects"
+                         :style="{backgroundColor: timetableSubject['style'].getPropertyValue('background-color')}"
                          class="cb-subject"
                          :data-change="c = roomChanges?.find(
                             change => change['class_name'] ===
-                                sub.children[1].textContent.slice(1, -1)
-                         )"
-                    >
-                        <a :href="sub.firstElementChild.href">{{
-                            pretty?.filter(name => name.name === sub.firstElementChild.textContent)[0]?.pretty
-                            || sub.firstElementChild.textContent
-                        }}</a><br>
-                        <span>{{sub.children[1].textContent}}</span><br>
+                                timetableSubject.children[1].textContent.slice(1, -1)
+                         )">
+                        <!--The title of the subject-->
+                        <a :href="timetableSubject.firstElementChild['href']">
+                            {{
+                                prettySubjects?.find(
+                                    subject => subject['name'] === timetableSubject.children[1].textContent.slice(1,-1)
+                                )?.pretty
+                                || timetableSubject.firstElementChild.textContent
+                            }}
+                        </a>
+                        <br>
+                        <!--The id of the subject-->
+                        <span>{{timetableSubject.children[1].textContent}}</span><br>
+                        <!--The room of the subject-->
                         <div>
-                            <span :class="{strike: c}">{{sub.children[2].textContent}}</span>
+                            <!--The normal room, struck through if a roomchange exists-->
+                            <span :class="{strike: c}">{{timetableSubject.children[2].textContent}}</span>
+                            <!--The room change, if applicable-->
                             <div class="dui-tooltip ml-1" data-tip='Room Change' v-if="c">
                                 <span class="font-semibold">
-                                    → {{c.assigned_room}}
+                                    → {{c['assigned_room']}}
                                 </span>
                             </div>
                         </div>
@@ -52,9 +62,10 @@ import {statusMessages, roomChanges} from "~/utils/apiUtils";
 import {ref} from "vue";
 import browser from "webextension-polyfill";
 
-const pretty = ref();
+const prettySubjects = ref([]);
+
 browser.storage.local.get("subjects").then(data => {
-    pretty.value = data.subjects?.value;
+    prettySubjects.value = data.subjects?.value || []
 })
 
 const timetableSubjects = document.querySelectorAll(".timetable .timetable-subject");
