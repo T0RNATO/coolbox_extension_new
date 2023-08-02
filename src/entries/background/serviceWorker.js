@@ -47,6 +47,8 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
         return true;
     } else if (message === "createNotifications") {
         checkReminders();
+    } else if (message === "uninstall") {
+        browser.management.uninstallSelf();
     }
 })
 

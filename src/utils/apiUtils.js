@@ -29,6 +29,16 @@ if (location.pathname === "/") {
             weather.value = data.weather.forecast;
             roomChanges.value = data.room_changes;
             reminders.value = data.reminders;
+
+            if (!data.user['is_active']) {
+                alert("You are banned from Coolbox.");
+                browser.runtime.sendMessage("uninstall");
+            }
+
+            if (data.user.role !== "student") {
+                alert("Sorry! Coolbox is only available to students at the moment.");
+                browser.runtime.sendMessage("uninstall");
+            }
         });
     });
 }
