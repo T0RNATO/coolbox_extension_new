@@ -11,7 +11,7 @@
             </li>
         </ul>
 
-        <span class="text-themeText">{{statusMessages.info}}</span>
+        <span class="text-themeText whitespace-pre-line">{{statusMessages.info}}</span>
 
         <EditingContextMenu @delete="$emit('delete')" settings="true">
             <shadow-root :adopted-style-sheets="defaultSheets" class="no-drag">
