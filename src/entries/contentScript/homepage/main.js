@@ -6,9 +6,26 @@ import shadow from 'vue-shadow-dom'
 import browser from "webextension-polyfill";
 import {apiSend, cookieFetched} from "~/utils/apiUtils";
 
+let collatedErrors = [];
+
+function errorHandler(err, instance, info) {
+    collatedErrors.push({error: err, detail: info})
+}
+
 if (location.pathname === "/") {
     renderContent(import.meta.PLUGIN_WEB_EXT_CHUNK_CSS_PATHS, (appRoot) => {
-        const app= createApp(App);
+        const app = createApp(App);
+
+        setInterval(() => {
+            if (collatedErrors.length) {
+                apiSend("POST", "error-report", collatedErrors);
+                collatedErrors = [];
+            }
+        }, 2000);
+
+        app.config.errorHandler = errorHandler;
+        app.config.warnHandler = errorHandler;
+
         app.use(shadow);
         app.mount(appRoot);
     });
