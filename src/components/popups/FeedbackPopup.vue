@@ -14,8 +14,8 @@ function sendFeedback() {
     popup.value.$el.close();
     apiSend("POST", "feedback", {
         content: body.value.value,
-        // origin: "schoolbox",
-        origin: "test",
+        origin: "schoolbox",
+        // origin: "test",
         anonymous: anon.value.checked
     }, "Feedback Sent!", "Failed to send feedback - you may be banned or not have internet.")
 }
