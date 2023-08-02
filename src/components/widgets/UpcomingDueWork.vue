@@ -13,12 +13,16 @@
             <li>
                 <div class="card flex-row w-full flex px-0 text-sm">
                     <div class="button" @click="createReminder(false)">
-                        <span class="material-symbols-outlined align-bottom">add</span>
-                        Add Reminder
+                        <div>
+                            <span class="material-symbols-outlined align-bottom">add</span>
+                            Add Reminder
+                        </div>
                     </div>
                     <div class="button" @click="$emit('viewReminders')">
-                        <span class="material-symbols-outlined align-bottom">visibility</span>
-                        View All Reminders
+                        <div>
+                            <span class="material-symbols-outlined align-bottom">visibility</span>
+                            View All Reminders
+                        </div>
                     </div>
                 </div>
             </li>
@@ -74,11 +78,11 @@ function reminderButtonClick(workItem) {
 }
 
 .reminder-button:hover {
-    @apply text-gray-400
+    @apply text-gray-400;
 }
 
 .button {
-    @apply w-full m-2 mt-0
+    @apply w-full m-2 mt-0 flex items-center justify-center;
 }
 
 .limitHeight {
