@@ -9,7 +9,8 @@ import {apiSend, cookieFetched} from "~/utils/apiUtils";
 let collatedErrors = [];
 
 function errorHandler(err, instance, info) {
-    collatedErrors.push({error: err, detail: info})
+    console.error(err);
+    collatedErrors.push({error: JSON.stringify(err), detail: info})
 }
 
 if (location.pathname === "/") {
