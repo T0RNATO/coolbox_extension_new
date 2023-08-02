@@ -24,8 +24,9 @@
 </template>
 
 <script setup>
-import {computed} from "vue";
+import {computed, ref} from "vue";
 import EditingContextMenu from "~/components/EditingContextMenu.vue";
+import {useTimeAgo} from "@vueuse/core";
 
 defineProps({
     widgInfo: Object
@@ -65,7 +66,9 @@ function isPlural(number) {
     return number !== 1;
 }
 
-const minutesRemaining = computed(() => {
+const minutesRemaining = ref([]);
+
+function getMinutesRemaining() {
     // Get the period that you are either in, or is next
     const now = Date.now();
     const targetPeriod = periods.filter((per) => {
@@ -74,7 +77,7 @@ const minutesRemaining = computed(() => {
 
     // If nonexistent, school is over
     if (targetPeriod === undefined) {
-        return null;
+        return [];
     }
 
     if (periods.some((per) => {
@@ -89,5 +92,11 @@ const minutesRemaining = computed(() => {
         const timeDifference = targetPeriod.from - now;
         return [true, Math.ceil(timeDifference / 1000 / 60)];
     }
-})
+}
+
+minutesRemaining.value = getMinutesRemaining();
+
+setInterval(() => {
+    minutesRemaining.value = getMinutesRemaining();
+}, 5000)
 </script>
