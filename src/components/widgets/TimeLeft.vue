@@ -24,9 +24,8 @@
 </template>
 
 <script setup>
-import {computed, ref} from "vue";
+import {ref} from "vue";
 import EditingContextMenu from "~/components/EditingContextMenu.vue";
-import {useTimeAgo} from "@vueuse/core";
 
 defineProps({
     widgInfo: Object
