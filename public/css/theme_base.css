@@ -5,12 +5,13 @@
     --form-bg-hover-color: var(--theme-accent) !important;
 }
 
-.smooth-dnd-draggable-wrapper {
-    background-color: var(--theme-accent) !important;
-}
+/*This css file is a mess*/
 
-.card p.body {
-    color: var(--theme-text);
+.smooth-dnd-draggable-wrapper,
+.side-nav,
+.rb-selected,
+.fc-cell-shaded {
+    background-color: var(--theme-accent) !important;
 }
 
 body textarea {
@@ -18,7 +19,19 @@ body textarea {
     color: var(--theme-text) !important;
 }
 
-.card:not(.eportfolio > .card) {
+.card:not(.eportfolio > .card),
+#news-component li,
+#msgs,
+li.actions-small-1,
+.filter-dropdown .filter-component > span.open,
+ul.grid,
+#left-menu,
+#calendar th,
+#calendar td,
+#attachment-browser-panel-container,
+#attachment-browser-filesystems,
+div#account-content,
+.content {
     background: var(--theme-generic);
 }
 
@@ -26,73 +39,23 @@ body textarea {
     color: var(--link-colour) !important;
 }
 
-#news-component li {
-    background: var(--theme-generic);
-}
-
-.component-action section {
+.component-action section,
+.island section,
+.empty-state,
+.fc-list-event {
     background-color: var(--theme-generic) !important;
-}
-
-#msgs {
-    background: var(--theme-generic);
-}
-
-.island section {
-    background-color: var(--theme-generic) !important;
-}
-
-.content {
-    background: var(--theme-generic);
-    color: var(--theme-text);
-}
-
-li.actions-small-1 {
-    background: var(--theme-generic);
-}
-
-.empty-state {
-    background-color: var(--theme-generic) !important;
-}
-
-ul.grid {
-    background: var(--theme-generic);
-}
-
-.filter-dropdown .filter-component > span.open {
-    background: var(--theme-generic);
 }
 
 .f-dropdown.content.open {
     background: #3d3d40;
 }
 
-#calendar th, #calendar td {
-    background: var(--theme-generic);
-}
-
 dl.tabs, .content table td {
     background: var(--theme-accent);
 }
 
-dd.active a {
+dd.active a, [role="menuitem"] a {
     color: var(--link-colour) !important;
-}
-
-[role="menuitem"] a {
-    color: var(--link-colour) !important;
-}
-
-.side-nav {
-    background-color: var(--theme-accent) !important;
-}
-
-li.tile {
-    filter: hue-rotate(calc(var(--rotate) * 1deg)) brightness(1.35) contrast(1.3);
-}
-
-#left-menu {
-    background: var(--theme-generic);
 }
 
 body blockquote {
@@ -109,18 +72,6 @@ body blockquote::before {
     background-color: var(--theme-generic);
     color: var(--theme-text) !important;
     border: 1px solid var(--theme-text) !important;
-}
-
-.rb-selected {
-    background-color: var(--theme-accent) !important;
-}
-
-.fc-col-header-cell-cushion {
-    color: var(--theme-text) !important;
-}
-
-#attachment-browser-panel-container, #attachment-browser-filesystems {
-    background-color: var(--theme-generic);
 }
 
 .active.tab-title a {
@@ -144,23 +95,8 @@ body .button:hover, body button:hover {
     color: var(--link-colour)
 }
 
-div#account-content {
-    background-color: var(--theme-generic);
-}
-
 rect.highcharts-background {
     fill: var(--body-background);
-}
-
-.popup {
-    background-color: var(--theme-generic);
-    color: var(--theme-text);
-    filter: drop-shadow(black 2px 4px 6px);
-}
-
-.popup input {
-    background-color: var(--body-background) !important;
-    color: var(--theme-text) !important;
 }
 
 label:not(.button),
@@ -168,8 +104,14 @@ label:not(.button),
 ul.off-canvas-list *,
 body h1,
 dd a,
-:not(a) > h3 {
+:not(a) > h3,
+.fc-col-header-cell-cushion,
+tr.fc-list-event > td {
     color: var(--theme-text) !important;
+}
+
+body tr.fc-list-event {
+    text-decoration-color: var(--theme-text) !important;
 }
 
 .error-state div.row,
@@ -185,6 +127,8 @@ span[data-assessment-status-text],
 .message,
 .content table td,
 .content table th,
-#fc-dom-1 {
+.card p.body,
+#fc-dom-1,
+.content {
     color: var(--theme-text);
 }
