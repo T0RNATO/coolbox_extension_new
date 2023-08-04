@@ -72,12 +72,15 @@ const timetableSubjects = document.querySelectorAll(".timetable .timetable-subje
 
 const show = Boolean(timetableSubjects.length);
 
-const calendarEvents = document.querySelectorAll(".fc-event-title");
-const weekEvent = Array.from(calendarEvents).find(el => el.innerText.includes("Week") && el.innerText.includes("(W"));
-const weekNo = weekEvent.innerText.slice(5,-5);
-
 const timetableHeaders = document.querySelectorAll(".timetable th");
-const dayTitle = `${document.querySelector("[data-timetable-header]")?.textContent} (Week ${weekNo})`;
+const dayTitle = ref(document.querySelector("[data-timetable-header]")?.textContent);
+
+setTimeout(() => {
+    const calendarEvents = document.querySelectorAll(".fc-event-title");
+    const weekEvent = Array.from(calendarEvents).find(el => el.innerText.includes("Week") && el.innerText.includes("(W"));
+    const weekNo = weekEvent.innerText.slice(5,-5);
+    dayTitle.value += ` (Week ${weekNo})`;
+}, 1500);
 
 defineProps({
     widgInfo: Object
