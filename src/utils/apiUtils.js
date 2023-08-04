@@ -59,23 +59,23 @@ function apiGet(path, callback) {
 }
 
 const toastAnimation = [
-    {bottom: "0.25rem", right: '-25%'},
+    {bottom: "0.25rem", right: '-50%'},
     {bottom: "0.25rem", right: "1rem"},
 ];
 
 function animateToast(el) {
     el.animate(toastAnimation, {
-        duration: 150,
+        duration: 300,
         easing: "cubic-bezier(0.25, 1, 0.5, 1)",
         fill: "forwards",
     }).finished.then(() => {setTimeout(() => {
         el.animate(toastAnimation, {
-            duration: 100,
+            duration: 200,
             easing: "cubic-bezier(0.25, 1, 0.5, 1)",
             direction: "reverse",
             fill: "forwards",
         })
-    }, 1200)})
+    }, 2000)})
 }
 
 export function apiSend(method, path, body, successMessage, errorMessage, callback) {
