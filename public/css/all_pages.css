@@ -7,6 +7,7 @@ body {
     --body-background: #F8F8F8;
     --theme-accent: #F8F8F8;
     --theme-text: #000;
+    overflow-y: auto !important;
 }
 
 .hide-pfp #profile-drop {
