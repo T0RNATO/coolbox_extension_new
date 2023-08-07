@@ -1,3 +1,7 @@
 body .timetable-small {
     display: none !important;
 }
+
+:root {
+    overflow-y: auto !important;
+}
