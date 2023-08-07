@@ -1,4 +1,4 @@
-body .timetable-small {
+body .timetable-small, body .timetable {
     display: none !important;
 }
 
