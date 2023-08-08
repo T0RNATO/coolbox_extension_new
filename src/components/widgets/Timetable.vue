@@ -92,7 +92,7 @@ defineProps({
     color: #085ba5;
 }
 .cb-subject {
-    @apply p-4 lg:w-1/5 text-sm sm:w-full sm:h-1/5;
+    @apply p-4 lg:w-1/5 lg:h-auto text-sm sm:w-full sm:h-1/5;
 }
 .cb-header {
     @apply p-3 lg:w-1/5 text-sm bg-primary text-themeText sm:w-full sm:h-full;
