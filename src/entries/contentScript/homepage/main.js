@@ -51,7 +51,10 @@ browser.storage.local.get(["pfp", "subjects"]).then(data => {
 
 function fetchPrettySubjectNames() {
     const subjectNames = Array.from(document.querySelectorAll("#side-menu-mysubjects li a"))
-    const mappedSubjects = subjectNames.map(el => {return {name: el.textContent}})
+    const mappedSubjects = subjectNames.map(el => {
+        const linkSections = el.href.split("/");
+        return {name: linkSections[linkSections.length - 1]}
+    })
 
     apiSend("POST", "subjects", mappedSubjects, null, null,
         (data) => {
@@ -63,7 +66,10 @@ function fetchPrettySubjectNames() {
 
 function setPrettySubjectNames(names) {
     for (const sidebarItem of document.querySelectorAll("#side-menu-mysubjects li a")) {
-        const subject = names.filter(name => name.name === sidebarItem.textContent)[0];
+        const subject = names.filter(name => {
+            const linkSections = sidebarItem.href.split("/");
+            return name.name?.toLowerCase() === linkSections[linkSections.length - 1]?.toLowerCase()
+        })[0];
         if (subject) {
             let content = sidebarItem.textContent;
             let lastChar = content.charAt(content.length - 1);
