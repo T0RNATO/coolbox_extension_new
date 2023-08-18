@@ -9,7 +9,7 @@
 
 .smooth-dnd-draggable-wrapper,
 .side-nav,
-.rb-selected,
+body .rb-selected,
 .fc-cell-shaded {
     background-color: var(--theme-accent) !important;
 }
@@ -35,7 +35,7 @@ div#account-content,
     background: var(--theme-generic);
 }
 
-:not(.cb-subject, .timetable-subject) > a:not(#notification-toggle):not(.button) {
+:not(.timetable-subject) > a:not(#notification-toggle, .button, .cb-link) {
     color: var(--link-colour) !important;
 }
 
