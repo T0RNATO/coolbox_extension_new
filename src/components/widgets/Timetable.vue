@@ -21,27 +21,29 @@
                             change => change['class_name'] ===
                                 timetableSubject.children[1]?.textContent.slice(1, -1)
                          )">
-                        <!--The title of the subject-->
-                        <a :href="timetableSubject.firstElementChild?.href">
-                            {{
-                                prettySubjects?.find(
-                                    subject => subject['name'] === timetableSubject.children[1]?.textContent.slice(1,-1)
-                                )?.pretty
-                                || timetableSubject.firstElementChild?.textContent
-                            }}
-                        </a>
-                        <br>
-                        <!--The id of the subject-->
-                        <span>{{timetableSubject.children[1]?.textContent}}</span><br>
-                        <!--The room of the subject-->
-                        <div>
-                            <!--The normal room, struck through if a roomchange exists-->
-                            <span :class="{strike: c}">{{timetableSubject.children[2]?.textContent}}</span>
-                            <!--The room change, if applicable-->
-                            <div class="dui-tooltip ml-1" data-tip='Room Change' v-if="c">
+                        <div v-if="timetableSubject.tagName === 'DIV'">
+                            <!--The title of the subject-->
+                            <a :href="timetableSubject.firstElementChild?.href" class="cb-link">
+                                {{
+                                    prettySubjects?.find(
+                                        subject => subject['name']?.toLowerCase() === timetableSubject.children[1]?.textContent.slice(1,-1)?.toLowerCase()
+                                    )?.pretty
+                                    || timetableSubject.firstElementChild?.textContent
+                                }}
+                            </a>
+                            <br>
+                            <!--The id of the subject-->
+                            <span>{{timetableSubject.children[1]?.textContent}}</span><br>
+                            <!--The room of the subject-->
+                            <div>
+                                <!--The normal room, struck through if a roomchange exists-->
+                                <span :class="{strike: c}">{{timetableSubject.children[2]?.textContent}}</span>
+                                <!--The room change, if applicable-->
+                                <div class="dui-tooltip ml-1" data-tip='Room Change' v-if="c">
                                 <span class="font-semibold">
                                     → {{c['assigned_room']}}
                                 </span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -68,7 +70,13 @@ browser.storage.local.get("subjects").then(data => {
     prettySubjects.value = data.subjects?.value || []
 })
 
-const timetableSubjects = document.querySelectorAll(".timetable .timetable-subject");
+let timetableSubjects;
+
+if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
+    timetableSubjects = document.querySelectorAll(".timetable .timetable-subject, .timetable td:-moz-only-whitespace");
+} else {
+    timetableSubjects = document.querySelectorAll(".timetable .timetable-subject, .timetable td:not(td:has(.timetable-subject))")
+}
 
 const show = Boolean(timetableSubjects.length);
 
