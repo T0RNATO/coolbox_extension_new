@@ -86,7 +86,7 @@ const dayTitle = ref(document.querySelector("[data-timetable-header]")?.textCont
 setTimeout(() => {
     const calendarEvents = document.querySelectorAll(".fc-event-title");
     const weekEvent = Array.from(calendarEvents).find(el => el.innerText.includes("Week") && el.innerText.includes("(W"));
-    const weekNo = weekEvent.innerText.slice(5,-5);
+    const weekNo = weekEvent?.innerText.slice(5,-5);
     dayTitle.value += ` (Week ${weekNo})`;
 }, 1500);
 
