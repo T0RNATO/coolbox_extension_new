@@ -10,7 +10,8 @@
 .smooth-dnd-draggable-wrapper,
 .side-nav,
 body .rb-selected,
-.fc-cell-shaded {
+.fc-cell-shaded,
+select {
     background-color: var(--theme-accent) !important;
 }
 
@@ -19,11 +20,14 @@ body textarea {
     color: var(--theme-text) !important;
 }
 
+.selected-item, .label.filter {
+    background-color: var(--body-background) !important;
+}
+
 .card:not(.eportfolio > .card),
 #news-component li,
 #msgs,
 li.actions-small-1,
-.filter-dropdown .filter-component > span.open,
 ul.grid,
 #left-menu,
 #calendar th,
@@ -47,7 +51,10 @@ div#account-content,
 .island section,
 .empty-state,
 .timetable th,
-.fc-list-event {
+.fc-list-event,
+.filter-dropdown .filter-component > span.open,
+body .f-open-dropdown,
+.reveal-modal {
     background-color: var(--theme-generic) !important;
 }
 
@@ -94,7 +101,7 @@ body .button, body button {
     color: var(--link-colour)
 }
 
-body .button:hover, body button:hover {
+body .button:hover, body button:hover, body .button:focus, body button:focus {
     filter: brightness(1.2);
     background-color: var(--theme-accent);
     color: var(--link-colour)
@@ -111,7 +118,8 @@ body h1,
 dd a,
 :not(a) > h3,
 .fc-col-header-cell-cushion,
-tr.fc-list-event > td {
+tr.fc-list-event > td,
+select {
     color: var(--theme-text) !important;
 }
 
