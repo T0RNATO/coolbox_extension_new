@@ -8,24 +8,43 @@ import {apiSend, cookieFetched} from "~/utils/apiUtils";
 
 let collatedErrors = [];
 
+const errorCodes = {
+    0: "SETUP_FUNCTION",
+    1: "RENDER_FUNCTION",
+    2: "WATCH_GETTER",
+    3: "WATCH_CALLBACK",
+    4: "WATCH_CLEANUP",
+    5: "NATIVE_EVENT_HANDLER",
+    6: "COMPONENT_EVENT_HANDLER",
+    7: "VNODE_HOOK",
+    8: "DIRECTIVE_HOOK",
+    9: "TRANSITION_HOOK",
+    10: "APP_ERROR_HANDLER",
+    11: "APP_WARN_HANDLER",
+    12: "FUNCTION_REF",
+    13: "ASYNC_COMPONENT_LOADER",
+    14: "SCHEDULER",
+}
+
 function errorHandler(err, instance, info) {
-    console.error(err);
-    collatedErrors.push({error: JSON.stringify(err), detail: info})
+    collatedErrors.push({error: err.toString(), detail: errorCodes?.[info]})
 }
 
 if (location.pathname === "/") {
     renderContent(import.meta.PLUGIN_WEB_EXT_CHUNK_CSS_PATHS, (appRoot) => {
         const app = createApp(App);
 
-        setInterval(() => {
-            if (collatedErrors.length) {
-                apiSend("POST", "error-report", collatedErrors);
-                collatedErrors = [];
-            }
-        }, 2000);
+        if (process.env.NODE_ENV === "production") {
+            setInterval(() => {
+                if (collatedErrors.length) {
+                    apiSend("POST", "error-report", collatedErrors);
+                    collatedErrors = [];
+                }
+            }, 2000);
 
-        app.config.errorHandler = errorHandler;
-        app.config.warnHandler = errorHandler;
+            app.config.errorHandler = errorHandler;
+            app.config.warnHandler = errorHandler;
+        }
 
         app.use(shadow);
         app.mount(appRoot);
