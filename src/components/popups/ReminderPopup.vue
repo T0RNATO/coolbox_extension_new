@@ -3,7 +3,7 @@
         Name:
         <input placeholder="Reminder Name" maxlength="128" class="!bg-primary !text-themeText" v-model="rem.title">
         Time:
-        <VueDatePicker :flow="['calender', 'time']" placeholder="Time"
+        <VueDatePicker :flow="['calender', 'time']" placeholder="Time" format="dd/MM/yyyy HH:mm"
                        position="left" input-class-name="!bg-primary !text-themeText"
                        v-model="rem['due']" :is-24="false" model-type="timestamp"/>
         Notification Method:
