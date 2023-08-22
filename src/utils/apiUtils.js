@@ -25,7 +25,7 @@ if (location.pathname === "/") {
         });
         apiGet("start", (data) => {
             statusMessages.value = data.status;
-            discordLinked.value = data.user.discord.linked;
+            discordLinked.value = data.user.discord?.linked;
             weather.value = data.weather.forecast;
             roomChanges.value = data.room_changes;
             reminders.value = data.reminders;
