@@ -21,14 +21,12 @@
                 <span class="dui-countdown am"></span>
             </div>
         </div>
-        <EditingContextMenu @delete="$emit('delete')" :settings="true">
-            <shadow-root :adopted-style-sheets="defaultSheets">
-                <div class="flex items-center p-1">
-                    <span>24-Hour Mode:</span>
-                    <input type="checkbox" class="ml-2 dui-checkbox border-solid border-gray-500 dui-checkbox-sm"
-                           :value="is24Hour === 'HH'" @input="is24Hour = $event.target.checked ? 'HH' : 'hh'"/>
-                </div>
-            </shadow-root>
+        <EditingContextMenu @delete="$emit('delete')" settings="true">
+            <div class="flex items-center p-1">
+                <span>24-Hour Mode:</span>
+                <input type="checkbox" class="ml-2 dui-checkbox border-solid border-gray-500 dui-checkbox-sm"
+                       :value="is24Hour === 'HH'" @input="is24Hour = $event.target.checked ? 'HH' : 'hh'"/>
+            </div>
         </EditingContextMenu>
     </div>
 </template>

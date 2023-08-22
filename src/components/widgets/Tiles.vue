@@ -14,43 +14,43 @@
         <span class="text-themeText whitespace-pre-line">{{statusMessages.info}}</span>
 
         <EditingContextMenu @delete="$emit('delete')" settings="true">
-            <shadow-root :adopted-style-sheets="defaultSheets" class="no-drag">
-                <div class="flex items-center mb-1">
-                    <input type="radio" name="ts_type" id="solid" value="solid" v-model="ts_type" class="dui-radio">
-                    <label for="solid" class="ml-1">Solid Colour</label>
-                </div>
-                <!--TODO: make this work-->
-                <div class="items-center mb-1 hidden">
-                    <input type="radio" name="ts_type" id="gradient" value="gradient" v-model="ts_type" class="dui-radio">
-                    <label for="gradient" class="ml-1">Gradient</label>
-                </div>
-                <!---->
-                <div class="flex items-center mb-1">
-                    <input type="radio" name="ts_type" id="default" value="default" v-model="ts_type" class="dui-radio">
-                    <label for="default" class="ml-1">Default Colour</label>
-                </div>
-                <div class="flex items-center mb-1">
-                    <input type="radio" name="ts_type" id="legacy" value="legacy" v-model="ts_type" class="dui-radio">
-                    <label for="legacy" class="ml-1">Legacy Gradient</label>
-                </div>
-                <div class="flex items-center mb-1">
-                    <input type="radio" name="ts_type" id="legacy_anim" value="legacy_anim" v-model="ts_type" class="dui-radio">
-                    <label for="legacy_anim" class="ml-1">RGB</label>
-                </div>
-                <input type="color" v-model="ts_hex1" v-if="ts_type === 'solid' || ts_type === 'gradient'">
-                <input type="color" v-model="ts_hex2" v-if="ts_type === 'gradient'">
-                
+            <div class="option">
+                <input type="radio" name="ts_type" id="solid" value="solid" v-model="ts_type" class="dui-radio">
+                <label for="solid" class="ml-1">Solid Colour</label>
+            </div>
+
+            <!--TODO: make this work-->
+            <div class="option !hidden">
+                <input type="radio" name="ts_type" id="gradient" value="gradient" v-model="ts_type" class="dui-radio">
+                <label for="gradient" class="ml-1">Gradient</label>
+            </div>
+            <!---->
+
+            <div class="option">
+                <input type="radio" name="ts_type" id="default" value="default" v-model="ts_type" class="dui-radio">
+                <label for="default" class="ml-1">Default Colour</label>
+            </div>
+            <div class="option">
+                <input type="radio" name="ts_type" id="legacy" value="legacy" v-model="ts_type" class="dui-radio">
+                <label for="legacy" class="ml-1">Legacy Gradient</label>
+            </div>
+            <div class="option">
+                <input type="radio" name="ts_type" id="legacy_anim" value="legacy_anim" v-model="ts_type" class="dui-radio">
+                <label for="legacy_anim" class="ml-1">RGB</label>
+            </div>
+            <input type="color" v-model="ts_hex1" v-if="ts_type === 'solid' || ts_type === 'gradient'">
+            <input type="color" v-model="ts_hex2" v-if="ts_type === 'gradient'">
+
 <!--                <div v-if="ts_type === 'legacy_anim'">-->
 <!--                    RGB Speed:<input type="range" min="1" max="1400" class="dui-range" v-model="speed">-->
 <!--                </div>-->
-            </shadow-root>
         </EditingContextMenu>
     </div>
 </template>
 
 <script setup>
 import EditingContextMenu from "~/components/EditingContextMenu.vue";
-import {defaultSheets, useExtensionStorage} from "~/utils/componentUtils";
+import {useExtensionStorage} from "~/utils/componentUtils";
 import {statusMessages} from "~/utils/apiUtils";
 
 let tiles = document.querySelector('#tileList-2248').getElementsByClassName('tile');

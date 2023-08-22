@@ -9,16 +9,19 @@
                 <button class="cb-icon-button material-symbols-outlined">delete</button>
             </div>
         </div>
-        <div class="absolute shadow-xl bg-white p-0 cm right-2 top-2 p-2 cursor-auto rounded-md widget-settings cm hidden" v-if="settingsOpen">
+        <div class="absolute shadow-xl bg-white cm right-2 top-2 p-2 cursor-auto rounded-md widget-settings cm hidden" v-if="settingsOpen">
             <span class="font-bold">Edit Widget:</span><br>
             <span class="material-symbols-outlined absolute top-1 right-1 cursor-pointer hover:text-gray-400" @click="settingsOpen = false">Close</span>
-            <slot></slot>
+            <shadow-root :adopted-style-sheets="defaultSheets" class="no-drag">
+                <slot/>
+            </shadow-root>
         </div>
     </div>
 </template>
 
 <script setup>
 import {ref} from "vue";
+import {defaultSheets} from "~/utils/componentUtils";
 
 const settingsOpen = ref(false);
 

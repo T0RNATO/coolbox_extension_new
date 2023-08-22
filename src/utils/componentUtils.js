@@ -86,5 +86,11 @@ iconsStyleSheet.replaceSync(icons);
 otherStyling.replaceSync(`
     .dui-radio, .dui-checkbox {
         border: 1px solid rgb(107 114 128);
-    }`)
+    }
+    .option {
+        display: flex;
+        margin-bottom: 0.25rem;
+        align-items: center;
+    }
+`)
 export const defaultSheets = [twStyleSheet, iconsStyleSheet, otherStyling];
