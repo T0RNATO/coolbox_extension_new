@@ -5,9 +5,7 @@
             <div class="flex sm:flex-row lg:flex-col">
                 <div class="flex lg:flex-row sm:flex-col">
                     <div v-for="head in timetableHeaders"
-                         class="cb-header"
-                         :class="{'head-active': head.classList.contains('timetable-period-active')}"
-                    >
+                         :class="{'head-active': head.classList.contains('timetable-period-active'), 'cb-header': true}">
                         {{head.firstChild.textContent}}
                         <div v-html="head.firstElementChild.outerHTML"></div>
                     </div>
@@ -16,7 +14,11 @@
                     <!--A period on the timetable-->
                     <div v-for="timetableSubject in timetableSubjects"
                          :style="{backgroundColor: timetableSubject['style'].getPropertyValue('background-color')}"
-                         class="cb-subject"
+                         :class="{
+                            'cb-subject': true,
+                            'darken': darkenSubjects,
+                            'outline': outlineCurrent && timetableSubject.classList.contains('timetable-subject-active')
+                        }"
                          :data-change="c = roomChanges?.find(
                             change => change['class_name'] ===
                                 timetableSubject.children[1]?.textContent.slice(1, -1)
@@ -54,7 +56,16 @@
 
         <span class="text-red-500 text-2xl whitespace-pre-line">{{statusMessages.critical}}</span>
 
-        <EditingContextMenu @delete="$emit('delete')"/>
+        <EditingContextMenu @delete="$emit('delete')" settings="true">
+            <div class="option">
+                <input type="checkbox" class="dui-checkbox" id="darken" v-model="darkenSubjects">
+                <label for="darken">Darken Timetable Colours</label>
+            </div>
+            <div class="option">
+                <input type="checkbox" class="dui-checkbox" id="outline" v-model="outlineCurrent">
+                <label for="outline">Outline Current Class</label>
+            </div>
+        </EditingContextMenu>
     </div>
 </template>
 
@@ -63,8 +74,12 @@ import EditingContextMenu from "~/components/EditingContextMenu.vue";
 import {statusMessages, roomChanges} from "~/utils/apiUtils";
 import {ref} from "vue";
 import browser from "webextension-polyfill";
+import {useExtensionStorage} from "~/utils/componentUtils";
 
 const prettySubjects = ref([]);
+
+const darkenSubjects = useExtensionStorage("timetable.dark", false);
+const outlineCurrent = useExtensionStorage("timetable.outline", false);
 
 browser.storage.local.get("subjects").then(data => {
     prettySubjects.value = data.subjects?.value || []
@@ -101,6 +116,26 @@ defineProps({
 }
 .cb-subject {
     @apply p-4 lg:w-1/5 lg:h-auto text-sm sm:w-full sm:h-1/5;
+}
+.cb-subject.darken {
+    filter: brightness(0.8);
+}
+.cb-subject.outline {
+    outline: 2px solid #355983;
+    outline-offset: -2px;
+    position: relative;
+}
+.cb-subject.outline::after {
+    border-top: 10px solid #355983;
+    border-right: 10px solid #355983;
+    border-bottom: 10px solid transparent;
+    border-left: 10px solid transparent;
+    height: 20px;
+    aspect-ratio: 1/1;
+    position: absolute;
+    top: 0;
+    right: 0;
+    content: "";
 }
 .cb-header {
     @apply p-3 lg:w-1/5 text-sm bg-primary text-themeText sm:w-full sm:h-full;

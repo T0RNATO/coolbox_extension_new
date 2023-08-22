@@ -43,10 +43,6 @@ div#account-content,
     color: var(--link-colour) !important;
 }
 
-.cb-subject, .timetable-subject {
-    filter: brightness(0.8);
-}
-
 .component-action section,
 .island section,
 .empty-state,
