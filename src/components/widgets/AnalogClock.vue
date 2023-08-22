@@ -33,7 +33,7 @@
 
 <script setup>
 import EditingContextMenu from "~/components/EditingContextMenu.vue";
-import {defaultSheets, useExtensionStorage} from "~/utils/componentUtils";
+import {useExtensionStorage} from "~/utils/componentUtils";
 import {useDateFormat, useNow, useToNumber} from "@vueuse/core";
 
 const is24Hour = useExtensionStorage("clock.24", "hh");
