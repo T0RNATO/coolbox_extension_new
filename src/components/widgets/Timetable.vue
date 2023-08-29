@@ -76,28 +76,34 @@ import {ref} from "vue";
 import browser from "webextension-polyfill";
 import {useExtensionStorage} from "~/utils/componentUtils";
 
-const prettySubjects = ref([]);
-
 const darkenSubjects = useExtensionStorage("timetable.dark", false);
 const outlineCurrent = useExtensionStorage("timetable.outline", false);
+
+const dayTitle = ref(document.querySelector("[data-timetable-header]")?.textContent);
+const prettySubjects = ref([]);
 
 browser.storage.local.get("subjects").then(data => {
     prettySubjects.value = data.subjects?.value || []
 })
 
-let timetableSubjects;
+const timetableSubjects = ref();
+const show = ref();
+const timetableHeaders = ref();
 
-if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
-    timetableSubjects = document.querySelectorAll(".timetable .timetable-subject, .timetable td:-moz-only-whitespace");
-} else {
-    timetableSubjects = document.querySelectorAll(".timetable .timetable-subject, .timetable td:not(td:has(.timetable-subject))")
+function updateTimetable() {
+    // Quirky Firefox not supporting :has and using its own proprietary pseudoclass
+    if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
+        timetableSubjects.value = document.querySelectorAll(".timetable .timetable-subject, .timetable td:-moz-only-whitespace");
+    } else {
+        timetableSubjects.value = document.querySelectorAll(".timetable .timetable-subject, .timetable td:not(td:has(.timetable-subject))")
+    }
+    show.value = Boolean(timetableSubjects.value.length);
+    timetableHeaders.value = document.querySelectorAll(".timetable th");
 }
 
-const show = Boolean(timetableSubjects.length);
+updateTimetable()
 
-const timetableHeaders = document.querySelectorAll(".timetable th");
-const dayTitle = ref(document.querySelector("[data-timetable-header]")?.textContent);
-
+// Not remotely scuff code to wait until calendar is loaded and add the week number to the heading
 setTimeout(() => {
     const calendarEvents = document.querySelectorAll(".fc-event-title");
     const weekEvent = Array.from(calendarEvents).find(el => el.innerText.includes("Week") && el.innerText.includes("(W"));

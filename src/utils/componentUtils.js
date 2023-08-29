@@ -77,9 +77,10 @@ function objValueFromStringPath(obj, path, optionalDefault) {
     return out;
 }
 
-export const twStyleSheet = new CSSStyleSheet();
-export const iconsStyleSheet = new CSSStyleSheet();
-export const otherStyling = new CSSStyleSheet();
+const twStyleSheet = new CSSStyleSheet();
+const iconsStyleSheet = new CSSStyleSheet();
+const otherStyling = new CSSStyleSheet();
+
 twStyleSheet.replaceSync(tailwind);
 iconsStyleSheet.replaceSync(icons);
 // language=CSS
