@@ -24,11 +24,11 @@ if (location.pathname === "/") {
             "Content-Type": "application/json"
         });
         apiGet("start", (data) => {
-            statusMessages.value = data.status;
-            discordLinked.value = data.user.discord?.linked;
-            weather.value = data.weather.forecast;
-            roomChanges.value = data.room_changes;
-            reminders.value = data.reminders;
+            statusMessages.value = data['status'];
+            discordLinked.value = data['user']['discord']?.['linked'];
+            weather.value = data['weather']['forecast'];
+            roomChanges.value = data['room_changes'];
+            reminders.value = data['reminders'];
 
             if (!data.user['is_active']) {
                 alert("You are banned from Coolbox.");
