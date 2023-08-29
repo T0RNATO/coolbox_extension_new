@@ -8,6 +8,7 @@ import {apiSend, cookieFetched} from "~/utils/apiUtils";
 
 let collatedErrors = [];
 
+// Enum of the error codes used in prod
 const errorCodes = {
     0: "SETUP_FUNCTION",
     1: "RENDER_FUNCTION",
@@ -30,10 +31,12 @@ function errorHandler(err, instance, info) {
     collatedErrors.push({error: err.toString(), detail: errorCodes?.[info]})
 }
 
+// Render Vue on the homepage
 if (location.pathname === "/") {
     renderContent(import.meta.PLUGIN_WEB_EXT_CHUNK_CSS_PATHS, (appRoot) => {
         const app = createApp(App);
 
+        // If this is in prod, report any collected errors to the api
         if (process.env.NODE_ENV === "production") {
             setInterval(() => {
                 if (collatedErrors.length) {
@@ -51,6 +54,7 @@ if (location.pathname === "/") {
     });
 }
 
+// Hide profile picture if needed, and apply pretty subjects to sidebar
 browser.storage.local.get(["pfp", "subjects"]).then(data => {
     cookieFetched.then(() => {
         if (data.pfp) {
