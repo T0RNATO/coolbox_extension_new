@@ -104,16 +104,16 @@
     </shadow-root>
 
     <!-- Generic Success Toast -->
-    <div class="dui-toast -right-1/4" id="toast-success">
-        <div class="dui-alert p-2 shadow-2xl shadow-black bg-primary text-themeText border-green-500 border-solid">
+    <div class="dui-toast -right-1/4 z-[1003]" id="toast-success">
+        <div class="border-green-500 notif">
             <span class="material-symbols-outlined text-green-500">check</span>
             <span class="content"></span>
         </div>
     </div>
 
     <!-- Generic Failure Toast -->
-    <div class="dui-toast -right-1/4" id="toast-failure">
-        <div class="dui-alert p-2 pr-4 shadow-2xl shadow-black bg-primary text-themeText border-red-400 border-solid">
+    <div class="dui-toast -right-1/4 z-[1003]" id="toast-failure">
+        <div class="border-red-400 notif">
             <span class="material-symbols-outlined text-red-400">close</span>
             <span class="content"></span>
         </div>
@@ -398,5 +398,8 @@ function clearSelectedComponent() {
 }
 .dp__input_icon_pad {
     padding-left: var(--dp-input-icon-padding) !important;
+}
+.notif {
+    @apply dui-alert p-2 shadow-2xl shadow-black bg-primary text-themeText border-solid;
 }
 </style>
