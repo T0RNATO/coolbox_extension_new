@@ -17,7 +17,7 @@
                          :class="{
                             'cb-subject': true,
                             'darken': darkenSubjects,
-                            'outline': outlineCurrent && timetableSubject.classList.contains('timetable-subject-active')
+                            'outline': outlineCurrent && timetableSubject.parentElement.classList.contains('timetable-subject-active')
                         }"
                          :data-change="c = roomChanges?.find(
                             change => change['class_name'] ===
