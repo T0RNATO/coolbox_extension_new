@@ -97,12 +97,10 @@ export function apiSend(method, path, body, successMessage, errorMessage, callba
                 successToast.querySelector(".content").textContent = successMessage;
                 animateToast(successToast);
             }
-        } else {
-            if (errorMessage) {
-                const errorToast = document.querySelector("#toast-failure");
-                errorToast.querySelector(".content").textContent = errorMessage;
-                animateToast(errorToast);
-            }
+        } else if (errorMessage) {
+            const errorToast = document.querySelector("#toast-failure");
+            errorToast.querySelector(".content").textContent = errorMessage;
+            animateToast(errorToast);
         }
     }).catch(error => {
         console.error("API error:", error);

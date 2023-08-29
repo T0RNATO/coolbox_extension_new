@@ -18,14 +18,10 @@
                 <input type="radio" name="ts_type" id="solid" value="solid" v-model="ts_type" class="dui-radio">
                 <label for="solid" class="ml-1">Solid Colour</label>
             </div>
-
-            <!--TODO: make this work-->
-            <div class="option !hidden">
+            <div class="option">
                 <input type="radio" name="ts_type" id="gradient" value="gradient" v-model="ts_type" class="dui-radio">
                 <label for="gradient" class="ml-1">Gradient</label>
             </div>
-            <!---->
-
             <div class="option">
                 <input type="radio" name="ts_type" id="default" value="default" v-model="ts_type" class="dui-radio">
                 <label for="default" class="ml-1">Default Colour</label>
@@ -52,6 +48,7 @@
 import EditingContextMenu from "~/components/EditingContextMenu.vue";
 import {useExtensionStorage} from "~/utils/componentUtils";
 import {statusMessages} from "~/utils/apiUtils";
+import {hexGradient} from "~/utils/utilFunctions";
 
 let tiles = document.querySelector('#tileList-2248').getElementsByClassName('tile');
 
@@ -72,19 +69,22 @@ function hexToHSV(hex) {
 }
 
 function getFilter(i) {
-    if (ts_type.value === "solid") {
-        const hsv = hexToHSV(ts_hex1.value);
-        return {filter: `hue-rotate(${hsv[0] + 180}deg) saturate(${hsv[1] * 300}%) brightness(${hsv[2] * 1.5})`};
-    } else if (ts_type.value === "default") {
-        return {};
-    } else if (ts_type.value === "legacy") {
-        return {filter: `hue-rotate(${getHueRotation(i)}deg) brightness(1.5) contrast(1.3)`};
-    } else if (ts_type.value === "legacy_anim") {
-        const distanceFromBottomRight = (i%5+Math.floor(i/5)) * -1 + 15;
-        return {
-            animation: `rgb 4s linear reverse infinite -${distanceFromBottomRight*150}ms`
-        }
+    const distanceFromBottomRight = (i%5+Math.floor(i/5)) * -1 + 15;
+    let hsv = hexToHSV(ts_hex1.value);
+
+    switch (ts_type.value) {
+        case "legacy":
+            return {filter: `hue-rotate(${getHueRotation(i)}deg) brightness(1.5) contrast(1.3)`};
+        case "legacy_anim":
+            return {animation: `rgb 4s linear reverse infinite -${distanceFromBottomRight*150}ms`}
+        case "gradient":
+            const gradientSteps = hexGradient(ts_hex1.value, ts_hex2.value, 7)
+            hsv = hexToHSV(gradientSteps[distanceFromBottomRight - 9]);
+        // intentional fallthrough
+        case "solid":
+            return {filter: `hue-rotate(${hsv[0] + 180}deg) saturate(${hsv[1] * 300}%) brightness(${hsv[2] * 1.5})`};
     }
+    return {}
 }
 
 function getHueRotation(index) {
