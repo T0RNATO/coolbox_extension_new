@@ -46,6 +46,7 @@
                    @drop="(ev) => dropComponent(column, ev)"
                    :get-child-payload="(ev) => getPayload(column, ev)"
                    non-drag-area-selector=".no-drag"
+                   :drop-placeholder="{className: 'hi'}"
         >
             <Draggable v-for="[i, el] in Object.entries(components)"
                        @click="selectComponent"
@@ -122,7 +123,11 @@
     <!-- Widget Add Sidebar -->
     <div :class="{'widget-sidebar': true, 'drawerOpen': drawerOpen}" v-if="editMode">
         <h1>Add Widgets</h1>
-        <Container group-name="homepage" behaviour="copy" @drag-start="drawerOpen = false" :get-child-payload="(ev) => allWidgets[ev]">
+        <Container group-name="homepage" behaviour="copy"
+                   @drag-start="drawerOpen = false"
+                   :get-child-payload="(ev) => allWidgets[ev]"
+                   :get-ghost-parent="getBody"
+        >
             <Draggable v-for="[i, el] in Object.entries(allWidgets)" :key="'d' + i">
                 <component :is="el" :key="i" :widg-info="{edit: true, col: null, add: true}"/>
             </Draggable>
@@ -163,6 +168,10 @@ const editReminderPopup = ref(null);
 const viewReminderPopup = ref(null);
 function openCreateReminderPopup(reminder) {
     createReminderPopup.value.openPopup(reminder);
+}
+
+function getBody() {
+    return document.body;
 }
 
 // Get the homepage layout from storage, and if it exists, restore it (or default)
@@ -334,10 +343,14 @@ function clearSelectedComponent() {
 .cb-icon-button {
     @apply bg-transparent border-0 text-2xl text-gray-800 hover:bg-gray-200 hover:text-gray-600 aspect-square rounded-md leading-6 m-0 z-[1];
 }
-.selected {
+.selected, .smooth-dnd-drop-preview-constant-class {
     @apply outline-blue-500 outline-2 outline outline-offset-2 rounded-sm;
 }
-
+.smooth-dnd-drop-preview-constant-class {
+    margin-top: 4px;
+    border-radius: 8px;
+    outline-offset: -3px;
+}
 .grid-layout {
     @apply grid grid-cols-[65%,35%] gap-2 relative;
 }
