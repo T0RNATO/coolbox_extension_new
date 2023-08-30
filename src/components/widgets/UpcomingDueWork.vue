@@ -3,10 +3,24 @@
         <h2 class="subheader">Due Work</h2>
         <ul class="information-list bg-white" id="due-work" :class="{limitHeight: widgInfo['add']}">
             <li v-for="workItem in dueWorkItems">
-                <div class="card w-full" v-html="workItem.innerHTML"></div>
+                <div class="card w-full">
+                    <h3 v-html="workItem.firstElementChild.innerHTML"></h3>
+                    <p class="meta">
+                        <a :href="workItem.children[1].firstElementChild.href">
+                            {{
+                                prettySubjects?.find(
+                                    subject => subject['name']?.toLowerCase() ===
+                                        workItem.children[1].firstElementChild?.textContent?.split("(")[1].slice(0, -1)?.toLowerCase()
+                                )?.pretty
+                                || workItem.children[1].firstElementChild?.textContent
+                            }}
+                        </a>
+                        {{workItem.children[1].lastChild.textContent}}
+                    </p>
+                    <p class="meta" v-html="workItem.lastElementChild.innerHTML"></p>
+                </div>
                 <div class="material-symbols-outlined reminder-button"
-                     @click="reminderButtonClick(workItem)"
-                >
+                     @click="reminderButtonClick(workItem)">
                     {{reminderExists(workItem) ? 'notifications_active' : 'notification_add'}}
                 </div>
             </li>
@@ -33,8 +47,16 @@
 
 <script setup>
 import EditingContextMenu from "~/components/EditingContextMenu.vue";
+import {ref} from "vue";
+import browser from "webextension-polyfill";
 
 let dueWorkItems = document.querySelectorAll('#component52396 .information-list .card');
+
+const prettySubjects = ref([]);
+
+browser.storage.local.get("subjects").then(data => {
+    prettySubjects.value = data.subjects?.value || []
+})
 
 const props = defineProps({
     widgInfo: Object

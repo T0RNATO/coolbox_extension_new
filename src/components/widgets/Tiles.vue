@@ -90,7 +90,7 @@ function getFilter(i) {
             if (ts_animate.value) {
                 animation_styles.value["--start"] = HSVToFilter(hexToHSV(ts_hex1.value));
                 animation_styles.value["--end"] = HSVToFilter(hexToHSV(ts_hex2.value));
-                return {animation: `custom_animation 4s linear alternate-reverse infinite -${distanceFromBottomRight*300}ms`}
+                return {animation: `custom_animation 3s linear alternate-reverse infinite -${distanceFromBottomRight*300}ms`}
             }
             const gradientSteps = hexGradient(ts_hex1.value, ts_hex2.value, 7);
             hsv = hexToHSV(gradientSteps[distanceFromTopLeft]);

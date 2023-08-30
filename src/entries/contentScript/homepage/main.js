@@ -88,17 +88,31 @@ function fetchPrettySubjectNames() {
 }
 
 function setPrettySubjectNames(names) {
+    // Loop through subjects on sidebar to update their names
     for (const sidebarItem of document.querySelectorAll("#side-menu-mysubjects li a")) {
+        // Match the subject name to the link because Schoolbox doesn't set the name correctly
         const subject = names.filter(name => {
             const linkSections = sidebarItem.href.split("/");
             return name.name?.toLowerCase() === linkSections[linkSections.length - 1]?.toLowerCase()
         })[0];
         if (subject) {
             let content = sidebarItem.textContent;
+            // Get the last character of the subject name, which is usually the class letter like ABCD
             let lastChar = content.charAt(content.length - 1);
             sidebarItem.textContent = subject.pretty;
+            // Check if it's uppercase, which is a good indicator that it's the class letter, and add it back
             if (lastChar === lastChar.toUpperCase()) {
                 sidebarItem.textContent += ` (${lastChar})`;
+            }
+        }
+    }
+    // Full timetable page
+    if (location.pathname === "/timetable") {
+        for (const timetableItem of document.querySelectorAll(".timetable-subject > div")) {
+            const subject = names.filter(name =>
+                name.name?.toLowerCase() === timetableItem.firstChild.textContent.slice(1,-1)?.toLowerCase())[0];
+            if (subject) {
+                timetableItem.previousElementSibling.textContent = subject.pretty;
             }
         }
     }
