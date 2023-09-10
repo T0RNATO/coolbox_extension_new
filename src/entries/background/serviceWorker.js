@@ -2,19 +2,6 @@ import browser from "webextension-polyfill";
 import {possibleThemes} from "~/utils/themes.js";
 import {shadeHexColor} from "~/utils/utilFunctions";
 
-browser.runtime.onInstalled.addListener(() => {
-    console.log("Extension installed");
-    browser.storage.sync.get().then((oldSettings) => {
-        browser.storage.sync.clear();
-        if (oldSettings.pfp) {
-            browser.storage.local.set({pfp: true});
-        }
-        if (oldSettings.theme) {
-            browser.storage.local.set({theme: {setting: oldSettings.theme}});
-        }
-    })
-});
-
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message === "applyTheme") {
         browser.storage.local.get("theme").then(result => {
