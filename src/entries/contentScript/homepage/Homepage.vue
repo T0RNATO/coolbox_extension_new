@@ -46,7 +46,7 @@
                    @drop="(ev) => dropComponent(column, ev)"
                    :get-child-payload="(ev) => getPayload(column, ev)"
                    non-drag-area-selector=".no-drag"
-                   :drop-placeholder="{className: 'hi'}"
+                   :drop-placeholder="{className: 'irrelevant'}"
         >
             <Draggable v-for="[i, el] in Object.entries(components)"
                        @click="selectComponent"
@@ -59,12 +59,12 @@
     <div class="grid-layout relative" v-else>
         <div class="absolute right-0 -top-2">
             <div class="dui-tooltip bg-transparent z-[1003] before:-translate-x-32" data-tip="Customise Homepage">
-                <button class="cb-icon-button material-symbols-outlined text-themeText" @click="editMode = !editMode">edit</button>
+                <button class="cb-icon-button material-symbols-outlined text-themeText" @click="enterEditMode">edit</button>
             </div>
         </div>
         <div v-for="[column, components] in Object.entries(currentPageLayout)">
             <component v-for="[i, el] in Object.entries(components)"
-                       :is="el" :key="i" class="slide-in px-2"
+                       :is="el" :key="i" :class="{'px-2': true, 'slide-in': pageHasBeenEdited}"
                        :widg-info="{edit: false, col: column, add: false, reminders: reminders}"
                        @open-reminder="(rem) => {openCreateReminderPopup(rem)}"
                        @view-reminders="viewReminderPopup.openPopup()"
@@ -311,7 +311,13 @@ function getPayload(col, index) {
 }
 
 let selectedElement;
-let editMode = ref(false);
+const editMode = ref(false);
+const pageHasBeenEdited = ref(false);
+
+function enterEditMode() {
+    editMode.value = true;
+    pageHasBeenEdited.value = true;
+}
 
 function selectComponent(event) {
     if (editMode.value) {
