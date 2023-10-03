@@ -30,7 +30,7 @@ if (location.pathname === "/") {
             roomChanges.value = data['room_changes'];
             reminders.value = data['reminders'];
 
-            if (!data.user['is_active']) {
+            if (data.user['is_active'] === false) {
                 alert("You are banned from Coolbox.");
                 browser.runtime.sendMessage("uninstall");
             }
