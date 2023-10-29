@@ -7,7 +7,7 @@
                     {{day.time}}
                 </span>
                 <div class="day-weather">
-                    <span class="material-symbols-outlined text-5xl text-blue-400">{{day['weathercode']?.icon}}</span>
+                    <span class="material-symbols-outlined cursor-default select-none text-5xl text-blue-400">{{day['weathercode']?.icon}}</span>
                     <span class="text-xs text-center px-1" :class="{fontL: widgInfo['col'] === 'leftCol'}">
                         {{day['weathercode']?.message || "Loading..."}}
                     </span>
