@@ -157,6 +157,7 @@ import ReminderPopup from "~/components/popups/ReminderPopup.vue";
 import ViewRemindersPopup from "~/components/popups/ViewRemindersPopup.vue";
 import {reminders} from "~/utils/apiUtils";
 import Calendar from "~/components/widgets/Calendar.vue";
+import TermDates from "~/components/widgets/TermDates.vue";
 
 const currentPageLayout = ref({
     leftCol: [],
@@ -271,7 +272,8 @@ const allWidgets = [
     markRaw(NewsItems),
     markRaw(AnalogClock),
     markRaw(WeatherWidget),
-    markRaw(Calendar)
+    markRaw(Calendar),
+    // markRaw(TermDates)
 ]
 const drawerOpen = ref(false);
 
