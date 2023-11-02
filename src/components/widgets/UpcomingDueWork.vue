@@ -23,14 +23,14 @@
                             {{reminderExists(workItem) ? 'notifications_active' : 'notification_add'}}
                         </span>
                             <span class="material-symbols-outlined assessment-button" @click="hiddenReminders = [...hiddenReminders, getAssessmentId(workItem)];">
-                            delete
+                            visibility_off
                         </span>
                     </div>
                     <div v-else class="reminder-button">
                         <div class="dui-tooltip" data-tip="Restore Task">
                             <span class="material-symbols-outlined assessment-button text-green-400"
                                   @click="hiddenReminders = hiddenReminders.toSpliced(hiddenReminders.indexOf(getAssessmentId(workItem)), 1)">
-                                done
+                                visibility
                             </span>
                         </div>
                     </div>
