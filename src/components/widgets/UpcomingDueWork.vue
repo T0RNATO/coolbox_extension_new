@@ -26,7 +26,7 @@
                             visibility_off
                         </span>
                     </div>
-                    <div v-else class="reminder-button">
+                    <div v-else class="reminder-button !top-2">
                         <div class="dui-tooltip" data-tip="Restore Task">
                             <span class="material-symbols-outlined assessment-button text-green-400"
                                   @click="hiddenReminders = hiddenReminders.toSpliced(hiddenReminders.indexOf(getAssessmentId(workItem)), 1)">
