@@ -70,6 +70,8 @@ const hiddenReminders = useExtensionStorage('hiddenReminders', []);
 
 // Remove any hidden reminders that no longer exist
 for (const reminder of hiddenReminders.value) {
+    console.log(reminder)
+    console.log(document.querySelector(`#component52396 .information-list .card h3 a[href*="/${reminder}"]`))
     if (!document.querySelector(`#component52396 .information-list .card h3 a[href*="/${reminder}"]`)) {
         hiddenReminders.value = hiddenReminders.value.toSpliced(hiddenReminders.value.indexOf(reminder), 1)
     }
@@ -137,7 +139,7 @@ function editReminder(workItem) {
 }
 
 .hiderem {
-    @apply max-h-3 !bg-accent transition-all;
+    @apply max-h-3 !bg-accent transition-all overflow-hidden;
 }
 
 .hiderem:hover {
