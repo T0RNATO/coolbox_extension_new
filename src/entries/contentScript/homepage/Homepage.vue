@@ -143,21 +143,21 @@ import CoolBoxMessage from "~/components/widgets/CoolBoxMessage.vue";
 import Timetable from "~/components/widgets/Timetable.vue";
 import TimeLeft from "~/components/widgets/TimeLeft.vue";
 import NewsItems from "~/components/widgets/NewsItems.vue";
-import {markRaw, ref} from "vue";
-import browser from "webextension-polyfill";
-
-import {Container, Draggable} from "vue3-smooth-dnd";
-import AnalogClock from "~/components/widgets/AnalogClock.vue";
+import TermDates from "~/components/widgets/TermDates.vue";
 import WeatherWidget from "~/components/widgets/WeatherWidget.vue";
-import {possibleThemes} from "~/utils/themes";
-import {ShadowRoot, ShadowStyle} from "vue-shadow-dom";
-import '@vuepic/vue-datepicker/dist/main.css'
-import {defaultSheets, useExtensionStorage} from "~/utils/componentUtils";
+import AnalogClock from "~/components/widgets/AnalogClock.vue";
+import Calendar from "~/components/widgets/Calendar.vue";
+
+import browser from "webextension-polyfill";
 import ReminderPopup from "~/components/popups/ReminderPopup.vue";
 import ViewRemindersPopup from "~/components/popups/ViewRemindersPopup.vue";
+import '@vuepic/vue-datepicker/dist/main.css'
+import {markRaw, ref} from "vue";
+import {Container, Draggable} from "vue3-smooth-dnd";
+import {possibleThemes} from "~/utils/themes";
+import {ShadowRoot, ShadowStyle} from "vue-shadow-dom";
+import {defaultSheets, useExtensionStorage} from "~/utils/componentUtils";
 import {reminders} from "~/utils/apiUtils";
-import Calendar from "~/components/widgets/Calendar.vue";
-import TermDates from "~/components/widgets/TermDates.vue";
 
 const currentPageLayout = ref({
     leftCol: [],
@@ -273,11 +273,12 @@ const allWidgets = [
     markRaw(AnalogClock),
     markRaw(WeatherWidget),
     markRaw(Calendar),
-    // markRaw(TermDates)
+    markRaw(TermDates),
 ]
 const drawerOpen = ref(false);
 
 function saveLayout() {
+    console.log(currentPageLayout.value);
     const layout = {
         leftCol: currentPageLayout.value.leftCol.map(el => el['__name']),
         rightCol: currentPageLayout.value.rightCol.map(el => el['__name']),
