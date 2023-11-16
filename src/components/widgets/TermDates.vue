@@ -1,5 +1,6 @@
 <script setup>
 import {ref} from "vue";
+import EditingContextMenu from "~/components/EditingContextMenu.vue";
 
 const images = document.querySelectorAll(".swiper-wrapper .swiper-slide img");
 
@@ -25,6 +26,7 @@ function forward() {
     <span class="material-symbols-outlined left-1" @click="back">arrow_back_ios</span>
     <img :src="images[viewing].src" draggable="false">
     <span class="material-symbols-outlined right-0" @click="forward">arrow_forward_ios</span>
+    <EditingContextMenu @delete="$emit('delete')"/>
 </div>
 </template>
 
