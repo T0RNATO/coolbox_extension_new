@@ -1,6 +1,6 @@
 <script setup>
 import {ref} from "vue";
-import EditingContextMenu from "~/components/EditingContextMenu.vue";
+import EditingContextMenu from "~/components/other/EditingContextMenu.vue";
 
 const images = document.querySelectorAll(".swiper-wrapper .swiper-slide img");
 
@@ -19,12 +19,14 @@ function forward() {
         viewing.value = 0;
     }
 }
+
+const props = defineProps({widgInfo: Object});
 </script>
 
 <template>
-<div class="bg-white relative">
+<div class="relative rounded-xl">
     <span class="material-symbols-outlined left-1" @click="back">arrow_back_ios</span>
-    <img :src="images[viewing].src" draggable="false">
+    <img :src="images[viewing].src" draggable="false" class="rounded-xl">
     <span class="material-symbols-outlined right-0" @click="forward">arrow_forward_ios</span>
     <EditingContextMenu @delete="$emit('delete')"/>
 </div>
@@ -33,7 +35,8 @@ function forward() {
 <style scoped>
 span {
     position: absolute;
-    color: #3d3d40;
+    color: grey;
+    mix-blend-mode: difference;
     font-size: 1.5rem;
     top: 50%;
     transform: translateY(-50%);
@@ -41,6 +44,10 @@ span {
     user-select: none;
 }
 img {
-    transform: scale(0.9);
+    transform: scale(0.85);
+    border: 12px solid white;
+}
+.pad-top {
+    @apply mt-8;
 }
 </style>
