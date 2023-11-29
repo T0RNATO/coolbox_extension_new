@@ -1,6 +1,6 @@
 {
   "name": "coolbox",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "displayName": "Coolbox",
   "author": "TorNato & SleepyStew",
   "description": "An extension to extend and customise Schoolbox.",
@@ -18,7 +18,7 @@
     "@types/webextension-polyfill": "^0.10.0",
     "@vitejs/plugin-vue": "^4.2.1",
     "autoprefixer": "^10.4.14",
-    "daisyui": "^3.0.22",
+    "daisyui": "^4.4.14",
     "postcss": "^8.4.24",
     "tailwindcss": "^3.3.2",
     "vite": "~4.3.3",
