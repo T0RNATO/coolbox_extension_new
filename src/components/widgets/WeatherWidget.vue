@@ -31,6 +31,11 @@
                     </div>
                 </div>
             </div>
+            <div v-if="!weather.length">
+                <span class="text-themeText">Loading Weather..</span>
+                <br/>
+                <div class="dui-loading dui-loading-spinner"/>
+            </div>
         </div>
         <EditingContextMenu @delete="$emit('delete')"/>
     </div>
