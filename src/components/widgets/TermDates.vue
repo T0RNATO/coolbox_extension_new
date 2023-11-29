@@ -20,13 +20,13 @@ function forward() {
     }
 }
 
-const props = defineProps({widgInfo: Object});
+defineProps({widgInfo: Object});
 </script>
 
 <template>
 <div class="relative rounded-xl">
     <span class="material-symbols-outlined left-1" @click="back">arrow_back_ios</span>
-    <img :src="images[viewing].src" draggable="false" class="rounded-xl">
+    <img :src="images[viewing].src" draggable="false" class="rounded-xl" alt="Term Dates">
     <span class="material-symbols-outlined right-0" @click="forward">arrow_forward_ios</span>
     <EditingContextMenu @delete="$emit('delete')"/>
 </div>
@@ -46,8 +46,5 @@ span {
 img {
     transform: scale(0.85);
     border: 12px solid white;
-}
-.pad-top {
-    @apply mt-8;
 }
 </style>
