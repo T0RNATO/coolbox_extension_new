@@ -3,9 +3,11 @@
         <div v-if="show">
             <h2 class="subheader">{{dayTitle}}</h2>
             <div class="flex sm:flex-row lg:flex-col">
+                <!--Timetable Headers-->
                 <div class="flex lg:flex-row sm:flex-col">
                     <div v-for="head in timetableHeaders"
-                         :class="{'head-active': head.classList.contains('timetable-period-active'), 'cb-header': true}">
+                         :class="{'head-active': head.classList.contains('timetable-period-active')}"
+                        class="cb-header">
                         {{head.firstChild.textContent}}
                         <div v-html="head.firstElementChild.outerHTML"></div>
                     </div>
@@ -15,10 +17,10 @@
                     <div v-for="timetableSubject in timetableSubjects"
                          :style="{backgroundColor: timetableSubject['style'].getPropertyValue('background-color')}"
                          :class="{
-                            'cb-subject': true,
                             'darken': darkenSubjects,
                             'outline': outlineCurrent && timetableSubject.parentElement.classList.contains('timetable-subject-active')
                         }"
+                         class="cb-subject"
                          :data-change="c = roomChanges?.find(
                             change => change['class_name'] ===
                                 timetableSubject.children[1]?.textContent.slice(1, -1)
@@ -70,7 +72,7 @@
 </template>
 
 <script setup>
-import EditingContextMenu from "~/components/EditingContextMenu.vue";
+import EditingContextMenu from "~/components/other/EditingContextMenu.vue";
 import {statusMessages, roomChanges} from "~/utils/apiUtils";
 import {ref} from "vue";
 import browser from "webextension-polyfill";
@@ -152,4 +154,8 @@ defineProps({
 .head-active {
     @apply bg-accent;
 }
+.cb-header:first-child {@apply rounded-tl-lg;}
+.cb-header:last-child {@apply rounded-tr-lg;}
+.cb-subject:first-child {@apply rounded-bl-lg;}
+.cb-subject:last-child {@apply rounded-br-lg;}
 </style>

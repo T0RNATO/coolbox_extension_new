@@ -19,7 +19,7 @@
 </template>
 
 <script setup>
-import EditingContextMenu from "~/components/EditingContextMenu.vue";
+import EditingContextMenu from "~/components/other/EditingContextMenu.vue";
 import {ref} from "vue";
 import FeedbackPopup from "~/components/popups/FeedbackPopup.vue";
 

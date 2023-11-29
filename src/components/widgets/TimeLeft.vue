@@ -25,7 +25,7 @@
 
 <script setup>
 import {ref} from "vue";
-import EditingContextMenu from "~/components/EditingContextMenu.vue";
+import EditingContextMenu from "~/components/other/EditingContextMenu.vue";
 
 defineProps({
     widgInfo: Object

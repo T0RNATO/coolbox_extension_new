@@ -45,7 +45,7 @@
 </template>
 
 <script setup>
-import EditingContextMenu from "~/components/EditingContextMenu.vue";
+import EditingContextMenu from "~/components/other/EditingContextMenu.vue";
 import {useExtensionStorage} from "~/utils/componentUtils";
 import {statusMessages} from "~/utils/apiUtils";
 import {hexGradient} from "~/utils/utilFunctions";

@@ -14,7 +14,7 @@
 </template>
 
 <script setup>
-import EditingContextMenu from "~/components/EditingContextMenu.vue";
+import EditingContextMenu from "~/components/other/EditingContextMenu.vue";
 import {useExtensionStorage} from "~/utils/componentUtils";
 
 const customName = useExtensionStorage('customName', '');

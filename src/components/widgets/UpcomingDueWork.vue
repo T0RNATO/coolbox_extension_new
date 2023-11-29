@@ -1,9 +1,9 @@
 <template>
     <div>
         <h2 class="subheader">Due Work</h2>
-        <ul class="information-list bg-white" id="due-work" :class="{limitHeight: widgInfo['add']}">
+        <ul class="information-list rounded-lg bg-primary pt-2" id="due-work" :class="{limitHeight: widgInfo['add']}">
             <li v-for="workItem in dueWorkItems">
-                <div class="card w-full" :class="{hiderem: hiddenReminders.includes(getAssessmentId(workItem))}">
+                <div class="w-full" :class="{hiderem: hiddenReminders.includes(getAssessmentId(workItem))}">
                     <h3 v-html="workItem.firstElementChild.innerHTML"></h3>
                     <p class="meta">
                         <a :href="workItem.children[1].firstElementChild.href">
@@ -37,7 +37,7 @@
                 </div>
             </li>
             <li>
-                <div class="card flex-row w-full flex px-0 text-sm">
+                <div class="flex-row w-full flex p-0 text-sm">
                     <div class="button" @click="createReminder(false)">
                         <div>
                             <span class="material-symbols-outlined align-bottom">add</span>
@@ -58,7 +58,7 @@
 </template>
 
 <script setup>
-import EditingContextMenu from "~/components/EditingContextMenu.vue";
+import EditingContextMenu from "~/components/other/EditingContextMenu.vue";
 import {ref} from "vue";
 import browser from "webextension-polyfill";
 import {useExtensionStorage} from "~/utils/componentUtils";
@@ -131,7 +131,7 @@ function editReminder(workItem) {
 }
 
 .button {
-    @apply w-full m-2 mt-0 flex items-center justify-center;
+    @apply w-full m-2 mt-0 flex items-center justify-center rounded-md;
 }
 
 .limitHeight {

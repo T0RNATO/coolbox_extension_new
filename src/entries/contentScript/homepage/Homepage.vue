@@ -59,13 +59,14 @@
     <div class="grid-layout relative" v-else>
         <div class="absolute right-0 -top-2">
             <div class="dui-tooltip bg-transparent z-[1003] before:-translate-x-32" data-tip="Customise Homepage">
-                <button class="cb-icon-button material-symbols-outlined text-themeText" @click="enterEditMode">edit</button>
+                <button class="cb-icon-button material-symbols-outlined text-themeText bg-primary rounded-full" @click="enterEditMode">edit</button>
             </div>
         </div>
         <div v-for="[column, components] in Object.entries(currentPageLayout)">
             <component v-for="[i, el] in Object.entries(components)"
                        :is="el" :key="i" :class="{'px-2': true, 'slide-in': pageHasBeenEdited}"
                        :widg-info="{edit: false, col: column, add: false, reminders: reminders}"
+                       class="my-2"
                        @open-reminder="(rem) => {openCreateReminderPopup(rem)}"
                        @view-reminders="viewReminderPopup.openPopup()"
                        @edit-reminder="(rem) => {editReminderPopup.openPopup(rem)}"
@@ -142,10 +143,10 @@ import Tiles from "~/components/widgets/Tiles.vue";
 import CoolBoxMessage from "~/components/widgets/CoolBoxMessage.vue";
 import Timetable from "~/components/widgets/Timetable.vue";
 import TimeLeft from "~/components/widgets/TimeLeft.vue";
-import NewsItems from "~/components/widgets/NewsItems.vue";
+import NewsItems from "~/components/widgets/News.vue";
 import TermDates from "~/components/widgets/TermDates.vue";
 import WeatherWidget from "~/components/widgets/WeatherWidget.vue";
-import AnalogClock from "~/components/widgets/AnalogClock.vue";
+import AnalogClock from "~/components/widgets/Clock.vue";
 import Calendar from "~/components/widgets/Calendar.vue";
 
 import browser from "webextension-polyfill";
@@ -175,20 +176,29 @@ function getBody() {
     return document.body;
 }
 
+// Renamed files, TODO remove in next update
+const widgetMappings = {
+    "NewsItems": "News",
+    "AnalogClock": "Clock",
+}
+
+function componentNameToComponent(name) {
+    return allWidgets.find(
+        widget => {
+            if (name in widgetMappings) {
+                return widget.__name === widgetMappings[name];
+            }
+            return widget.__name === name;
+        }
+    )
+}
+
 // Get the homepage layout from storage, and if it exists, restore it (or default)
 browser.storage.local.get("homepageLayout").then(layout => {
     if (layout.homepageLayout) {
         currentPageLayout.value = {
-            leftCol: layout.homepageLayout.leftCol.map(
-                component => allWidgets.find(
-                    widget => widget.__name === component
-                )
-            ),
-            rightCol: layout.homepageLayout.rightCol.map(
-                component => allWidgets.find(
-                    widget => widget.__name === component
-                )
-            )
+            leftCol: layout.homepageLayout.leftCol.map(componentNameToComponent),
+            rightCol: layout.homepageLayout.rightCol.map(componentNameToComponent)
         }
     } else {
         currentPageLayout.value = {
@@ -278,7 +288,6 @@ const allWidgets = [
 const drawerOpen = ref(false);
 
 function saveLayout() {
-    console.log(currentPageLayout.value);
     const layout = {
         leftCol: currentPageLayout.value.leftCol.map(el => el['__name']),
         rightCol: currentPageLayout.value.rightCol.map(el => el['__name']),
