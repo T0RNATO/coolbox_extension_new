@@ -69,7 +69,3 @@ defineProps({
     widgInfo: Object
 })
 </script>
-
-<style scoped>
-
-</style>

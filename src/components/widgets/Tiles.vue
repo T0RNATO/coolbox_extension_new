@@ -82,11 +82,13 @@ function getFilter(i) {
     let hsv = hexToHSV(ts_hex1.value);
 
     switch (ts_type.value) {
-        case "legacy":
+        case "legacy": {
             return {filter: `hue-rotate(${getHueRotation(i)}deg) brightness(1.5) contrast(1.3)`};
-        case "legacy_anim":
-            return {animation: `rgb 4s linear reverse infinite -${distanceFromBottomRight*150}ms`}
-        case "gradient":
+        }
+        case "legacy_anim": {
+            return {animation: `rgb 4s linear reverse infinite -${distanceFromBottomRight * 150}ms`};
+        }
+        case "gradient": {
             if (ts_animate.value) {
                 animation_styles.value["--start"] = HSVToFilter(hexToHSV(ts_hex1.value));
                 animation_styles.value["--end"] = HSVToFilter(hexToHSV(ts_hex2.value));
@@ -94,9 +96,10 @@ function getFilter(i) {
             }
             const gradientSteps = hexGradient(ts_hex1.value, ts_hex2.value, 7);
             hsv = hexToHSV(gradientSteps[distanceFromTopLeft]);
-        // intentional fallthrough
-        case "solid":
+        } // intentional fallthrough
+        case "solid": {
             return {filter: HSVToFilter(hsv)};
+        }
     }
     return {}
 }

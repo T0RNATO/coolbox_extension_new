@@ -111,7 +111,7 @@ const props = defineProps<{
         attachments: number;
         viewedAt: null;
     },
-    saved: Boolean
+    saved: boolean
 }>();
 const emit = defineEmits(["save", "unsave"]);
 
