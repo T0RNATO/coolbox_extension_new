@@ -1,13 +1,88 @@
 import browser from "webextension-polyfill";
 import {ref} from "vue";
+import type {Ref} from 'vue';
 
 let headers = null;
 
+interface Verse {
+    verse: {
+        details: {
+            text: string,
+            reference: string
+        }
+    }
+}
+interface ApiResponse {
+    user: {
+        name: string;
+        id: string;
+        year: number;
+        role: string;
+        is_active: boolean;
+        discord: {
+            linked: boolean;
+            info: {
+                id: string;
+                username: string;
+                avatar: string;
+                discriminator: string;
+                public_flags: number;
+                premium_type: number;
+                flags: number;
+                banner: string | null;
+                accent_color: number;
+                global_name: string;
+                avatar_decoration_data: string | null;
+                banner_color: string;
+                mfa_enabled: boolean;
+                locale: string;
+            };
+        };
+    };
+    status: {
+        info: string | null;
+        critical: string | null;
+        message: string | null;
+    };
+    reminders: Array<any>;
+    weather: {
+        last_updated: string;
+        forecast: any;
+    };
+    room_changes: Array<any>;
+}
+
 export const statusMessages = ref({});
 export const discordLinked = ref(false);
-export const weather = ref([]);
+export const weather: Ref<Array<{
+    time: string;
+    time_real: string;
+    weathercode: {
+        icon: string;
+        message: string;
+    };
+    uv_index_max: number;
+    temperature_2m_max: number;
+    temperature_2m_min: number;
+    precipitation_probability_mean: number;
+}>> = ref([]);
 export const roomChanges = ref([]);
 export const reminders = ref([]);
+export const dailyVerse = ref({
+    text: null,
+    reference: null
+});
+
+// No need to fetch the verse if the widget doesn't even exist
+export function getDailyVerse() {
+    if (!dailyVerse.value.text) {
+        fetch("https://beta.ourmanna.com/api/v1/get/?format=json")
+            .then(response => response.json())
+            .then((data: Verse) => {
+                dailyVerse.value = data.verse.details;
+            });
+    }
+}
 
 export function updateReminders() {
     apiGet("reminders", (data) => {
@@ -23,14 +98,14 @@ if (location.pathname === "/") {
             "Authorization": `Bearer ${cookie}`,
             "Content-Type": "application/json"
         });
-        apiGet("start", (data) => {
-            statusMessages.value = data['status'];
-            discordLinked.value = data['user']['discord']?.['linked'];
-            weather.value = data['weather']['forecast'];
-            roomChanges.value = data['room_changes'];
-            reminders.value = data['reminders'];
+        apiGet("start", (data: ApiResponse) => {
+            statusMessages.value = data.status;
+            discordLinked.value = data.user.discord?.linked;
+            weather.value = data.weather.forecast;
+            roomChanges.value = data.room_changes;
+            reminders.value = data.reminders;
 
-            if (data.user['is_active'] === false) {
+            if (data.user.is_active === false) {
                 alert("You are banned from Coolbox.");
                 browser.runtime.sendMessage("uninstall");
             }
