@@ -148,6 +148,7 @@ import TermDates from "~/components/widgets/TermDates.vue";
 import WeatherWidget from "~/components/widgets/WeatherWidget.vue";
 import AnalogClock from "~/components/widgets/Clock.vue";
 import Calendar from "~/components/widgets/Calendar.vue";
+import DailyVerse from "~/components/widgets/DailyVerse.vue";
 
 import browser from "webextension-polyfill";
 import ReminderPopup from "~/components/popups/ReminderPopup.vue";
@@ -284,6 +285,7 @@ const allWidgets = [
     markRaw(WeatherWidget),
     markRaw(Calendar),
     markRaw(TermDates),
+    markRaw(DailyVerse),
 ]
 const drawerOpen = ref(false);
 
