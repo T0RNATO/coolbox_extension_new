@@ -12,6 +12,7 @@
 body .rb-selected,
 .fc-cell-shaded,
 #account-content-mobile,
+.fc .fc-list-event:hover td,
 select {
     background-color: var(--theme-accent) !important;
 }

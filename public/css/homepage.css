@@ -18,3 +18,11 @@ body .timetable-small, body .timetable {
 #container > [data-v-app] {
     animation: fadein 1200ms;
 }
+
+#calendar-36739 table.fc-list-table {
+    @apply rounded-md overflow-hidden;
+}
+
+#calendar-36739 tbody {
+    border: none !important;
+}
