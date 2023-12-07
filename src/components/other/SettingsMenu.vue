@@ -65,6 +65,7 @@ browser.runtime.sendMessage("getCookie").then((token) => {
 .settings-label {
     @apply text-[18px];
 }
+/*noinspection CssUnusedSymbol*/
 .dui-toggle, input.dui-radio {
     @apply border-gray-500 border-solid;
 }

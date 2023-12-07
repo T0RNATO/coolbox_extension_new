@@ -45,6 +45,7 @@ defineProps({
     }
 }
 
+/*noinspection CssUnusedSymbol*/
 .selected .cm {
     display: unset;
     animation: toggleSettings 100ms
