@@ -118,6 +118,8 @@ dd a,
 :not(a) > h3,
 .fc-col-header-cell-cushion,
 tr.fc-list-event > td,
+.reveal-modal p,
+.reveal-modal h2,
 select {
     color: var(--theme-text) !important;
 }
