@@ -4,14 +4,6 @@ import type {Ref} from 'vue';
 
 let headers = null;
 
-interface Verse {
-    verse: {
-        details: {
-            text: string,
-            reference: string
-        }
-    }
-}
 interface ApiResponse {
     user: {
         name: string;
@@ -50,6 +42,11 @@ interface ApiResponse {
         forecast: any;
     };
     room_changes: Array<any>;
+    daily_verse: {
+        content: string;
+        reference: string;
+        link: string;
+    }
 }
 
 export const statusMessages = ref({});
@@ -69,20 +66,10 @@ export const weather: Ref<Array<{
 export const roomChanges = ref([]);
 export const reminders = ref([]);
 export const dailyVerse = ref({
-    text: null,
-    reference: null
+    content: null,
+    reference: null,
+    link: null,
 });
-
-// No need to fetch the verse if the widget doesn't even exist
-export function getDailyVerse() {
-    if (!dailyVerse.value.text) {
-        fetch("https://beta.ourmanna.com/api/v1/get/?format=json")
-            .then(response => response.json())
-            .then((data: Verse) => {
-                dailyVerse.value = data.verse.details;
-            });
-    }
-}
 
 export function updateReminders() {
     apiGet("reminders", (data) => {
@@ -104,6 +91,7 @@ if (location.pathname === "/") {
             weather.value = data.weather.forecast;
             roomChanges.value = data.room_changes;
             reminders.value = data.reminders;
+            dailyVerse.value = data.daily_verse;
 
             if (data.user.is_active === false) {
                 alert("You are banned from Coolbox.");
@@ -138,7 +126,7 @@ const toastAnimation = [
     {bottom: "0.25rem", right: "1rem"},
 ];
 
-function animateToast(el) {
+function animateToast(el: Element) {
     el.animate(toastAnimation, {
         duration: 300,
         easing: "cubic-bezier(0.25, 1, 0.5, 1)",
@@ -153,7 +141,13 @@ function animateToast(el) {
     }, 2000)})
 }
 
-export function apiSend(method, path, body, successMessage, errorMessage, callback) {
+export function successToast(message: string) {
+    const successToast = document.querySelector("#toast-success");
+    successToast.querySelector(".content").textContent = message;
+    animateToast(successToast);
+}
+
+export function apiSend(method: string, path: string, body: any, successMessage: string, errorMessage: string, callback) {
     fetch(`https://api.coolbox.lol/${path}`, {
         method: method,
         headers: headers,
@@ -168,9 +162,7 @@ export function apiSend(method, path, body, successMessage, errorMessage, callba
                 });
             }
             if (successMessage) {
-                const successToast = document.querySelector("#toast-success");
-                successToast.querySelector(".content").textContent = successMessage;
-                animateToast(successToast);
+                successToast(successMessage);
             }
         } else if (errorMessage) {
             const errorToast = document.querySelector("#toast-failure");
