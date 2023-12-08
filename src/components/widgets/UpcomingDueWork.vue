@@ -68,14 +68,15 @@ let dueWorkItems = document.querySelectorAll('#component52396 .information-list 
 const prettySubjects = ref([]);
 const hiddenReminders = useExtensionStorage('hiddenReminders', []);
 
-// Remove any hidden reminders that no longer exist
-for (const reminder of hiddenReminders.value) {
-    console.log(reminder)
-    console.log(document.querySelector(`#component52396 .information-list .card h3 a[href*="/${reminder}"]`))
-    if (!document.querySelector(`#component52396 .information-list .card h3 a[href*="/${reminder}"]`)) {
-        hiddenReminders.value = hiddenReminders.value.toSpliced(hiddenReminders.value.indexOf(reminder), 1)
+// Couldn't find a better way to do this
+setTimeout(() => {
+    // Remove any hidden reminders that no longer exist
+    for (const reminder of hiddenReminders.value) {
+        if (!document.querySelector(`#component52396 .information-list .card h3 a[href*="/${reminder}"]`)) {
+            hiddenReminders.value = hiddenReminders.value.toSpliced(hiddenReminders.value.indexOf(reminder), 1)
+        }
     }
-}
+}, 1000)
 
 browser.storage.local.get("subjects").then(data => {
     prettySubjects.value = data.subjects?.value || []
