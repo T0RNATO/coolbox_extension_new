@@ -138,7 +138,7 @@
 
 <script setup>
 import GreetingText from "~/components/widgets/GreetingText.vue";
-import UpcomingDueWork from "~/components/widgets/UpcomingDueWork.vue";
+import UpcomingDueWork from "~/components/widgets/DueWork/UpcomingDueWork.vue";
 import Tiles from "~/components/widgets/Tiles.vue";
 import CoolBoxMessage from "~/components/widgets/CoolBoxMessage.vue";
 import Timetable from "~/components/widgets/Timetable.vue";
