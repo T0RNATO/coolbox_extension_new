@@ -1,11 +1,13 @@
 <template>
     <div>
         <h2 class="subheader">Due Work</h2>
-        <ul class="information-list rounded-lg bg-primary pt-2" id="due-work" :class="{limitHeight: widgInfo['add']}">
+        <ul class="information-list rounded-lg bg-primary overflow-hidden" id="due-work" :class="{limitHeight: widgInfo['add']}">
             <li v-for="workItem in dueWorkItems">
-                <div class="w-full" :class="{hiderem: hiddenReminders.includes(getAssessmentId(workItem))}">
-                    <h3 v-html="workItem.firstElementChild.innerHTML"></h3>
-                    <p class="meta">
+                <div class="w-full p-2" :class="{hiderem: hiddenReminders.includes(getAssessmentId(workItem))}">
+                    <!-- Work Item Name -->
+                    <h3 v-html="workItem.firstElementChild.innerHTML" class="m-0"></h3>
+                    <!-- Work Item Subject -->
+                    <p class="meta inline">
                         <a :href="workItem.children[1].firstElementChild.href">
                             {{
                                 prettySubjects?.find(
@@ -17,7 +19,9 @@
                         </a>
                         {{workItem.children[1].lastChild.textContent}}
                     </p>
-                    <p class="meta pb-2" v-html="workItem.lastElementChild.innerHTML"></p>
+                    <!-- Time left -->
+                    <p class="meta" v-html="workItem.lastElementChild.innerHTML"></p>
+                    <!-- Add reminder button -->
                     <div class="reminder-button" v-if="!hiddenReminders.includes(getAssessmentId(workItem))">
                         <span class="material-symbols-outlined assessment-button" @click="editReminder(workItem)">
                             {{reminderExists(workItem) ? 'notifications_active' : 'notification_add'}}
@@ -26,6 +30,7 @@
                             visibility_off
                         </span>
                     </div>
+                    <!-- Hide work item button -->
                     <div v-else class="reminder-button !top-2">
                         <div class="dui-tooltip dui-tooltip-left" data-tip="Restore Task">
                             <span class="material-symbols-outlined assessment-button text-green-400"
@@ -36,22 +41,10 @@
                     </div>
                 </div>
             </li>
-            <li>
-                <div class="flex-row w-full flex p-0 text-sm">
-                    <div class="button" @click="createReminder(false)">
-                        <div>
-                            <span class="material-symbols-outlined align-bottom">add</span>
-                            Add Reminder
-                        </div>
-                    </div>
-                    <div class="button" @click="$emit('viewReminders')">
-                        <div>
-                            <span class="material-symbols-outlined align-bottom">visibility</span>
-                            View All Reminders
-                        </div>
-                    </div>
-                </div>
-            </li>
+            <ReminderButtons
+                @view-reminders="$emit('viewReminders')"
+                @create-reminder="createReminder(false)"
+            />
         </ul>
         <EditingContextMenu @delete="$emit('delete')"/>
     </div>
@@ -62,6 +55,7 @@ import EditingContextMenu from "~/components/other/EditingContextMenu.vue";
 import {ref} from "vue";
 import browser from "webextension-polyfill";
 import {useExtensionStorage} from "~/utils/componentUtils";
+import ReminderButtons from "~/components/widgets/DueWork/ReminderButtons.vue";
 
 let dueWorkItems = document.querySelectorAll('#component52396 .information-list .card');
 
@@ -131,20 +125,29 @@ function editReminder(workItem) {
     @apply text-gray-400;
 }
 
-.button {
-    @apply w-full m-2 mt-0 flex items-center justify-center rounded-md;
-}
-
 .limitHeight {
     max-height: 240px;
 }
 
 .hiderem {
-    @apply max-h-3 !bg-accent transition-all overflow-hidden;
+    @apply max-h-3 !bg-accent transition-[max-height] overflow-hidden;
+}
+
+.hiderem > h3 {
+    @apply mt-5 transition-[margin];
+}
+.hiderem:hover > h3 {
+    @apply mt-0;
+}
+.hiderem .assessment-button {
+    @apply transition-[opacity] opacity-0;
+}
+.hiderem:hover .assessment-button {
+    @apply opacity-100;
 }
 
 .hiderem:hover {
-    @apply max-h-20;
+    @apply max-h-24 pt-2;
 }
 </style>
 

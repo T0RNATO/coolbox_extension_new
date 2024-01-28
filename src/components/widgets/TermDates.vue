@@ -26,7 +26,7 @@ defineProps({widgInfo: Object});
 <template>
 <div class="relative rounded-xl">
     <span class="material-symbols-outlined left-1" @click="back">arrow_back_ios</span>
-    <img :src="images[viewing].src" draggable="false" class="rounded-xl" alt="Term Dates">
+    <img v-if="images[viewing]" :src="images[viewing]?.src" draggable="false" class="rounded-xl" alt="Term Dates">
     <span class="material-symbols-outlined right-0" @click="forward">arrow_forward_ios</span>
     <EditingContextMenu @delete="$emit('delete')"/>
 </div>
