@@ -26,11 +26,11 @@ function share() {
                 <div class="absolute right-6 bottom-2 flex">
                     <div class="dui-tooltip dui-tooltip-left" data-tip="View on BibleGateway">
                         <a :href="dailyVerse.link" target="_blank">
-                            <span class="material-symbols-outlined !text-gray-500 text-xl">link</span>
+                            <span class="material-symbols-outlined !text-gray-500 text-xl">open_in_new</span>
                         </a>
                     </div>
                     <div class="dui-tooltip dui-tooltip-left cursor-pointer select-none" data-tip="Copy to clipboard">
-                        <span class="material-symbols-outlined text-gray-500 text-xl" @click="share">share</span>
+                        <span class="material-symbols-outlined text-gray-500 text-xl" @click="share">content_copy</span>
                     </div>
                 </div>
             </div>
