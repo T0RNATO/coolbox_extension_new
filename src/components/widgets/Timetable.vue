@@ -154,8 +154,10 @@ defineProps({
 .head-active {
     @apply bg-accent;
 }
-.cb-header:first-child {@apply rounded-tl-lg;}
-.cb-header:last-child {@apply rounded-tr-lg;}
-.cb-subject:first-child {@apply rounded-bl-lg;}
-.cb-subject:last-child {@apply rounded-br-lg;}
+.cb-header {
+    @apply first:rounded-tl-lg lg:last:rounded-tr-lg sm:last:rounded-bl-lg;
+}
+.cb-subject {
+    @apply lg:first:rounded-bl-lg lg:last:rounded-br-lg sm:max-lg:first:rounded-tr-lg sm:last:rounded-br-lg;
+}
 </style>
