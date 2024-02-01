@@ -10,7 +10,7 @@ defineProps({widgInfo: Object});
 <div class="relative">
     <h2 class="subheader">Term Dates</h2>
     <div class="rounded-xl bg-primary p-2">
-        <div v-for="date of dates.children" class="text-themeText *:!text-themeText mb-2" v-html="date.innerHTML"></div>
+        <div v-for="date of dates?.children" class="text-themeText *:!text-themeText mb-2" v-html="date?.innerHTML"></div>
     </div>
 
     <EditingContextMenu @delete="$emit('delete')"/>
