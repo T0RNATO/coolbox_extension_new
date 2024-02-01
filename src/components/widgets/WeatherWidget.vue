@@ -15,14 +15,14 @@
                     </span>
                 </div>
                 <div class="day-temp">
-                    <div class="dui-tooltip" data-tip="Minimum Temperature">
-                        <span class="text-xl text-blue-500">
-                            {{Math.round(day.temperature_2m_min)}}°
-                        </span>
-                    </div>
                     <div class="dui-tooltip" data-tip="Maximum Temperature">
                         <span class="text-xl text-red-600">
                             {{Math.round(day.temperature_2m_max)}}°
+                        </span>
+                    </div>
+                    <div class="dui-tooltip" data-tip="Minimum Temperature">
+                        <span class="text-xl text-blue-500">
+                            {{Math.round(day.temperature_2m_min)}}°
                         </span>
                     </div>
                 </div>
