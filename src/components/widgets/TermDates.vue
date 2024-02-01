@@ -1,33 +1,18 @@
 <script setup>
-import {ref} from "vue";
 import EditingContextMenu from "~/components/other/EditingContextMenu.vue";
 
-const images = document.querySelectorAll(".swiper-wrapper .swiper-slide img");
-
-const viewing = ref(0);
-
-function back() {
-    viewing.value -= 1;
-    if (viewing.value < 0) {
-        viewing.value = images.length - 1;
-    }
-}
-
-function forward() {
-    viewing.value += 1;
-    if (viewing.value >= images.length) {
-        viewing.value = 0;
-    }
-}
+const dates = document.querySelector("#component146956 article");
 
 defineProps({widgInfo: Object});
 </script>
 
 <template>
-<div class="relative rounded-xl">
-    <span class="material-symbols-outlined left-1" @click="back">arrow_back_ios</span>
-    <img v-if="images[viewing]" :src="images[viewing]?.src" draggable="false" class="rounded-xl" alt="Term Dates">
-    <span class="material-symbols-outlined right-0" @click="forward">arrow_forward_ios</span>
+<div class="relative">
+    <h2 class="subheader">Term Dates</h2>
+    <div class="rounded-xl bg-primary p-2">
+        <div v-for="date of dates.children" class="text-themeText *:!text-themeText mb-2" v-html="date.innerHTML"></div>
+    </div>
+
     <EditingContextMenu @delete="$emit('delete')"/>
 </div>
 </template>
