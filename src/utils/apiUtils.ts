@@ -1,6 +1,7 @@
 import browser from "webextension-polyfill";
 import {ref} from "vue";
 import type {Ref} from 'vue';
+import purify from 'dompurify'
 
 let headers = null;
 
@@ -91,7 +92,14 @@ if (location.pathname === "/") {
             weather.value = data.weather.forecast;
             roomChanges.value = data.room_changes;
             reminders.value = data.reminders;
-            dailyVerse.value = data.daily_verse;
+            {
+                const {content, link, reference} = data.daily_verse;
+                dailyVerse.value = {
+                    link,
+                    reference,
+                    content: purify.sanitize(content)
+                };
+            }
 
             if (data.user.is_active === false) {
                 alert("You are banned from Coolbox.");

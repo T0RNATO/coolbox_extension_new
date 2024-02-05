@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import EditingContextMenu from "~/components/other/EditingContextMenu.vue";
 import {dailyVerse, successToast} from "~/utils/apiUtils";
+import Shadow from "~/components/other/Shadow.vue";
+import {shadow_style} from "vue-shadow-dom";
 
 function share() {
     navigator.clipboard.writeText(`${dailyVerse.value.reference}: "${dailyVerse.value.content}"`).then(() => {
@@ -16,9 +18,18 @@ function share() {
             <div v-if="dailyVerse.content">
                 <div class="flex">
                     <span class="material-symbols-outlined icon-fill mr-3 text-2xl -scale-x-100">format_quote</span>
-                    <div>
-                        {{dailyVerse.content}}
-                    </div>
+                    <Shadow>
+                        <div v-html="dailyVerse.content"></div>
+                        <!--language=CSS-->
+                        <shadow_style>
+                            span.small-caps {font-variant: small-caps;}
+                            h3, h4 {margin: 0;}
+                            h4 {
+                                font-size: 16px;
+                                font-weight: 650;
+                            }
+                        </shadow_style>
+                    </Shadow>
                 </div>
                 <span class="mt-2">
                     {{dailyVerse.reference}}
