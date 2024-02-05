@@ -110,6 +110,7 @@ function deleteReminder() {
 defineExpose({openPopup});
 </script>
 
+<!--suppress CssUnusedSymbol -->
 <style>
 .dp__button {
     display: none;

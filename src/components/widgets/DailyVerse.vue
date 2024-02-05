@@ -21,6 +21,7 @@ function share() {
                     <Shadow>
                         <div v-html="dailyVerse.content"></div>
                         <!--language=CSS-->
+                        <!--suppress CssUnusedSymbol -->
                         <shadow_style>
                             span.small-caps {font-variant: small-caps;}
                             h3, h4 {margin: 0;}
