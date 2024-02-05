@@ -7,18 +7,16 @@
             </div>
         </div>
         <!--Shadow root to prevent button styling-->
-        <shadow-root :adopted-style-sheets="defaultSheets" class="dui-modal-backdrop">
+        <Shadow class="dui-modal-backdrop">
             <form method="dialog" class="dui-modal-backdrop">
                 <button class="bg-black bg-transparent/20 border-transparent">close</button>
             </form>
-        </shadow-root>
+        </Shadow>
     </dialog>
 </template>
 
 <script setup>
-
-import {defaultSheets} from "~/utils/componentUtils";
-import {ShadowRoot} from "vue-shadow-dom";
+import Shadow from "~/components/other/Shadow.vue";
 
 defineProps({
     title: String

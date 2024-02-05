@@ -7,7 +7,7 @@
                        position="left" input-class-name="!bg-primary !text-themeText"
                        v-model="rem['due']" :is-24="false" model-type="timestamp"/>
         Notification Method:
-        <shadow-root :adopted-style-sheets="defaultSheets">
+        <Shadow>
             <!--Why is (key, value) backwards??-->
             <div class="flex items-center mb-1" v-for="(display, value) in {
                 desktop: 'System Notification',
@@ -17,7 +17,7 @@
                 <input type="radio" name="notification_method" :id="value" :value="value" class="dui-radio" v-model="rem.method">
                 <label :for="value" class="ml-1">{{display}}</label>
             </div>
-        </shadow-root>
+        </Shadow>
 
         <span class="text-red-500 block" v-if="(rem.method === 'discord' || rem.method === 'both') && !discordLinked">
             You must
@@ -43,8 +43,7 @@
 
 <script setup>
 import VueDatePicker from "@vuepic/vue-datepicker"
-import {ShadowRoot} from "vue-shadow-dom";
-import {defaultSheets} from "~/utils/componentUtils";
+import Shadow from "~/components/other/Shadow.vue";
 import {ref} from "vue";
 import {apiSend, cookieFetched, discordLinked, updateReminders} from "~/utils/apiUtils";
 import PopupBase from "~/components/popups/PopupBase.vue";

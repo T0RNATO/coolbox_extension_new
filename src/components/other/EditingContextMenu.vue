@@ -12,16 +12,16 @@
         <div class="absolute shadow-xl bg-white cm right-2 top-2 p-2 cursor-auto rounded-md widget-settings hidden" v-if="settingsOpen">
             <span class="font-bold">Edit Widget:</span><br>
             <span class="material-symbols-outlined absolute top-1 right-1 cursor-pointer hover:text-gray-400" @click="settingsOpen = false">Close</span>
-            <shadow-root :adopted-style-sheets="defaultSheets" class="no-drag">
+            <Shadow class="no-drag">
                 <slot/>
-            </shadow-root>
+            </Shadow>
         </div>
     </div>
 </template>
 
 <script setup>
 import {ref} from "vue";
-import {defaultSheets} from "~/utils/componentUtils";
+import Shadow from "~/components/other/Shadow.vue";
 
 const settingsOpen = ref(false);
 

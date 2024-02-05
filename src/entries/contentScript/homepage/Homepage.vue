@@ -4,7 +4,7 @@
         <div class="fixed left-0 bottom-0 z-[1003] bg-white rounded-tr-md p-2">
             <!--Theme picker box-->
             <!--Shadow root to prevent dumb radio input styling-->
-            <shadow-root :adopted-style-sheets="defaultSheets">
+            <Shadow>
                 <span>Theme:</span>
                 <div>
                     <div class="dui-tooltip" :data-tip="theme.display" v-for="theme in possibleThemes">
@@ -38,7 +38,7 @@
                         outline: 1px solid black;
                     }
                 </shadow-style>
-            </shadow-root>
+            </Shadow>
         </div>
         <Container v-for="[column, components] in Object.entries(currentPageLayout)"
                    group-name="homepage"
@@ -81,7 +81,7 @@
     </teleport>
 
     <!-- Page Editing Toast -->
-    <shadow-root :adopted-style-sheets="defaultSheets">
+    <Shadow>
         <div class="dui-toast" v-if="editMode">
             <div class="dui-alert p-2 shadow-2xl shadow-black">
                 <span class="material-symbols-outlined text-lg">edit</span>
@@ -103,7 +103,7 @@
                 </div>
             </div>
         </div>
-    </shadow-root>
+    </Shadow>
 
     <!-- Generic Success Toast -->
     <div class="dui-toast -right-1/4 z-[1003]" id="toast-success">
@@ -150,16 +150,18 @@ import AnalogClock from "~/components/widgets/Clock.vue";
 import Calendar from "~/components/widgets/Calendar.vue";
 import DailyVerse from "~/components/widgets/DailyVerse.vue";
 
-import browser from "webextension-polyfill";
 import ReminderPopup from "~/components/popups/ReminderPopup.vue";
+import Shadow from "~/components/other/Shadow.vue";
 import ViewRemindersPopup from "~/components/popups/ViewRemindersPopup.vue";
-import '@vuepic/vue-datepicker/dist/main.css'
+
+import browser from "webextension-polyfill";
 import {markRaw, ref} from "vue";
 import {Container, Draggable} from "vue3-smooth-dnd";
 import {possibleThemes} from "~/utils/themes";
-import {ShadowRoot, ShadowStyle} from "vue-shadow-dom";
-import {defaultSheets, useExtensionStorage} from "~/utils/componentUtils";
+import {ShadowStyle} from "vue-shadow-dom";
+import {useExtensionStorage} from "~/utils/componentUtils";
 import {reminders} from "~/utils/apiUtils";
+import '@vuepic/vue-datepicker/dist/main.css';
 
 const currentPageLayout = ref({
     leftCol: [],

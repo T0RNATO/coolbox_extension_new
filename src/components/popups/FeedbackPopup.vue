@@ -1,5 +1,5 @@
 <script setup>
-import {defaultSheets} from "~/utils/componentUtils";
+import Shadow from "~/components/other/Shadow.vue";
 import {ref} from "vue";
 import {apiSend} from "~/utils/apiUtils";
 import PopupBase from "~/components/popups/PopupBase.vue";
@@ -33,10 +33,10 @@ defineExpose({openPopup});
     <PopupBase title="Submit Feedback" ref="popup">
         Submit your feedback, comments, suggestions, or bug reports here.
         <textarea class="resize-none h-40 mt-2" ref="body"></textarea>
-        <shadow-root :adopted-style-sheets="defaultSheets">
+        <Shadow>
             <label for="anon" class="align-top">Anonymous:</label>
             <input type="checkbox" class="dui-checkbox dui-checkbox-sm" id="anon" ref="anon">
-        </shadow-root>
+        </Shadow>
         <span class="text-gray-500 italic text-xs mb-2 block">
             This feedback is publicly visible, with your name, unless you tick the anonymous box.<br>
             (Do not tick it if you expect a response!)<br>
