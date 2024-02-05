@@ -46,10 +46,10 @@ const ManifestV2 = {
         persistent: true,
     },
     browser_action: browserAction,
-    options_ui: {
-        ...sharedManifest.options_ui,
-        chrome_style: false,
-    },
+    // options_ui: {
+    //     ...sharedManifest.options_ui,
+    //     chrome_style: false,
+    // },
     permissions: [...sharedManifest.permissions, "*://schoolbox.donvale.vic.edu.au/*"],
 };
 
