@@ -16,7 +16,7 @@ body .timetable-small, body .timetable {
 }
 
 #container > [data-v-app] {
-    animation: fadein 1200ms;
+    animation: fadein 300ms;
 }
 
 #calendar-36739 table.fc-list-table {

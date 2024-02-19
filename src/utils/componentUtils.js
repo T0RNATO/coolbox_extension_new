@@ -1,7 +1,7 @@
 import browser from "webextension-polyfill";
 import {computed, ref} from "vue";
 import tailwind from "tailwindcss/tailwind.css?inline";
-import icons from "/public/css/icons.css?inline";
+import icons from "/src/assets/css/icons.css?inline";
 
 /**
  * Returns a reactive reference to Chrome extension storage
