@@ -1,5 +1,5 @@
 <template>
-    <div class="text-themeText">
+    <div class="text-themeText" @click="periodChange">
         <div v-if="minutesRemaining.length" class="mb-3">
             <div v-if="minutesRemaining[0]">
                 <span v-if="isPlural(minutesRemaining[1])">
@@ -26,6 +26,7 @@
 <script setup>
 import {ref} from "vue";
 import EditingContextMenu from "~/components/other/EditingContextMenu.vue";
+import {periodChange} from "~/utils/apiUtils";
 
 defineProps({
     widgInfo: Object
@@ -96,6 +97,11 @@ function getMinutesRemaining() {
 minutesRemaining.value = getMinutesRemaining();
 
 setInterval(() => {
+    const inOutPeriod = minutesRemaining.value[0];
     minutesRemaining.value = getMinutesRemaining();
+    if (minutesRemaining.value[0] !== inOutPeriod) {
+        // refresh timetable
+        periodChange()
+    }
 }, 5000)
 </script>

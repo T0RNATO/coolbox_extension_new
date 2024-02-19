@@ -73,7 +73,7 @@
 
 <script setup>
 import EditingContextMenu from "~/components/other/EditingContextMenu.vue";
-import {statusMessages, roomChanges} from "~/utils/apiUtils";
+import {statusMessages, roomChanges, onPeriodChange} from "~/utils/apiUtils";
 import {ref} from "vue";
 import browser from "webextension-polyfill";
 import {useExtensionStorage} from "~/utils/componentUtils";
@@ -92,18 +92,26 @@ const timetableSubjects = ref();
 const show = ref();
 const timetableHeaders = ref();
 
-function updateTimetable() {
+function updateTimetable(page) {
     // Quirky Firefox not supporting :has and using its own proprietary pseudoclass
     if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
-        timetableSubjects.value = document.querySelectorAll(".timetable .timetable-subject, .timetable td:-moz-only-whitespace");
+        timetableSubjects.value = page.querySelectorAll(".timetable .timetable-subject, .timetable td:-moz-only-whitespace");
     } else {
-        timetableSubjects.value = document.querySelectorAll(".timetable .timetable-subject, .timetable td:not(td:has(.timetable-subject))")
+        timetableSubjects.value = page.querySelectorAll(".timetable .timetable-subject, .timetable td:not(td:has(.timetable-subject))")
     }
     show.value = Boolean(timetableSubjects.value.length);
-    timetableHeaders.value = document.querySelectorAll(".timetable th");
+    timetableHeaders.value = page.querySelectorAll(".timetable th");
 }
 
-updateTimetable()
+updateTimetable(document)
+
+const domParser = new DOMParser();
+
+onPeriodChange(() => {
+    fetch(location.href).then((data) => data.text().then((page) => {
+        updateTimetable(domParser.parseFromString(page, "text/html"))
+    }))
+})
 
 // Not remotely scuff code to wait until calendar is loaded and add the week number to the heading
 setTimeout(() => {

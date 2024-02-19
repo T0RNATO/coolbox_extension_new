@@ -72,6 +72,18 @@ export const dailyVerse = ref({
     link: null,
 });
 
+const periodChangeListeners = [];
+
+export function periodChange() {
+    for (const func of periodChangeListeners) {
+        func()
+    }
+}
+
+export function onPeriodChange(listener) {
+    periodChangeListeners.push(listener);
+}
+
 export function updateReminders() {
     apiGet("reminders", (data) => {
         reminders.value = data;
