@@ -92,38 +92,44 @@ export function updateReminders() {
 
 export const cookieFetched = browser.runtime.sendMessage("getCookie");
 
-if (location.pathname === "/") {
+function processApiData(data: ApiResponse) {
+    statusMessages.value = data.status;
+    discordLinked.value = data.user.discord?.linked;
+    weather.value = data.weather.forecast;
+    roomChanges.value = data.room_changes;
+    reminders.value = data.reminders;
+    {
+        const {content, link, reference} = data.daily_verse;
+        dailyVerse.value = {
+            link,
+            reference,
+            content: purify.sanitize(content)
+        };
+    }
+
+    if (data.user.is_active === false) {
+        alert("You are banned from Coolbox.");
+        browser.runtime.sendMessage("uninstall");
+    }
+
+    if (data.user.role !== "student") {
+        alert("Sorry! Coolbox is only available to students at the moment.");
+        browser.runtime.sendMessage("uninstall");
+    }
+
+    history.replaceState(data, "", location.href);
+}
+
+if (location.pathname === "/" && !history.state) {
     cookieFetched.then(cookie => {
         headers = new Headers({
             "Authorization": `Bearer ${cookie}`,
             "Content-Type": "application/json"
         });
-        apiGet("start", (data: ApiResponse) => {
-            statusMessages.value = data.status;
-            discordLinked.value = data.user.discord?.linked;
-            weather.value = data.weather.forecast;
-            roomChanges.value = data.room_changes;
-            reminders.value = data.reminders;
-            {
-                const {content, link, reference} = data.daily_verse;
-                dailyVerse.value = {
-                    link,
-                    reference,
-                    content: purify.sanitize(content)
-                };
-            }
-
-            if (data.user.is_active === false) {
-                alert("You are banned from Coolbox.");
-                browser.runtime.sendMessage("uninstall");
-            }
-
-            if (data.user.role !== "student") {
-                alert("Sorry! Coolbox is only available to students at the moment.");
-                browser.runtime.sendMessage("uninstall");
-            }
-        });
+        apiGet("start", processApiData);
     });
+} else if (history.state) {
+    processApiData(history.state);
 }
 
 function apiGet(path, callback) {
