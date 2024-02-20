@@ -163,7 +163,7 @@ defineProps({
     @apply bg-accent;
 }
 .cb-header {
-    @apply first:rounded-tl-lg lg:last:rounded-tr-lg sm:last:rounded-bl-lg;
+    @apply first:rounded-tl-lg lg:last:rounded-tr-lg sm:max-lg:last:rounded-bl-lg;
 }
 .cb-subject {
     @apply lg:first:rounded-bl-lg lg:last:rounded-br-lg sm:max-lg:first:rounded-tr-lg sm:last:rounded-br-lg;
