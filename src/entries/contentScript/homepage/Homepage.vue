@@ -141,7 +141,7 @@ import GreetingText from "~/components/widgets/GreetingText.vue";
 import UpcomingDueWork from "~/components/widgets/DueWork/UpcomingDueWork.vue";
 import Tiles from "~/components/widgets/Tiles.vue";
 import CoolBoxMessage from "~/components/widgets/CoolBoxMessage.vue";
-import Timetable from "~/components/widgets/Timetable.vue";
+import Timetable from "~/components/widgets/Timetable/Timetable.vue";
 import TimeLeft from "~/components/widgets/TimeLeft.vue";
 import NewsItems from "~/components/widgets/News.vue";
 import TermDates from "~/components/widgets/TermDates.vue";

@@ -13,44 +13,11 @@
                     </div>
                 </div>
                 <div class="flex lg:flex-row sm:flex-col">
-                    <!--A period on the timetable-->
-                    <div v-for="timetableSubject in timetableSubjects"
-                         :style="{backgroundColor: timetableSubject['style'].getPropertyValue('background-color')}"
-                         :class="{
-                            'darken': darkenSubjects,
-                            'outline': outlineCurrent && timetableSubject.parentElement.classList.contains('timetable-subject-active')
-                        }"
-                         class="cb-subject"
-                         :data-change="c = roomChanges?.find(
-                            change => change['class_name'] ===
-                                timetableSubject.children[1]?.textContent.slice(1, -1)
-                         )">
-                        <div v-if="timetableSubject.tagName === 'DIV'">
-                            <!--The title of the subject-->
-                            <a :href="timetableSubject.firstElementChild?.href" class="cb-link">
-                                {{
-                                    prettySubjects?.find(
-                                        subject => subject['name']?.toLowerCase() === timetableSubject.children[1]?.textContent.slice(1,-1)?.toLowerCase()
-                                    )?.pretty
-                                    || timetableSubject.firstElementChild?.textContent
-                                }}
-                            </a>
-                            <br>
-                            <!--The id of the subject-->
-                            <span>{{timetableSubject.children[1]?.textContent}}</span><br>
-                            <!--The room of the subject-->
-                            <div>
-                                <!--The normal room, struck through if a roomchange exists-->
-                                <span :class="{strike: c}">{{timetableSubject.children[2]?.textContent}}</span>
-                                <!--The room change, if applicable-->
-                                <div class="dui-tooltip ml-1" data-tip='Room Change' v-if="c">
-                                <span class="font-semibold">
-                                    → {{c['assigned_room']}}
-                                </span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <Subject v-for="(timetableSubject, i) in timetableSubjects"
+                             :subject="timetableSubject"
+                             :pretty="prettySubjects"
+                             :period="i"
+                    />
                 </div>
             </div>
         </div>
@@ -73,24 +40,26 @@
 
 <script setup>
 import EditingContextMenu from "~/components/other/EditingContextMenu.vue";
-import {statusMessages, roomChanges, onPeriodChange} from "~/utils/apiUtils";
+import {statusMessages, onPeriodChange} from "~/utils/apiUtils";
 import {ref} from "vue";
 import browser from "webextension-polyfill";
 import {useExtensionStorage} from "~/utils/componentUtils";
+import Subject from "~/components/widgets/Timetable/Subject.vue";
 
 const darkenSubjects = useExtensionStorage("timetable.dark", false);
 const outlineCurrent = useExtensionStorage("timetable.outline", false);
 
 const dayTitle = ref(document.querySelector("[data-timetable-header]")?.textContent);
+
+const timetableSubjects = ref();
+const show = ref();
+const timetableHeaders = ref();
+
 const prettySubjects = ref([]);
 
 browser.storage.local.get("subjects").then(data => {
     prettySubjects.value = data.subjects?.value || []
 })
-
-const timetableSubjects = ref();
-const show = ref();
-const timetableHeaders = ref();
 
 function updateTimetable(page) {
     // Quirky Firefox not supporting :has and using its own proprietary pseudoclass
@@ -126,6 +95,7 @@ defineProps({
 })
 </script>
 
+<!--suppress CssUnusedSymbol -->
 <style scoped>
 .cb-subject a {
     color: #085ba5;

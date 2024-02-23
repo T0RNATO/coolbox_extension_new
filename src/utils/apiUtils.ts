@@ -64,7 +64,11 @@ export const weather: Ref<Array<{
     temperature_2m_min: number;
     precipitation_probability_mean: number;
 }>> = ref([]);
-export const roomChanges = ref([]);
+export const roomChanges: Ref<Array<{
+    period: number,
+    assigned_room: string,
+    timetabled_room: string
+}>> = ref([]);
 export const reminders = ref([]);
 export const dailyVerse = ref({
     content: null,
