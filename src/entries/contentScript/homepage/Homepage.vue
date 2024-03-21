@@ -1,45 +1,7 @@
 <template>
     <!-- Edit Mode -->
     <div class="grid-layout" @click="clearSelectedComponent" v-if="editMode">
-        <div class="fixed left-0 bottom-0 z-[1003] bg-white rounded-tr-md p-2">
-            <!--Theme picker box-->
-            <!--Shadow root to prevent dumb radio input styling-->
-            <Shadow>
-                <span>Theme:</span>
-                <div>
-                    <div class="dui-tooltip" :data-tip="theme.display" v-for="theme in possibleThemes">
-                        <input type="radio" name="theme"
-                               class="mx-1 border-solid dui-radio"
-                               v-model="themeStore"
-                               :value="theme.value"
-                               :style="{backgroundColor: theme.hex}"
-                        >
-                    </div>
-                    <div class="dui-tooltip" data-tip="Custom Theme">
-                        <input type="radio" name="theme" id="custom_theme" class="hidden mx-1 cursor-pointer" v-model="themeStore" value="custom">
-                        <label for="custom_theme">
-                            <span class="material-symbols-outlined text-2xl">palette</span>
-                        </label>
-                    </div>
-                </div>
-                <div v-if="themeStore === 'custom'">
-                    Custom Theme Colour:<br>
-                    <input type="color" v-model="customTheme" @change="manuallyUpdateCustomTheme"><br>
-                    Theme Style:
-                    <input type="radio" name="themeStyle" value="light" id="theme_style_light" v-model="customThemeStyle">
-                    <label for="theme_style_light">Light</label>
-                    <input type="radio" name="themeStyle" value="dark" id="theme_style_dark" v-model="customThemeStyle">
-                    <label for="theme_style_dark">Dark</label>
-                </div>
-                <!--language=CSS-->
-                <shadow-style>
-                    input#custom_theme:checked + label > span {
-                        border-radius: 50%;
-                        outline: 1px solid black;
-                    }
-                </shadow-style>
-            </Shadow>
-        </div>
+        <ThemePicker/>
         <Container v-for="[column, components] in Object.entries(currentPageLayout)"
                    group-name="homepage"
                    :data-col="column"
@@ -157,11 +119,9 @@ import ViewRemindersPopup from "~/components/popups/ViewRemindersPopup.vue";
 import browser from "webextension-polyfill";
 import {markRaw, ref} from "vue";
 import {Container, Draggable} from "vue3-smooth-dnd";
-import {possibleThemes} from "~/utils/themes";
-import {ShadowStyle} from "vue-shadow-dom";
-import {useExtensionStorage} from "~/utils/componentUtils";
 import {reminders} from "~/utils/apiUtils";
 import '@vuepic/vue-datepicker/dist/main.css';
+import ThemePicker from "~/components/other/ThemePicker.vue";
 
 const currentPageLayout = ref({
     leftCol: [],
@@ -179,11 +139,7 @@ function getBody() {
     return document.body;
 }
 
-// Renamed files, TODO remove in next update
-const widgetMappings = {
-    "NewsItems": "News",
-    "AnalogClock": "Clock",
-}
+const widgetMappings = {}
 
 function componentNameToComponent(name) {
     return allWidgets.find(
@@ -236,44 +192,6 @@ function resetPageLayout() {
     }
     saveLayout();
 }
-
-const themeStore = useExtensionStorage("theme.setting", "light");
-const customTheme = useExtensionStorage("theme.custom", "#096790");
-const customThemeStyle = useExtensionStorage("theme.style", "dark");
-
-let mostRecentStorageChanges = null;
-
-function manuallyUpdateCustomTheme() {
-    browser.runtime.sendMessage({
-        type: "updateTheme",
-        new: mostRecentStorageChanges.theme.newValue,
-        old: mostRecentStorageChanges.theme.oldValue
-    });
-}
-
-setTimeout(() => {
-    browser.storage.local.onChanged.addListener((changes) => {
-        mostRecentStorageChanges = changes;
-        if (changes.theme) {
-            if (changes.theme.newValue.custom) {
-                // Prevent spam-updating theme every single time the colour is changed
-                if (changes.theme.newValue.custom === changes.theme.oldValue.custom) {
-                    browser.runtime.sendMessage({
-                        type: "updateTheme",
-                        new: changes.theme.newValue,
-                        old: changes.theme.oldValue
-                    });
-                }
-            } else {
-                browser.runtime.sendMessage({
-                    type: "updateTheme",
-                    new: changes.theme.newValue,
-                    old: changes.theme.oldValue
-                });
-            }
-        }
-    })
-}, 500);
 
 const allWidgets = [
     markRaw(GreetingText),

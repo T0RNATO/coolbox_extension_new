@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="z-20">
         <div class="context-menu hidden" v-if="!settingsOpen">
             <div class="dui-tooltip bg-transparent [position:unset] p-0" data-tip="Customise Widget" @click="settingsOpen = true" v-if="settings">
                 <button class="cb-icon-button material-symbols-outlined">settings</button>
@@ -52,7 +52,7 @@ defineProps({
 }
 
 .context-menu {
-    @apply dui-card dui-card-compact absolute shadow-xl bg-white p-0 right-0 top-0;
+    @apply absolute shadow-xl bg-white p-0 right-0 top-0 rounded-md;
 }
 
 .widget-settings {

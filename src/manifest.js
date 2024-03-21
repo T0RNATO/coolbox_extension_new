@@ -42,7 +42,7 @@ const browserAction = {
 const ManifestV2 = {
     ...sharedManifest,
     background: {
-        scripts: ["src/entries/background/serviceWorker.js"],
+        scripts: ["src/entries/background/serviceWorker.ts"],
         persistent: true,
     },
     browser_action: browserAction,
@@ -57,7 +57,7 @@ const ManifestV3 = {
     ...sharedManifest,
     action: browserAction,
     background: {
-        service_worker: "src/entries/background/serviceWorker.js",
+        service_worker: "src/entries/background/serviceWorker.ts",
     },
     host_permissions: ["*://schoolbox.donvale.vic.edu.au/*"],
 };

@@ -2,6 +2,7 @@ import browser from "webextension-polyfill";
 import {ref} from "vue";
 import type {Ref} from 'vue';
 import purify from 'dompurify'
+import {Reminder} from "./types";
 
 let headers = null;
 
@@ -69,7 +70,7 @@ export const roomChanges: Ref<Array<{
     assigned_room: string,
     timetabled_room: string
 }>> = ref([]);
-export const reminders = ref([]);
+export const reminders: Ref<Reminder[]> = ref([]);
 export const dailyVerse = ref({
     content: null,
     reference: null,

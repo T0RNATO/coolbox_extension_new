@@ -26,3 +26,7 @@ body .timetable-small, body .timetable {
 #calendar-36739 tbody {
     border: none !important;
 }
+
+.smooth-dnd-container.vertical > .smooth-dnd-draggable-wrapper {
+    @apply !overflow-auto
+}

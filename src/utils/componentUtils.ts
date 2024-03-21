@@ -1,14 +1,12 @@
 import browser from "webextension-polyfill";
-import {computed, ref} from "vue";
+import {computed, ref, WritableComputedRef} from "vue";
 import tailwind from "tailwindcss/tailwind.css?inline";
 import icons from "/src/assets/css/icons.css?inline";
 
 /**
  * Returns a reactive reference to Chrome extension storage
- * @param {String} path - The fullstop-seperated path for the value to be stored, e.g `foo.bar.baz` is `foo:{bar:{baz:<value>}}`
- * @param {*} defaultV - The default for the value
  */
-export function useExtensionStorage(path, defaultV) {
+export function useExtensionStorage<T>(path: string, defaultV: T): WritableComputedRef<T> {
     // The value that's being stored
     const storage = ref(defaultV);
 
@@ -94,4 +92,5 @@ otherStyling.replaceSync(`
         align-items: center;
     }
 `)
-export const defaultSheets = [twStyleSheet, iconsStyleSheet, otherStyling];
+
+export const defaultSheets: CSSStyleSheet[] = [twStyleSheet, iconsStyleSheet, otherStyling];
