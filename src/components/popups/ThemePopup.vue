@@ -56,7 +56,7 @@ defineExpose({openPopup() {
     <hr>
     <div class="options grid-rows-2">
         <span>Type:</span>
-        <select v-model="themeType" class="!my-2">
+        <select v-model="themeType" class="!my-2 dui-select bg-black bg-opacity-10">
             <option value="preset">Preset</option>
             <option value="legacy">Legacy Customised</option>
             <option value="custom">Advanced</option>

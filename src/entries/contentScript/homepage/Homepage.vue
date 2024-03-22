@@ -1,7 +1,6 @@
 <template>
     <!-- Edit Mode -->
     <div class="grid-layout" @click="clearSelectedComponent" v-if="editMode">
-        <ThemePicker/>
         <Container v-for="[column, components] in Object.entries(currentPageLayout)"
                    group-name="homepage"
                    :data-col="column"
@@ -43,6 +42,7 @@
     </teleport>
 
     <!-- Page Editing Toast -->
+    <ThemePicker v-if="editMode"/>
     <Shadow>
         <div class="dui-toast" v-if="editMode">
             <div class="dui-alert p-2 shadow-2xl shadow-black">

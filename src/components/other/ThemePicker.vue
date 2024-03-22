@@ -1,18 +1,26 @@
 <script setup>
 import ThemePopup from "~/components/popups/ThemePopup.vue";
+import Shadow from "~/components/other/Shadow.vue";
 import {ref} from "vue";
 
 const popup = ref();
 </script>
 
 <template>
-    <div class="fixed left-0 bottom-0 z-[1003] bg-white rounded-tr-md p-2">
-        <div>
-            Theme:
-            <span class="font-bold">NEW!</span><br>
-            <button @click="popup.openPopup()">Open Theme Editor</button>
+    <Shadow>
+        <div class="dui-toast dui-toast-start">
+            <div class="dui-alert p-2 shadow-2xl shadow-black">
+                <span class="material-symbols-outlined text-lg">palette</span>
+                <span>Theme:</span>
+                <div class="dui-indicator">
+                    <span class="dui-indicator-item dui-badge dui-badge-secondary">NEW!</span>
+                    <button @click="popup.openPopup()" class="dui-btn bg-gray-300">
+                        Open Theme Editor
+                    </button>
+                </div>
+            </div>
         </div>
-    </div>
+    </Shadow>
     <teleport to="body">
         <ThemePopup ref="popup"/>
     </teleport>

@@ -28,5 +28,5 @@ body .timetable-small, body .timetable {
 }
 
 .smooth-dnd-container.vertical > .smooth-dnd-draggable-wrapper {
-    @apply !overflow-auto
+    @apply !overflow-visible;
 }
