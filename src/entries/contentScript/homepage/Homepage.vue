@@ -19,8 +19,11 @@
     <!-- Normal Mode -->
     <div class="grid-layout relative" v-else>
         <div class="absolute right-0 -top-2">
-            <div class="dui-tooltip bg-transparent z-[1003] before:-translate-x-32" data-tip="Customise Homepage">
-                <button class="cb-icon-button material-symbols-outlined text-themeText bg-primary rounded-full" @click="enterEditMode">edit</button>
+            <div class="dui-indicator">
+                <span class="dui-indicator-item dui-badge dui-badge-secondary z-[1004]" v-if="!checkedNewFeatures">!</span>
+                <div class="dui-tooltip bg-transparent z-[1003] before:-translate-x-32" data-tip="Customise Homepage">
+                    <button class="cb-icon-button material-symbols-outlined text-themeText bg-primary rounded-full" @click="enterEditMode">edit</button>
+                </div>
             </div>
         </div>
         <div v-for="[column, components] in Object.entries(currentPageLayout)">
@@ -53,10 +56,13 @@
                         <span class="material-symbols-outlined text-lg">restart_alt</span>
                     </button>
                 </div>
-                <div class="dui-tooltip" data-tip="Add Widgets">
-                    <button class="dui-btn dui-btn-secondary" @click="drawerOpen = !drawerOpen">
-                        <span class="material-symbols-outlined text-lg">add</span>
-                    </button>
+                <div class="dui-indicator">
+                    <span class="dui-indicator-item dui-badge dui-badge-accent">NEW!</span>
+                    <div class="dui-tooltip" data-tip="Add Widgets">
+                        <button class="dui-btn dui-btn-secondary" @click="drawerOpen = !drawerOpen">
+                            <span class="material-symbols-outlined text-lg">add</span>
+                        </button>
+                    </div>
                 </div>
                 <div class="dui-tooltip" data-tip="Done">
                     <button class="dui-btn dui-btn-primary" @click="editMode = false; clearSelectedComponent();">
@@ -92,13 +98,13 @@
                    :get-ghost-parent="getBody"
         >
             <Draggable v-for="[i, el] in Object.entries(allWidgets)" :key="'d' + i">
-                <component :is="el" :key="i" :widg-info="{edit: true, col: null, add: true}"/>
+                <component :is="el" :key="i" :widg-info="{edit: true, col: null, add: true}" @click.prevent/>
             </Draggable>
         </Container>
     </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import GreetingText from "~/components/widgets/GreetingText.vue";
 import UpcomingDueWork from "~/components/widgets/DueWork/UpcomingDueWork.vue";
 import Tiles from "~/components/widgets/Tiles.vue";
@@ -113,15 +119,22 @@ import Calendar from "~/components/widgets/Calendar.vue";
 import DailyVerse from "~/components/widgets/DailyVerse.vue";
 
 import ReminderPopup from "~/components/popups/ReminderPopup.vue";
-import Shadow from "~/components/other/Shadow.vue";
 import ViewRemindersPopup from "~/components/popups/ViewRemindersPopup.vue";
+import ThemePicker from "~/components/other/ThemePicker.vue";
+
+// @ts-ignore
+import {Container, Draggable} from "vue3-smooth-dnd";
+import Shadow from "~/components/other/Shadow.vue";
+
+import '@vuepic/vue-datepicker/dist/main.css';
 
 import browser from "webextension-polyfill";
-import {markRaw, ref} from "vue";
-import {Container, Draggable} from "vue3-smooth-dnd";
 import {reminders} from "~/utils/apiUtils";
-import '@vuepic/vue-datepicker/dist/main.css';
-import ThemePicker from "~/components/other/ThemePicker.vue";
+import {markRaw, ref} from "vue";
+import type {Component, Raw} from "vue";
+import {useExtensionStorage} from "~/utils/componentUtils";
+
+const checkedNewFeatures = useExtensionStorage("checkedNewFeatures", false);
 
 const currentPageLayout = ref({
     leftCol: [],
@@ -145,9 +158,9 @@ function componentNameToComponent(name) {
     return allWidgets.find(
         widget => {
             if (name in widgetMappings) {
-                return widget.__name === widgetMappings[name];
+                return widget['__name'] === widgetMappings[name];
             }
-            return widget.__name === name;
+            return widget['__name'] === name;
         }
     )
 }
@@ -160,53 +173,41 @@ browser.storage.local.get("homepageLayout").then(layout => {
             rightCol: layout.homepageLayout.rightCol.map(componentNameToComponent)
         }
     } else {
-        currentPageLayout.value = {
-            leftCol: [
-                markRaw(GreetingText),
-                markRaw(Timetable),
-                markRaw(TimeLeft),
-                markRaw(Tiles),
-                markRaw(CoolBoxMessage),
-            ],
-            rightCol: [
-                markRaw(UpcomingDueWork),
-                markRaw(NewsItems),
-            ]
-        }
+        resetPageLayout();
     }
 })
 
 function resetPageLayout() {
     currentPageLayout.value = {
         leftCol: [
-            markRaw(GreetingText),
-            markRaw(Timetable),
-            markRaw(TimeLeft),
-            markRaw(Tiles),
-            markRaw(CoolBoxMessage),
-        ],
+            GreetingText,
+            Timetable,
+            TimeLeft,
+            Tiles,
+            CoolBoxMessage,
+        ].map(markRaw),
         rightCol: [
-            markRaw(UpcomingDueWork),
-            markRaw(NewsItems),
-        ]
+            UpcomingDueWork,
+            NewsItems,
+        ].map(markRaw)
     }
     saveLayout();
 }
 
-const allWidgets = [
-    markRaw(GreetingText),
-    markRaw(Timetable),
-    markRaw(TimeLeft),
-    markRaw(Tiles),
-    markRaw(CoolBoxMessage),
-    markRaw(UpcomingDueWork),
-    markRaw(NewsItems),
-    markRaw(AnalogClock),
-    markRaw(WeatherWidget),
-    markRaw(Calendar),
-    markRaw(TermDates),
-    markRaw(DailyVerse),
-]
+const allWidgets: Raw<Component>[] = [
+    DailyVerse,
+    AnalogClock,
+    WeatherWidget,
+    GreetingText,
+    Timetable,
+    TimeLeft,
+    Tiles,
+    CoolBoxMessage,
+    UpcomingDueWork,
+    NewsItems,
+    Calendar,
+    TermDates,
+].map(markRaw);
 const drawerOpen = ref(false);
 
 function saveLayout() {
@@ -249,6 +250,7 @@ const editMode = ref(false);
 const pageHasBeenEdited = ref(false);
 
 function enterEditMode() {
+    checkedNewFeatures.value = true;
     editMode.value = true;
     pageHasBeenEdited.value = true;
 }
@@ -335,7 +337,10 @@ function clearSelectedComponent() {
 }
 
 .widget-sidebar {
-    @apply fixed h-[100vh] w-1/3 bg-primary left-0 top-0 shadow-2xl z-[1002] p-6 overflow-y-scroll -translate-x-full;
+    height: 100vh;
+    width: 40%;
+    overflow: clip scroll;
+    @apply fixed bg-primary left-0 top-0 shadow-2xl z-[1002] p-6 -translate-x-full;
 }
 .drawerOpen {
     animation: slide-x 500ms forwards;
