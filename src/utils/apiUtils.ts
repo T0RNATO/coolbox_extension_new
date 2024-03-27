@@ -179,6 +179,12 @@ export function successToast(message: string) {
 }
 
 export function apiSend(method: string, path: string, body: any, successMessage: string, errorMessage: string, callback) {
+    if (!headers) {
+        cookieFetched.then(() => {
+            apiSend(method, path, body, successMessage, errorMessage, callback)
+        })
+        return
+    }
     fetch(`https://api.coolbox.lol/${path}`, {
         method: method,
         headers: headers,
