@@ -53,6 +53,7 @@ div#account-content,
 .filter-dropdown .filter-component > span.open,
 body .f-open-dropdown,
 #profile-accordion,
+.hybrid-bar .top-menu li a:hover,
 .reveal-modal {
     background-color: var(--theme-generic) !important;
 }
