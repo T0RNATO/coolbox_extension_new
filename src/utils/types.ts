@@ -32,3 +32,10 @@ export type Reminder = {
     due: number,
     assessment: null | number,
 }
+
+export type widgInfo = {
+    col: 'rightCol' | 'leftCol'
+    edit: boolean
+    add: boolean
+    reminders?: Reminder[]
+}
