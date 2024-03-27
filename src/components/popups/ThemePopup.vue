@@ -29,7 +29,6 @@ const advancedColours: WCR<AdvancedData> = useExtensionStorage("theme.advancedDa
 })
 
 browser.storage.local.onChanged.addListener((changes) => {
-    console.log(changes.theme);
     if (changes.theme) {
         browser.runtime.sendMessage({
             type: "updateTheme",
