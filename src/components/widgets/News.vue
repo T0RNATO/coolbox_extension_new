@@ -10,12 +10,12 @@
             </a>
         </span>
         <br>
-        <div class="overflow-y-auto h-[50vh] rounded-lg bg-primary" v-if="newsItems.length">
-            <NewsItem :item="item" v-for="item in pinnedNewsItems" :saved="savedItems.includes(item.id)"
+        <div class="overflow-y-auto h-[50vh] rounded-lg bg-primary" v-if="newsItems.length" :class="{noscroll: widgInfo.add}">
+            <NewsItem :item="item" v-for="item in pinnedNewsItems" :saved="(savedItems as Array<string>).includes(item.id)"
                       @save="savedItems.push(item.id)"
                       @unsave="savedItems.splice(savedItems.indexOf(item.id), 1)"
             />
-            <NewsItem :item="item" v-for="item in newsItems" :saved="savedItems.includes(item.id)"
+            <NewsItem :item="item" v-for="item in newsItems" :saved="(savedItems as Array<string>).includes(item.id)"
                       @save="savedItems.push(item.id)"
                       @unsave="savedItems.splice(savedItems.indexOf(item.id), 1)"
             />
@@ -25,11 +25,12 @@
     </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import EditingContextMenu from "~/components/other/EditingContextMenu.vue";
 import {cookieFetched} from "~/utils/apiUtils";
 import {ref} from "vue";
 import NewsItem from "~/components/other/NewsItem.vue";
+import type {widgInfo} from "~/utils/types";
 
 const pinnedNewsItems = ref([]);
 const newsItems = ref([]);
@@ -65,7 +66,13 @@ cookieFetched.then(cookie => {
     }))
 })
 
-defineProps({
-    widgInfo: Object
-})
+defineProps<{
+    widgInfo: widgInfo
+}>()
 </script>
+
+<style scoped>
+.noscroll {
+    overflow-y: hidden;
+}
+</style>
