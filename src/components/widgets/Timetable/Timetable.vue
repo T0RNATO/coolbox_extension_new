@@ -1,12 +1,12 @@
 <template>
-    <div class="mb-4">
+    <div class="mb-4 text-sm">
         <div v-if="show">
             <h2 class="subheader">{{dayTitle}}</h2>
             <div class="flex sm:flex-row lg:flex-col">
                 <!--Timetable Headers-->
                 <div class="flex lg:flex-row sm:flex-col">
                     <div v-for="head in timetableHeaders"
-                         :class="{'head-active': head.classList.contains('timetable-period-active')}"
+                         :class="{'head-active': head.classList.contains('timetable-period-active'), 'small': widgInfo.add}"
                         class="cb-header">
                         {{head.firstChild.textContent}}
                         <div v-html="head.firstElementChild.outerHTML"></div>
@@ -17,6 +17,7 @@
                              :subject="timetableSubject"
                              :pretty="prettySubjects"
                              :period="i"
+                             :small_text="widgInfo.add"
                     />
                 </div>
             </div>
@@ -38,30 +39,34 @@
     </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import EditingContextMenu from "~/components/other/EditingContextMenu.vue";
 import {statusMessages, onPeriodChange} from "~/utils/apiUtils";
-import {ref} from "vue";
+import {Ref, ref} from "vue";
 import browser from "webextension-polyfill";
 import {useExtensionStorage} from "~/utils/componentUtils";
 import Subject from "~/components/widgets/Timetable/Subject.vue";
+import type {widgInfo} from "~/utils/types";
 
 const darkenSubjects = useExtensionStorage("timetable.dark", false);
 const outlineCurrent = useExtensionStorage("timetable.outline", false);
 
 const dayTitle = ref(document.querySelector("[data-timetable-header]")?.textContent);
 
-const timetableSubjects = ref();
-const show = ref();
-const timetableHeaders = ref();
+type Elements = Ref<NodeListOf<HTMLElement>>;
+type Subjects = Ref<{name: string, pretty: string}[]>;
 
-const prettySubjects = ref([]);
+const timetableSubjects: Elements = ref();
+const timetableHeaders: Elements = ref();
+const show: Ref<boolean> = ref();
+
+const prettySubjects: Subjects = ref([]);
 
 browser.storage.local.get("subjects").then(data => {
     prettySubjects.value = data.subjects?.value || []
 })
 
-function updateTimetable(page) {
+function updateTimetable(page: Document) {
     // Quirky Firefox not supporting :has and using its own proprietary pseudoclass
     if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
         timetableSubjects.value = page.querySelectorAll(".timetable .timetable-subject, .timetable td:-moz-only-whitespace");
@@ -76,6 +81,7 @@ updateTimetable(document)
 
 const domParser = new DOMParser();
 
+// this just.. doesnt work todo: fix
 onPeriodChange(() => {
     fetch(location.href).then((data) => data.text().then((page) => {
         updateTimetable(domParser.parseFromString(page, "text/html"))
@@ -84,58 +90,29 @@ onPeriodChange(() => {
 
 // Not remotely scuff code to wait until calendar is loaded and add the week number to the heading
 setTimeout(() => {
-    const calendarEvents = document.querySelectorAll(".fc-event-title");
-    const weekEvent = Array.from(calendarEvents).find(el => el.innerText.includes("Week") && el.innerText.includes("(W"));
+    const calendarEvents: HTMLSpanElement[] = Array.from(document.querySelectorAll(".fc-event-title"));
+    const weekEvent = calendarEvents.find(el => el.innerText.includes("Week") && el.innerText.includes("(W"));
     const weekNo = weekEvent?.innerText.slice(5,-5).trimEnd();
     dayTitle.value += ` (Week ${weekNo})`;
 }, 1500);
 
-defineProps({
-    widgInfo: Object
-})
+defineProps<{
+    widgInfo: widgInfo
+}>()
 </script>
 
-<!--suppress CssUnusedSymbol -->
 <style scoped>
-.cb-subject a {
-    color: #085ba5;
-}
-.cb-subject {
-    @apply p-4 lg:w-1/5 lg:h-auto text-sm sm:w-full sm:h-1/5;
-}
-.cb-subject.darken {
-    filter: brightness(0.8);
-}
-.cb-subject.outline {
-    outline: 2px solid #355983;
-    outline-offset: -2px;
-    position: relative;
-}
-.cb-subject.outline::after {
-    border-top: 10px solid #355983;
-    border-right: 10px solid #355983;
-    border-bottom: 10px solid transparent;
-    border-left: 10px solid transparent;
-    height: 20px;
-    aspect-ratio: 1/1;
-    position: absolute;
-    top: 0;
-    right: 0;
-    content: "";
-}
 .cb-header {
     @apply p-3 lg:w-1/5 text-sm bg-primary text-themeText sm:w-full sm:h-full;
 }
-.strike {
-    @apply line-through text-red-500;
+.small :deep(time), .small {
+    font-size: 10px !important;
+    line-height: 12px;
 }
 .head-active {
     @apply bg-accent;
 }
 .cb-header {
     @apply first:rounded-tl-lg lg:last:rounded-tr-lg sm:max-lg:last:rounded-bl-lg;
-}
-.cb-subject {
-    @apply lg:first:rounded-bl-lg lg:last:rounded-br-lg sm:max-lg:first:rounded-tr-lg sm:last:rounded-br-lg;
 }
 </style>
