@@ -8,7 +8,7 @@ const popup = ref();
 
 <template>
     <Shadow>
-        <div class="dui-toast dui-toast-start">
+        <div class="dui-toast dui-toast-start z-[1004]">
             <div class="dui-alert p-2 shadow-2xl shadow-black">
                 <span class="material-symbols-outlined text-lg">palette</span>
                 <span>Theme:</span>
