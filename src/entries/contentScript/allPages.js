@@ -1,12 +1,16 @@
 import { createApp } from "vue";
-import renderContent from "../renderContent";
-import App from "./Homepage.vue";
+import renderContent from "./renderContent";
+import App from "./homepage/Homepage.vue";
 import "tailwindcss/tailwind.css";
 import shadow from 'vue-shadow-dom'
 import browser from "webextension-polyfill";
 import {apiSend, cookieFetched} from "~/utils/apiUtils";
+import {coolboxifyCalendar} from "~/entries/contentScript/calendar/calendar.ts";
+import {addViteStyleTarget} from "@samrum/vite-plugin-web-extension/client";
+addViteStyleTarget(document.head);
 
 let collatedErrors = [];
+
 
 // Enum of the error codes used in prod
 const errorCodes = {
@@ -33,7 +37,7 @@ function errorHandler(err, instance, info) {
 
 // Render Vue on the homepage
 if (location.pathname === "/") {
-    renderContent(import.meta.PLUGIN_WEB_EXT_CHUNK_CSS_PATHS, (appRoot) => {
+    renderContent((appRoot) => {
         const app = createApp(App);
 
         // If this is in prod, report any collected errors to the api
@@ -52,6 +56,8 @@ if (location.pathname === "/") {
         app.use(shadow);
         app.mount(appRoot);
     });
+} else if (location.pathname === "/calendar/week") {
+    coolboxifyCalendar();
 }
 
 // Hide profile picture if needed, and apply pretty subjects to sidebar

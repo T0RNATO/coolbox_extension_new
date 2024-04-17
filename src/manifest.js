@@ -3,7 +3,7 @@ import pkg from "../package.json";
 const sharedManifest = {
     content_scripts: [
         {
-            js: ["src/entries/contentScript/homepage/main.js"],
+            js: ["src/entries/contentScript/allPages.js"],
             css: [
                 "src/assets/css/icons.css",
                 "src/assets/css/all_pages.css",
@@ -19,6 +19,10 @@ const sharedManifest = {
             css: ["src/assets/css/homepage.css"],
             matches: ["*://schoolbox.donvale.vic.edu.au/"],
         },
+        {
+            css: ["src/entries/contentScript/calendar/calendar.css"],
+            matches: ["*://schoolbox.donvale.vic.edu.au/calendar/week"],
+        }
     ],
     icons: {
         64: "icons/icon.png"

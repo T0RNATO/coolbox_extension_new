@@ -1,13 +1,10 @@
 import browser from "webextension-polyfill";
 
-export default async function renderContent(cssPaths, render = (_appRoot) => {}) {
+export default async function renderContent(render) {
     const appRoot = document.createElement("div");
 
-    if (import.meta.hot) {
-        const { addViteStyleTarget } = await import("@samrum/vite-plugin-web-extension/client");
-        await addViteStyleTarget(document.head);
-    } else {
-        cssPaths.forEach((cssPath) => {
+    if (!import.meta.hot) {
+        import.meta.PLUGIN_WEB_EXT_CHUNK_CSS_PATHS.forEach((cssPath) => {
             const styleEl = document.createElement("link");
             styleEl.setAttribute("rel", "stylesheet");
             styleEl.setAttribute("href", browser.runtime.getURL(cssPath));
