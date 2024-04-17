@@ -3,6 +3,7 @@
     --off-canvas-background: var(--theme-generic) !important;
     --form-border-color: var(--body-background) !important;
     --form-bg-hover-color: var(--theme-accent) !important;
+    --logo-background: var(--navigation-background) !important;
 }
 
 /*This css file is a mess*/
