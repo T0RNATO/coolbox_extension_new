@@ -1,27 +1,13 @@
 const eventSpacing = 30;
 
+// temporarily disabled
 export function coolboxifyCalendar() {
-    // document.addEventListener("OVERLAY_LOADER_HIDE", () => {
-    //     setTimeout(() => {
-    //         cCalendar();
-    //     })
-    // })
-    // // const calendar = document.getElementById("calendar");
-    // const loading = document.querySelector(".preview.loader");
-    // if (!loading) {
+    // setInterval(() => {
     //     cCalendar();
-    // }
-    // return
-    setInterval(() => {
-        cCalendar();
-    }, 500);
-    // const observer = new MutationObserver((mutations) => {
-    //     console.log(mutations);
-    // })
-    // observer.observe(calendar, {childList: true, subtree: true});
-    // observer.observe(document.querySelector(".preview.loader"), {childList: true, subtree: true});
+    // }, 500);
 }
 function cCalendar() {
+    if (!document.querySelector(".fc-button-active[title='Month view']")) {return}
     const days: HTMLDivElement[] = Array.from(document.querySelectorAll(".fc-daygrid-day-frame"));
     let carryOverEvents = 0;
     for (const day of days) {
