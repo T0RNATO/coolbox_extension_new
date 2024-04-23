@@ -41,17 +41,17 @@ if (location.pathname === "/") {
         const app = createApp(App);
 
         // If this is in prod, report any collected errors to the api
-        if (process.env.NODE_ENV === "production") {
-            setInterval(() => {
-                if (collatedErrors.length) {
-                    apiSend("POST", "error-report", collatedErrors);
-                    collatedErrors = [];
-                }
-            }, 2000);
-
-            app.config.errorHandler = errorHandler;
-            app.config.warnHandler = errorHandler;
-        }
+        // if (process.env.NODE_ENV === "production") {
+        //     setInterval(() => {
+        //         if (collatedErrors.length) {
+        //             apiSend("POST", "error-report", collatedErrors);
+        //             collatedErrors = [];
+        //         }
+        //     }, 2000);
+        //
+        //     app.config.errorHandler = errorHandler;
+        //     app.config.warnHandler = errorHandler;
+        // }
 
         app.use(shadow);
         app.mount(appRoot);
