@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import PopupBase from "~/components/popups/PopupBase.vue";
-import {ref} from "vue";
+import {computed, ref} from "vue";
 import {useExtensionStorage} from "~/utils/componentUtils";
 import {WritableComputedRef as WCR} from "vue";
 import {AdvancedData, Preset, ThemeType} from "~/utils/types.ts";
@@ -19,14 +19,16 @@ type Style = 'light' | 'dark';
 const legacyColour = useExtensionStorage("theme.legacyData.colour", "#ffffff");
 const legacyStyle = useExtensionStorage("theme.legacyData.style", "light" as Style);
 
-const advancedColours: WCR<AdvancedData> = useExtensionStorage("theme.advancedData", {
-    "theme-text":            "#ffffff",
+const defaultAdvanced = {
+    "theme-text":            "#000000",
     "theme-generic":         "#ffffff",
     "theme-accent":          "#ffffff",
     "link-colour":           "#ffffff",
     "body-background":       "#ffffff",
     "navigation-background": "#ffffff",
-})
+}
+
+const advancedColours: WCR<AdvancedData> = useExtensionStorage("theme.advancedData", defaultAdvanced)
 
 browser.storage.local.onChanged.addListener((changes) => {
     if (changes.theme) {
@@ -43,6 +45,29 @@ function setVariable(variable: string, value: string) {
     colours[variable] = value;
     advancedColours.value = colours;
 }
+
+const themeExport = computed({
+    get() {
+        return Object.values(advancedColours.value).join(";").replace(/#/g, "");
+    },
+    set(value: string) {
+        console.log(value);
+        const colours = value.split(";");
+        if (colours.length !== 6) {
+            advancedColours.value = defaultAdvanced;
+            return;
+        }
+        const newColours = {};
+        Object.keys(advancedColours.value).forEach((key, index) => {
+            if (colours[index].length === 6) {
+                newColours[key] = "#" + colours[index];
+            } else {
+                newColours[key] = defaultAdvanced[key];
+            }
+        });
+        advancedColours.value = newColours as AdvancedData;
+    }
+});
 
 defineExpose({openPopup() {
     popup.value.$el.showModal();
@@ -96,7 +121,7 @@ defineExpose({openPopup() {
         </div>
     </div>
     <div v-else-if="themeType == 'custom'">
-        <div class="options grid-rows-6">
+        <div class="options grid-rows-7">
             <span>Text Colour</span>
             <CBColourPicker :model-value="advancedColours['theme-text']" @update:modelValue="setVariable('theme-text', $event)"/>
             <span>Generic Colour</span>
@@ -109,6 +134,8 @@ defineExpose({openPopup() {
             <CBColourPicker :model-value="advancedColours['body-background']" @update:modelValue="setVariable('body-background', $event)"/>
             <span>Navbar Colour</span>
             <CBColourPicker :model-value="advancedColours['navigation-background']" @update:modelValue="setVariable('navigation-background', $event)"/>
+            <span>Import/Export Theme:</span>
+            <input type="text" v-model="themeExport" spellcheck="false">
         </div>
     </div>
 </PopupBase>
