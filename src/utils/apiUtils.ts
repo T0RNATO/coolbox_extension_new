@@ -2,7 +2,7 @@ import browser from "webextension-polyfill";
 import {ref} from "vue";
 import type {Ref} from 'vue';
 import purify from 'dompurify'
-import {Reminder} from "./types";
+import {Reminder, RoomChange} from "./types";
 
 let headers = null;
 
@@ -65,11 +65,7 @@ export const weather: Ref<Array<{
     temperature_2m_min: number;
     precipitation_probability_mean: number;
 }>> = ref([]);
-export const roomChanges: Ref<Array<{
-    period: number,
-    assigned_room: string,
-    timetabled_room: string
-}>> = ref([]);
+export const roomChanges: Ref<RoomChange[]> = ref([]);
 export const reminders: Ref<Reminder[]> = ref([]);
 export const dailyVerse = ref({
     content: null,
@@ -142,7 +138,6 @@ if (history.state) {
 }
 
 function apiGet(path, callback) {
-    console.log(headers);
     fetch(`https://api.coolbox.lol/${path}`, {
         method: "GET",
         headers: headers
@@ -184,7 +179,6 @@ export function successToast(message: string) {
 }
 
 export function apiSend(method: string, path: string, body: any, successMessage: string, errorMessage: string, callback) {
-    console.log(headers);
     fetch(`https://api.coolbox.lol/${path}`, {
         method: method,
         headers: headers,

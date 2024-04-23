@@ -10,6 +10,7 @@ type PrettySub = {
     pretty: string
 }
 
+// noinspection TypeScriptUnresolvedReference
 const props = defineProps<{
     subject: HTMLElement,
     pretty: PrettySub[],
@@ -17,12 +18,13 @@ const props = defineProps<{
     small_text: boolean
 }>();
 
+const subjectID = props.subject.children[1]?.textContent.slice(1,-1)?.toLowerCase();
+
 const roomChange = roomChanges.value?.find(
-    change => change.assigned_room === props.subject.children[2]?.textContent &&
-              change.period === props.period
+    change => change.timetabled_room === props.subject.children[2]?.textContent &&
+              change.class_name.toLowerCase() === subjectID
 );
 
-const subjectID = props.subject.children[1]?.textContent.slice(1,-1)?.toLowerCase();
 </script>
 
 <template>
@@ -38,7 +40,7 @@ const subjectID = props.subject.children[1]?.textContent.slice(1,-1)?.toLowerCas
             <a :href="(subject.firstElementChild as HTMLAnchorElement)?.href" class="cb-link">
                 {{
                     pretty?.find(
-                        s => s['name']?.toLowerCase() === subjectID
+                        s => s.name?.toLowerCase() === subjectID
                     )?.pretty || subject.firstElementChild?.textContent
                 }}
             </a>

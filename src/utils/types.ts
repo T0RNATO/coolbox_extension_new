@@ -39,3 +39,9 @@ export type widgInfo = {
     add: boolean
     reminders?: Reminder[]
 }
+
+export type RoomChange = {
+    class_name: string, // id of the class
+    assigned_room: string, // room being moved to
+    timetabled_room: string, // room being moved from
+}
