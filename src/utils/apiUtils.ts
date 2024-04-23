@@ -125,19 +125,24 @@ function processApiData(data: ApiResponse) {
     history.replaceState(data, "", location.href);
 }
 
-if (location.pathname === "/" && !history.state) {
+if (location.pathname === "/") {
     cookieFetched.then(cookie => {
         headers = new Headers({
             "Authorization": `Bearer ${cookie}`,
             "Content-Type": "application/json"
         });
-        apiGet("start", processApiData);
+        if (!history.state) {
+            apiGet("start", processApiData);
+        }
     });
-} else if (history.state) {
+}
+
+if (history.state) {
     processApiData(history.state);
 }
 
 function apiGet(path, callback) {
+    console.log(headers);
     fetch(`https://api.coolbox.lol/${path}`, {
         method: "GET",
         headers: headers
@@ -179,12 +184,7 @@ export function successToast(message: string) {
 }
 
 export function apiSend(method: string, path: string, body: any, successMessage: string, errorMessage: string, callback) {
-    if (!headers) {
-        cookieFetched.then(() => {
-            apiSend(method, path, body, successMessage, errorMessage, callback)
-        })
-        return
-    }
+    console.log(headers);
     fetch(`https://api.coolbox.lol/${path}`, {
         method: method,
         headers: headers,
