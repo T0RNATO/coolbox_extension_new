@@ -28,7 +28,16 @@ const defaultAdvanced = {
     "navigation-background": "#ffffff",
 }
 
-const advancedColours: WCR<AdvancedData> = useExtensionStorage("theme.advancedData", defaultAdvanced)
+const variableOrder = [
+    "theme-text",
+    "theme-generic",
+    "theme-accent",
+    "link-colour",
+    "body-background",
+    "navigation-background"
+]
+
+const advancedColours: WCR<AdvancedData> = useExtensionStorage("theme.advancedData", Object.assign({}, defaultAdvanced));
 
 browser.storage.local.onChanged.addListener((changes) => {
     if (changes.theme) {
@@ -48,24 +57,27 @@ function setVariable(variable: string, value: string) {
 
 const themeExport = computed({
     get() {
-        return Object.values(advancedColours.value).join(";").replace(/#/g, "");
+        let output = "";
+        for (const v of variableOrder) {
+            output += advancedColours.value[v].replace("#", "") + ";";
+        }
+        return output.slice(0, -1);
     },
     set(value: string) {
-        console.log(value);
         const colours = value.split(";");
-        if (colours.length !== 6) {
-            advancedColours.value = defaultAdvanced;
+        if (colours.length !== variableOrder.length) {
+            advancedColours.value = Object.assign({}, defaultAdvanced);
             return;
         }
-        const newColours = {};
-        Object.keys(advancedColours.value).forEach((key, index) => {
-            if (colours[index].length === 6) {
-                newColours[key] = "#" + colours[index];
-            } else {
-                newColours[key] = defaultAdvanced[key];
+        const output = {};
+        for (const [i, v] of variableOrder.entries()) {
+            if (colours[i].length !== 6) {
+                output[v] = defaultAdvanced[v];
+                continue;
             }
-        });
-        advancedColours.value = newColours as AdvancedData;
+            output[v] = "#" + colours[i];
+        }
+        advancedColours.value = output as AdvancedData; // avoid updating css 6 times
     }
 });
 
