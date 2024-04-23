@@ -1,8 +1,10 @@
 <script setup lang="ts">
+// noinspection TypeScriptUnresolvedReference
 defineProps<{
     modelValue: string
 }>();
 
+// noinspection TypeScriptUnresolvedReference
 const emit = defineEmits(["update:modelValue"]);
 
 function debounce(callback, wait) {
