@@ -51,7 +51,11 @@ interface ApiResponse {
     }
 }
 
-export const statusMessages = ref({});
+export const statusMessages: Ref<{
+    info?: string;
+    critical?: string;
+    message?: string;
+}> = ref({});
 export const discordLinked = ref(false);
 export const weather: Ref<Array<{
     time: string;

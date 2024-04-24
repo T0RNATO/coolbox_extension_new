@@ -1,3 +1,4 @@
+export type Preset = "light" | "dark" | "catppuccin_mocha" | "catppuccin_frappe" | "purple" | "dark_blue";
 export type ThemeType = "preset" | "legacy" | "custom"
 
 export type Theme = {
@@ -9,7 +10,7 @@ export type Theme = {
 }
 
 export type PresetData = {
-    preset: string,
+    preset: Preset,
 }
 export type LegacyData = {
     colour: string,
