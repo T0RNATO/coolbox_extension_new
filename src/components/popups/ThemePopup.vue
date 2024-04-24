@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import PopupBase from "~/components/popups/PopupBase.vue";
-import {computed, ref} from "vue";
+import {computed, ref, WritableComputedRef as WCR} from "vue";
 import {useExtensionStorage} from "~/utils/componentUtils";
-import {WritableComputedRef as WCR} from "vue";
 import {AdvancedData, Preset, ThemeType} from "~/utils/types.ts";
 import {themePresets, legacyThemePresets} from "~/utils/themePresets";
 import CBColourPicker from "~/components/other/CBColourPicker.vue";

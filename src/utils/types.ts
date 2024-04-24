@@ -1,4 +1,3 @@
-export type Preset = string;
 export type ThemeType = "preset" | "legacy" | "custom"
 
 export type Theme = {
@@ -10,7 +9,7 @@ export type Theme = {
 }
 
 export type PresetData = {
-    preset: Preset,
+    preset: string,
 }
 export type LegacyData = {
     colour: string,

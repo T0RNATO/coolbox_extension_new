@@ -53,7 +53,3 @@ function share() {
         <EditingContextMenu @delete="$emit('delete')"/>
     </div>
 </template>
-
-<style scoped>
-
-</style>

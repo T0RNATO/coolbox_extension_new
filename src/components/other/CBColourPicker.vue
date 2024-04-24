@@ -23,6 +23,3 @@ const handleInput = debounce((event: InputEvent) => {
 <template>
     <input type="color" @input="handleInput" :value="modelValue" class="!w-10 !h-10 !p-0.5 !m-0">
 </template>
-
-<style scoped>
-</style>

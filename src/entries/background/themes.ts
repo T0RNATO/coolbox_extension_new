@@ -57,7 +57,7 @@ function generateThemeCss(themeObject: Theme): string | null {
             variables = themePresets.concat(legacyThemePresets).find(theme => theme.value === themeObject.presetData.preset)?.vars;
             console.log(variables);
             break;
-        case "legacy":
+        case "legacy": {
             const colour = themeObject.legacyData.colour;
             if (themeObject.legacyData.style === "dark") {
                 variables = {
@@ -79,6 +79,7 @@ function generateThemeCss(themeObject: Theme): string | null {
                 }
             }
             break;
+        }
         case "custom":
             variables = themeObject.advancedData;
             break;

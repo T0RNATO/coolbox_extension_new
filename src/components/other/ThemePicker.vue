@@ -25,7 +25,3 @@ const popup = ref();
         <ThemePopup ref="popup"/>
     </teleport>
 </template>
-
-<style scoped>
-
-</style>

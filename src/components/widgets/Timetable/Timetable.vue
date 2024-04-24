@@ -103,7 +103,7 @@ defineProps<{
 
 <style scoped>
 .cb-header {
-    @apply p-3 lg:w-1/5 text-sm bg-primary text-themeText sm:w-full sm:h-full;
+    @apply p-3 lg:w-1/5 text-sm bg-primary text-themeText sm:w-full sm:h-full first:rounded-tl-lg lg:last:rounded-tr-lg sm:max-lg:last:rounded-bl-lg;
 }
 .small :deep(time), .small {
     font-size: 10px !important;
@@ -111,8 +111,5 @@ defineProps<{
 }
 .head-active {
     @apply bg-accent;
-}
-.cb-header {
-    @apply first:rounded-tl-lg lg:last:rounded-tr-lg sm:max-lg:last:rounded-bl-lg;
 }
 </style>
