@@ -36,6 +36,7 @@
                        @edit-reminder="(rem) => {editReminderPopup.openPopup(rem)}"
             />
         </div>
+        
     </div>
 
     <teleport to="body">
@@ -133,6 +134,7 @@ import {reminders} from "~/utils/apiUtils";
 import {markRaw, ref} from "vue";
 import type {Component, Raw} from "vue";
 import {useExtensionStorage} from "~/utils/componentUtils";
+import SillyFeed from "~/components/widgets/SillyFeed.vue";
 
 const checkedNewFeatures = useExtensionStorage("checkedNewFeatures", false);
 
@@ -207,6 +209,7 @@ const allWidgets: Raw<Component>[] = [
     NewsItems,
     Calendar,
     TermDates,
+    SillyFeed
 ].map(markRaw);
 const drawerOpen = ref(false);
 
