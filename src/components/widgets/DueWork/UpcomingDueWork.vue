@@ -8,11 +8,11 @@
                     <h3 v-html="workItem.firstElementChild.innerHTML" class="m-0"></h3>
                     <!-- Work Item Subject -->
                     <p class="meta inline">
-                        <a :href="workItem.children[1].firstElementChild.href">
+                        <a :href="(workItem.children[1].firstElementChild as HTMLAnchorElement)?.href">
                             {{
                                 prettySubjects?.find(
-                                    subject => subject['name']?.toLowerCase() ===
-                                        workItem.children[1].firstElementChild?.textContent?.split("(")[1].slice(0, -1)?.toLowerCase()
+                                    subject => subject?.name?.toLowerCase() ===
+                                        workItem.children[1]?.firstElementChild?.textContent?.split("(")[1]?.slice(0, -1)?.toLowerCase()
                                 )?.pretty
                                 || workItem.children[1].firstElementChild?.textContent
                             }}
@@ -23,7 +23,7 @@
                     <p class="meta" v-html="workItem.lastElementChild.innerHTML"></p>
                     <!-- Add reminder button -->
                     <div class="reminder-button" v-if="!hiddenReminders.includes(getAssessmentId(workItem))">
-                        <span class="material-symbols-outlined assessment-button" @click="editReminder(workItem)">
+                        <span class="material-symbols-outlined assessment-button" @click="editReminder(workItem as HTMLElement)">
                             {{reminderExists(workItem) ? 'notifications_active' : 'notification_add'}}
                         </span>
                             <span class="material-symbols-outlined assessment-button" @click="hiddenReminders = [...hiddenReminders, getAssessmentId(workItem)];">
@@ -33,6 +33,7 @@
                     <!-- Hide work item button -->
                     <div v-else class="reminder-button !top-2">
                         <div class="dui-tooltip dui-tooltip-left" data-tip="Restore Task">
+                            <!--suppress TypeScriptUnresolvedReference, toSpliced randomly is unrecognised despite target of ESNext -->
                             <span class="material-symbols-outlined assessment-button text-green-400"
                                   @click="hiddenReminders = hiddenReminders.toSpliced(hiddenReminders.indexOf(getAssessmentId(workItem)), 1)">
                                 visibility
@@ -50,16 +51,17 @@
     </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import EditingContextMenu from "~/components/other/EditingContextMenu.vue";
-import {ref} from "vue";
+import {Ref, ref} from "vue";
 import browser from "webextension-polyfill";
 import {useExtensionStorage} from "~/utils/componentUtils";
 import ReminderButtons from "~/components/widgets/DueWork/ReminderButtons.vue";
+import type {widgInfo} from "~/utils/types";
 
 let dueWorkItems = document.querySelectorAll('#component52396 .information-list .card');
 
-const prettySubjects = ref([]);
+const prettySubjects: Ref<{pretty: string, name: string}[]> = ref([]);
 const hiddenReminders = useExtensionStorage('hiddenReminders', []);
 
 // Couldn't find a better way to do this
@@ -67,6 +69,7 @@ setTimeout(() => {
     // Remove any hidden reminders that no longer exist
     for (const reminder of hiddenReminders.value) {
         if (!document.querySelector(`#component52396 .information-list .card h3 a[href*="/${reminder}"]`)) {
+            // noinspection TypeScriptUnresolvedReference, toSpliced randomly is unrecognised despite target of ESNext
             hiddenReminders.value = hiddenReminders.value.toSpliced(hiddenReminders.value.indexOf(reminder), 1)
         }
     }
@@ -76,13 +79,13 @@ browser.storage.local.get("subjects").then(data => {
     prettySubjects.value = data.subjects?.value || []
 })
 
-const props = defineProps({
-    widgInfo: Object
-})
+const props = defineProps<{
+    widgInfo: widgInfo
+}>();
 
 const emit = defineEmits(['openReminder', 'delete', 'viewReminders', 'editReminder']);
 
-function createReminder(assessmentReminder, workItem) {
+function createReminder(assessmentReminder: boolean, workItem?: Element) {
     if (assessmentReminder) {
         const assessmentId = getAssessmentId(workItem);
         const title = workItem.querySelector('h3').innerText;
@@ -92,18 +95,19 @@ function createReminder(assessmentReminder, workItem) {
     }
 }
 
-function reminderExists(workItem) {
-    if (props.widgInfo['reminders']) {
-        return props.widgInfo['reminders'].some(reminder => reminder.assessment === getAssessmentId(workItem));
+function reminderExists(workItem: Element): boolean {
+    if (props.widgInfo.reminders) {
+        return props.widgInfo.reminders.some(reminder => reminder.assessment === getAssessmentId(workItem));
     }
     return false;
 }
 
-function getAssessmentId(workItem) {
-    return Number(workItem.querySelector('h3 a').href.split('/').slice(-2, -1)[0]);
+function getAssessmentId(workItem: Element): number {
+    const id = (workItem.querySelector('h3 a') as HTMLAnchorElement)?.href.split('/').slice(-2, -1)[0];
+    return Number(id);
 }
 
-function editReminder(workItem) {
+function editReminder(workItem: Element) {
     if (reminderExists(workItem)) {
         emit('editReminder', props.widgInfo['reminders'].find(reminder => reminder.assessment === getAssessmentId(workItem)));
     } else {
