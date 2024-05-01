@@ -1,7 +1,6 @@
 import { createApp } from "vue";
 import renderContent from "./renderContent";
 import App from "./homepage/Homepage.vue";
-import "tailwindcss/tailwind.css";
 import shadow from 'vue-shadow-dom'
 import browser from "webextension-polyfill";
 import {apiSend, cookieFetched} from "~/utils/apiUtils";
