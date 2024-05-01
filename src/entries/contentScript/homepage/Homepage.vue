@@ -4,8 +4,8 @@
         <Container v-for="[column, components] in Object.entries(currentPageLayout)"
                    group-name="homepage"
                    :data-col="column"
-                   @drop="(ev) => dropComponent(column, ev)"
-                   :get-child-payload="(ev) => getPayload(column, ev)"
+                   @drop="(ev) => dropComponent(column as Column, ev)"
+                   :get-child-payload="(ev) => getPayload(column as Column, ev)"
                    non-drag-area-selector=".no-drag"
                    :drop-placeholder="{className: 'irrelevant'}"
         >
@@ -31,9 +31,9 @@
                        :is="el" :key="i" :class="{'px-2': true, 'slide-in': pageHasBeenEdited}"
                        :widg-info="{edit: false, col: column, add: false, reminders: reminders}"
                        class="my-2"
-                       @open-reminder="(rem) => {openCreateReminderPopup(rem)}"
+                       @open-reminder="(rem: Reminder) => {openCreateReminderPopup(rem)}"
                        @view-reminders="viewReminderPopup.openPopup()"
-                       @edit-reminder="(rem) => {editReminderPopup.openPopup(rem)}"
+                       @edit-reminder="(rem: Reminder) => {editReminderPopup.openPopup(rem)}"
             />
         </div>
     </div>
@@ -122,6 +122,7 @@ import ReminderPopup from "~/components/popups/ReminderPopup.vue";
 import ViewRemindersPopup from "~/components/popups/ViewRemindersPopup.vue";
 import ThemePicker from "~/components/other/ThemePicker.vue";
 
+// types do not exist for this package
 // @ts-ignore
 import {Container, Draggable} from "vue3-smooth-dnd";
 import Shadow from "~/components/other/Shadow.vue";
@@ -130,13 +131,14 @@ import '@vuepic/vue-datepicker/dist/main.css';
 
 import browser from "webextension-polyfill";
 import {reminders} from "~/utils/apiUtils";
-import {markRaw, ref} from "vue";
+import {markRaw, Ref, ref} from "vue";
 import type {Component, Raw} from "vue";
 import {useExtensionStorage} from "~/utils/componentUtils";
+import {Reminder} from "~/utils/types";
 
 const checkedNewFeatures = useExtensionStorage("checkedNewFeatures", false);
 
-const currentPageLayout = ref({
+const currentPageLayout: Ref<Record<Column,Component[]>> = ref({
     leftCol: [],
     rightCol: []
 })
@@ -144,7 +146,7 @@ const currentPageLayout = ref({
 const createReminderPopup = ref(null);
 const editReminderPopup = ref(null);
 const viewReminderPopup = ref(null);
-function openCreateReminderPopup(reminder) {
+function openCreateReminderPopup(reminder: Reminder) {
     createReminderPopup.value.openPopup(reminder);
 }
 
@@ -154,7 +156,7 @@ function getBody() {
 
 const widgetMappings = {}
 
-function componentNameToComponent(name) {
+function componentNameToComponent(name: string): Component {
     return allWidgets.find(
         widget => {
             if (name in widgetMappings) {
@@ -220,28 +222,36 @@ function saveLayout() {
     });
 }
 
-function dropComponent(column, dropInfo) {
+type DropInfo = {
+    removedIndex: number | null,
+    addedIndex: number | null,
+    payload: Raw<Component>
+}
+
+type Column = "leftCol" | "rightCol";
+
+function dropComponent(column: Column, dropInfo: DropInfo) {
     // If there was an element removed, delete it from the page.
-    if (dropInfo["removedIndex"] !== null) {
-        currentPageLayout.value[column].splice(dropInfo["removedIndex"], 1);
+    if (dropInfo.removedIndex !== null) {
+        currentPageLayout.value[column].splice(dropInfo.removedIndex, 1);
     }
     // If there was an element added, add it to the page.
     if (dropInfo["addedIndex"] !== null) {
-        currentPageLayout.value[column].splice(dropInfo["addedIndex"], 0, dropInfo["payload"]);
+        currentPageLayout.value[column].splice(dropInfo.addedIndex, 0, dropInfo.payload);
     }
     saveLayout();
 }
 
 function deleteSelectedWidget() {
-    const column = selectedElement.parentElement.dataset.col;
-    const i = selectedElement.dataset.i;
+    const column: Column = selectedElement.parentElement.dataset.col;
+    const i = Number(selectedElement.dataset.i);
 
     currentPageLayout.value[column].splice(i, 1);
     clearSelectedComponent();
     saveLayout();
 }
 
-function getPayload(col, index) {
+function getPayload(col: Column, index: number) {
     return currentPageLayout.value[col][index];
 }
 

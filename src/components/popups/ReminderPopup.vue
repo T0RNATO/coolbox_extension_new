@@ -3,9 +3,10 @@
         Name:
         <input placeholder="Reminder Name" maxlength="128" class="!bg-primary !text-themeText" v-model="rem.title">
         Time:
+        <!--suppress TypeScriptValidateTypes -->
         <VueDatePicker :flow="['calender', 'time']" placeholder="Time" format="dd/MM/yyyy HH:mm"
                        position="left" input-class-name="!bg-primary !text-themeText"
-                       v-model="rem['due']" :is-24="false" model-type="timestamp"/>
+                       v-model="rem.due" :is-24="false" model-type="timestamp"/>
         Notification Method:
         <Shadow>
             <!--Why is (key, value) backwards??-->
@@ -41,33 +42,34 @@
     </PopupBase>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import VueDatePicker from "@vuepic/vue-datepicker"
 import Shadow from "~/components/other/Shadow.vue";
-import {ref} from "vue";
+import {Ref, ref} from "vue";
 import {apiSend, cookieFetched, discordLinked, updateReminders} from "~/utils/apiUtils";
 import PopupBase from "~/components/popups/PopupBase.vue";
 import browser from "webextension-polyfill";
+import {Reminder} from "~/utils/types";
 
-defineProps({
-    edit: Boolean
-})
+defineProps<{
+    edit: boolean;
+}>();
 
 const authLink = ref();
 cookieFetched.then(cookie => {
     authLink.value = "https://api.coolbox.lol/discord/redirect?state=" + cookie;
 })
 
-const rem = ref({});
+const rem: Ref<Reminder> = ref({});
 const popupComponent = ref(null);
-function openPopup(reminder) {
+function openPopup(reminder: Reminder) {
     popupComponent.value.$el.showModal();
     rem.value = reminder;
 }
 
 function validateReminder(ev) {
     const r = rem.value;
-    if (r['title'] && r['due'] && r['method']) {
+    if (r.title && r.due && r.method) {
         return true;
     } else {
         ev.preventDefault();

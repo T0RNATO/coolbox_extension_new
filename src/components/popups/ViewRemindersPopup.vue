@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import PopupBase from "~/components/popups/PopupBase.vue";
 import {ref} from "vue";
 import {reminders, updateReminders} from "~/utils/apiUtils";
@@ -28,9 +28,9 @@ defineExpose({openPopup});
         <div v-else-if="reminders.length === 0">You have no reminders</div>
         <div v-else v-for="(reminder, i) in reminders" :key="i" class="border-solid border-themeText mb-2 p-2 relative">
             <div class="inline-flex items-center">
-                {{reminder['title']}}
-                <div class="dui-tooltip ml-1" :data-tip="formatDate(new Date(reminder['due']), 'ddd D MMM h:mm a')">
-                    <span class="text-gray-500">{{formatTimeAgo(reminder['due'])}}</span>
+                {{reminder.title}}
+                <div class="dui-tooltip ml-1" :data-tip="formatDate(new Date(reminder.due), 'ddd D MMM h:mm a')">
+                    <span class="text-gray-500">{{formatTimeAgo(new Date(reminder.due))}}</span>
                 </div>
             </div>
             <br>
@@ -38,8 +38,8 @@ defineExpose({openPopup});
                 <span class="text-sm text-gray-500">
                 Notification on {{reminder.method.charAt(0).toUpperCase() + reminder.method.slice(1)}}
                 </span>
-                <div v-if="reminder['assessment']" class="inline ml-2 dui-tooltip" data-tip="Linked to assessment">
-                    <a :href="'https://schoolbox.donvale.vic.edu.au/learning/assessments/' + reminder['assessment']">
+                <div v-if="reminder.assessment" class="inline ml-2 dui-tooltip" data-tip="Linked to assessment">
+                    <a :href="'https://schoolbox.donvale.vic.edu.au/learning/assessments/' + reminder.assessment">
                         <span class="material-symbols-outlined inline-block">attachment</span>
                     </a>
                 </div>

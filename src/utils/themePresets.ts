@@ -1,3 +1,4 @@
+// @ts-ignore
 import {AdvancedData} from "./types";
 
 type Preset = {

@@ -2,6 +2,7 @@ import browser from "webextension-polyfill";
 import {ref} from "vue";
 import type {Ref} from 'vue';
 import purify from 'dompurify'
+// @ts-ignore
 import {Reminder, RoomChange} from "./types";
 
 let headers = null;

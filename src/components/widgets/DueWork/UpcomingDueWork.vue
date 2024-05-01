@@ -1,7 +1,7 @@
 <template>
     <div>
         <h2 class="subheader">Due Work</h2>
-        <ul class="information-list rounded-lg bg-primary overflow-hidden" id="due-work" :class="{limitHeight: widgInfo['add']}">
+        <ul class="information-list rounded-lg bg-primary overflow-hidden" id="due-work" :class="{limitHeight: widgInfo.add}">
             <li v-for="workItem in dueWorkItems">
                 <div class="w-full p-2" :class="{hiderem: hiddenReminders.includes(getAssessmentId(workItem))}">
                     <!-- Work Item Name -->
@@ -109,7 +109,7 @@ function getAssessmentId(workItem: Element): number {
 
 function editReminder(workItem: Element) {
     if (reminderExists(workItem)) {
-        emit('editReminder', props.widgInfo['reminders'].find(reminder => reminder.assessment === getAssessmentId(workItem)));
+        emit('editReminder', props.widgInfo.reminders.find(reminder => reminder.assessment === getAssessmentId(workItem)));
     } else {
         createReminder(true, workItem);
     }

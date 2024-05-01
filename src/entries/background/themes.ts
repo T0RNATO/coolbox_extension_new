@@ -1,6 +1,9 @@
 import browser from "webextension-polyfill";
-import {shadeHexColor} from "~/utils/utilFunctions";
-import {themePresets, legacyThemePresets} from "~/utils/themePresets";
+// @ts-ignore
+import {shadeHexColor} from "../../utils/utilFunctions";
+// @ts-ignore
+import {themePresets, legacyThemePresets} from "../../utils/themePresets";
+// @ts-ignore
 import {AdvancedData, Theme} from "../../utils/types";
 
 export function applyTheme(tab: number) {

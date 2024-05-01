@@ -22,7 +22,7 @@
                 </div>
             </div>
         </div>
-        <span class="italic text-gray-500" v-else-if="widgInfo['edit']">(Timetable Widget)</span>
+        <span class="italic text-gray-500" v-else-if="widgInfo.edit">(Timetable Widget)</span>
 
         <span class="text-red-500 text-2xl whitespace-pre-line">{{statusMessages.critical}}</span>
 

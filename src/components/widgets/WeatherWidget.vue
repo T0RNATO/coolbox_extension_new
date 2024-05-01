@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="bg-primary rounded-md flex p-2 flex-wrap text-themeText flex-col lg:flex-row" :class="{mt: !widgInfo['edit']}">
+        <div class="bg-primary rounded-md flex p-2 flex-wrap text-themeText flex-col lg:flex-row" :class="{mt: !widgInfo.edit}">
             <div class="day-item"
                  v-for="(day, i) in weather" :key="i">
                 <span class="day-title">
@@ -10,7 +10,7 @@
                     <span class="material-symbols-outlined cursor-default select-none text-5xl text-blue-400">
                         {{day.weathercode?.icon}}
                     </span>
-                    <span class="text-xs text-center px-1" :class="{fontL: widgInfo['col'] === 'leftCol'}">
+                    <span class="text-xs text-center px-1" :class="{fontL: widgInfo.col === 'leftCol'}">
                         {{day.weathercode?.message || "Loading..."}}
                     </span>
                 </div>
@@ -51,13 +51,14 @@
     </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import EditingContextMenu from "~/components/other/EditingContextMenu.vue";
 import {weather} from "~/utils/apiUtils";
+import {widgInfo} from "~/utils/types";
 
-defineProps({
-    widgInfo: Object
-})
+defineProps<{
+    widgInfo: widgInfo
+}>();
 </script>
 
 <style scoped>
