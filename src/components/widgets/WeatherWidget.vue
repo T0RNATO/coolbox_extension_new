@@ -54,7 +54,7 @@
 <script setup lang="ts">
 import EditingContextMenu from "~/components/other/EditingContextMenu.vue";
 import {weather} from "~/utils/apiUtils";
-import {widgInfo} from "~/utils/types";
+import type {widgInfo} from "~/utils/types";
 
 defineProps<{
     widgInfo: widgInfo

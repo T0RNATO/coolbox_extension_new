@@ -48,7 +48,7 @@
 import EditingContextMenu from "~/components/other/EditingContextMenu.vue";
 import {useExtensionStorage} from "~/utils/componentUtils";
 import {statusMessages} from "~/utils/apiUtils";
-import {hexGradient} from "~/utils/utilFunctions.js";
+import {hexGradient} from "~/utils/utilFunctions";
 import {ref} from "vue";
 
 let tiles = document.querySelector('#tileList-2248').getElementsByClassName('tile');

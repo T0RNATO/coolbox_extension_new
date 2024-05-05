@@ -1,5 +1,7 @@
 import browser from "webextension-polyfill";
+// @ts-ignore
 import {applyTheme, updateTheme} from "./themes";
+// @ts-ignore
 import {Reminder, Theme} from "../../utils/types";
 
 // migrating theme setting to new system todo remove next update
@@ -29,7 +31,9 @@ browser.runtime.onInstalled.addListener(() => {
     })
 })
 
-browser.runtime.onMessage.addListener((message: string, sender, sendResponse: (cookie: string) => void) => {
+type UpdateThemeMessage = {type: string, old: Theme, new: Theme}
+
+browser.runtime.onMessage.addListener((message: string | UpdateThemeMessage, sender, sendResponse: (cookie: string) => void) => {
     switch (message) {
         case "applyTheme":
             applyTheme(sender.tab.id)
@@ -46,6 +50,7 @@ browser.runtime.onMessage.addListener((message: string, sender, sendResponse: (c
             browser.management.uninstallSelf();
             break;
         default:
+            message = message as UpdateThemeMessage;
             if (message.type == "updateTheme") {
                 updateTheme(sender.tab.id, message.old, message.new)
             }
