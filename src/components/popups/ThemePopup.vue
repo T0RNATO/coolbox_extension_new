@@ -39,7 +39,6 @@ const variableImportExportOrder = [
 const advancedColours: WCR<AdvancedData> = useExtensionStorage("theme.advancedData", Object.assign({}, defaultAdvanced));
 
 listenForStorageChange("theme", (changes) => {
-    console.log(changes);
     browser.runtime.sendMessage({
         type: "updateTheme",
         old: changes.oldValue,

@@ -5,7 +5,10 @@ import tailwind from "tailwindcss/tailwind.css?inline";
 // @ts-ignore, vite-specific code
 import icons from "/src/assets/css/icons.css?inline";
 
+// count the number of current changes that should not update refs
 let internalStorageChangeCount: number = 0;
+// count the number of current changes that should not activate watchers
+let noPropagateStorageChangeCount: number = 0;
 
 /**
  * Returns a reactive reference to Chrome extension storage
@@ -19,10 +22,9 @@ export function useExtensionStorage<T>(path: string, defaultV: T): WritableCompu
         try {
             storage.value = objValueFromStringPath(data, path);
         } catch {
-            console.log("setting default value", path)
             // @ts-ignore, idek what's going on here
             storage.value = defaultV;
-            setStorageValue(path, defaultV);
+            setStorageValue(path, defaultV, true);
         }
     })
 
@@ -30,7 +32,6 @@ export function useExtensionStorage<T>(path: string, defaultV: T): WritableCompu
     browser.storage.local.onChanged.addListener((changes) => {
         if (internalStorageChangeCount > 0) {return}
         if (changes['subjects']) {return}
-        console.log("external change", changes, path);
 
         // Get the first section of the path
         const p = path.split(".");
@@ -62,14 +63,16 @@ export function manualStorageSet(data: object) {
 
 export function listenForStorageChange(path: string, callback: (storage: Storage.StorageChange) => void) {
     browser.storage.local.onChanged.addListener((changes) => {
-        if (internalStorageChangeCount > 0 || !changes[path]) {return}
+        if (noPropagateStorageChangeCount > 0 || !changes[path]) {return}
         callback(changes[path]);
     })
 }
 
 // Given a period-seperated path and a value, set the value in browser storage
-function setStorageValue(path: string, value: any) {
-    console.log("started setting internal storage change")
+function setStorageValue(path: string, value: any, doNotPropagate = false) {
+    if (doNotPropagate) {
+        noPropagateStorageChangeCount++;
+    }
     internalStorageChangeCount++;
     browser.storage.local.get().then(data => {
         let out = data;
@@ -85,7 +88,9 @@ function setStorageValue(path: string, value: any) {
         }
         out[layers[layers.length - 1]] = value;
         browser.storage.local.set(data).then(() => {
-            console.log("reset internal storage change")
+            if (doNotPropagate) {
+                noPropagateStorageChangeCount--;
+            }
             internalStorageChangeCount--;
         })
     })
