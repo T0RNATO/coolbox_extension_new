@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import PopupBase from "~/components/popups/PopupBase.vue";
 import {computed, ref, WritableComputedRef as WCR} from "vue";
-import {useExtensionStorage} from "~/utils/componentUtils";
+import {listenForStorageChange, useExtensionStorage} from "~/utils/componentUtils";
 import {AdvancedData, Preset, ThemeType} from "~/utils/types.ts";
 import {themePresets, legacyThemePresets} from "~/utils/themePresets";
 import CBColourPicker from "~/components/other/CBColourPicker.vue";
@@ -27,7 +27,7 @@ const defaultAdvanced = {
     "navigation-background": "#ffffff",
 }
 
-const variableOrder = [
+const variableImportExportOrder = [
     "theme-text",
     "theme-generic",
     "theme-accent",
@@ -38,15 +38,14 @@ const variableOrder = [
 
 const advancedColours: WCR<AdvancedData> = useExtensionStorage("theme.advancedData", Object.assign({}, defaultAdvanced));
 
-browser.storage.local.onChanged.addListener((changes) => {
-    if (changes.theme) {
-        browser.runtime.sendMessage({
-            type: "updateTheme",
-            old: changes.theme.oldValue,
-            new: changes.theme.newValue
-        })
-    }
-});
+listenForStorageChange("theme", (changes) => {
+    console.log(changes);
+    browser.runtime.sendMessage({
+        type: "updateTheme",
+        old: changes.oldValue,
+        new: changes.newValue
+    })
+})
 
 function setVariable(variable: string, value: string) {
     const colours = advancedColours.value;
@@ -57,19 +56,19 @@ function setVariable(variable: string, value: string) {
 const themeExport = computed({
     get() {
         let output = "";
-        for (const v of variableOrder) {
+        for (const v of variableImportExportOrder) {
             output += advancedColours.value[v].replace("#", "") + ";";
         }
         return output.slice(0, -1);
     },
     set(value: string) {
         const colours = value.split(";");
-        if (colours.length !== variableOrder.length) {
+        if (colours.length !== variableImportExportOrder.length) {
             advancedColours.value = Object.assign({}, defaultAdvanced);
             return;
         }
         const output = {};
-        for (const [i, v] of variableOrder.entries()) {
+        for (const [i, v] of variableImportExportOrder.entries()) {
             if (colours[i].length !== 6) {
                 output[v] = defaultAdvanced[v];
                 continue;

@@ -121,10 +121,6 @@ import DailyVerse from "~/components/widgets/DailyVerse.vue";
 import ReminderPopup from "~/components/popups/ReminderPopup.vue";
 import ViewRemindersPopup from "~/components/popups/ViewRemindersPopup.vue";
 import ThemePicker from "~/components/other/ThemePicker.vue";
-
-// types do not exist for this package
-// @ts-ignore
-import {Container, Draggable} from "vue3-smooth-dnd";
 import Shadow from "~/components/other/Shadow.vue";
 
 import '@vuepic/vue-datepicker/dist/main.css';
@@ -133,8 +129,11 @@ import browser from "webextension-polyfill";
 import {reminders} from "~/utils/apiUtils";
 import {markRaw, Ref, ref} from "vue";
 import type {Component, Raw} from "vue";
-import {useExtensionStorage} from "~/utils/componentUtils";
+import {manualStorageSet, useExtensionStorage} from "~/utils/componentUtils";
 import {Reminder} from "~/utils/types";
+// types do not exist for this package
+// @ts-ignore
+import {Container, Draggable} from "vue3-smooth-dnd";
 
 const checkedNewFeatures = useExtensionStorage("checkedNewFeatures", false);
 
@@ -217,7 +216,7 @@ function saveLayout() {
         leftCol: currentPageLayout.value.leftCol.map(el => el['__name']),
         rightCol: currentPageLayout.value.rightCol.map(el => el['__name']),
     }
-    browser.storage.local.set({
+    manualStorageSet({
         "homepageLayout": layout
     });
 }
