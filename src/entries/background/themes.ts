@@ -49,16 +49,14 @@ function applyCss(tab: number, css: string) {
             css: css
         })
         appliedCss.push(css);
-        console.log(appliedCss);
     })
 }
 
 function generateThemeCss(themeObject: Theme): string | null {
     let variables: AdvancedData;
-    switch (themeObject.type) {
+    switch (themeObject?.type || "preset") {
         case "preset":
             variables = themePresets.concat(legacyThemePresets).find(theme => theme.value === themeObject.presetData.preset)?.vars;
-            console.log(variables);
             break;
         case "legacy": {
             const colour = themeObject.legacyData.colour;
