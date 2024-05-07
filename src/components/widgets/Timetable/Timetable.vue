@@ -88,12 +88,31 @@ onPeriodChange(() => {
     }))
 })
 
+const numberToNumber = {
+    "one": 1,
+    "two": 2,
+    "three": 3,
+    "four": 4,
+    "five": 5,
+    "six": 6,
+    "seven": 7,
+    "eight": 8,
+    "nine": 9,
+    "ten": 10,
+    "eleven": 11,
+    "twelve": 12,
+    "thirteen": 13,
+    "fourteen": 14
+}
+
 // Not remotely scuff code to wait until calendar is loaded and add the week number to the heading
 setTimeout(() => {
     const calendarEvents: HTMLSpanElement[] = Array.from(document.querySelectorAll(".fc-event-title"));
-    const weekEvent = calendarEvents.find(el => el.innerText.includes("Week") && el.innerText.includes("(W"));
-    const weekNo = weekEvent?.innerText.slice(5,-5).trimEnd();
-    dayTitle.value += ` (Week ${weekNo})`;
+    const weekEvent = calendarEvents.find(el => el.innerText.includes("Week") && /\(\d\)/.test(el.innerText));
+    const weekNo = numberToNumber[weekEvent?.innerText.split(" ")[1].toLowerCase()];
+    if (weekNo) {
+        dayTitle.value += ` (Week ${weekNo})`;
+    }
 }, 1500);
 
 defineProps<{
