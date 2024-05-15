@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import {roomChanges} from "~/utils/apiUtils";
+import {apiResponded, roomChanges} from "~/utils/apiUtils";
 import {useExtensionStorage} from "~/utils/componentUtils";
+import {type RoomChange} from "~/utils/types";
+import {ref, type Ref} from "vue";
 
 const darkenSubjects = useExtensionStorage("timetable.dark", false);
 const outlineCurrent = useExtensionStorage("timetable.outline", false);
@@ -20,11 +22,14 @@ const props = defineProps<{
 
 const subjectID = props.subject.children[1]?.textContent.slice(1,-1)?.toLowerCase();
 
-const roomChange = roomChanges.value?.find(
-    change => change.timetabled_room === props.subject.children[2]?.textContent &&
-              change.class_name.toLowerCase() === subjectID
-);
+const roomChange: Ref<RoomChange | undefined> = ref(undefined);
 
+apiResponded.then(() => {
+    roomChange.value = roomChanges.value?.find(
+        change => change.timetabled_room === props.subject.children[2]?.textContent &&
+            change.class_name.toLowerCase() === subjectID
+    );
+})
 </script>
 
 <template>

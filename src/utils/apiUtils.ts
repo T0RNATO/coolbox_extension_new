@@ -97,6 +97,10 @@ export function updateReminders() {
 }
 
 export const cookieFetched = browser.runtime.sendMessage("getCookie");
+let triggerApiRespondedEvent: (value?: unknown) => void;
+export const apiResponded = new Promise(resolve => {
+    triggerApiRespondedEvent = resolve;
+})
 
 function processApiData(data: ApiResponse) {
     statusMessages.value = data.status;
@@ -104,6 +108,7 @@ function processApiData(data: ApiResponse) {
     weather.value = data.weather.forecast;
     roomChanges.value = data.room_changes;
     reminders.value = data.reminders;
+    triggerApiRespondedEvent();
     {
         const {content, link, reference} = data.daily_verse;
         dailyVerse.value = {
