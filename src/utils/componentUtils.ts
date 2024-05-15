@@ -1,5 +1,5 @@
 import browser, {Storage} from "webextension-polyfill";
-import {computed, ref, UnwrapRef, WritableComputedRef} from "vue";
+import {computed, Ref, ref, UnwrapRef, WritableComputedRef} from "vue";
 // @ts-ignore, vite-specific code
 import tailwind from "tailwindcss/tailwind.css?inline";
 // @ts-ignore, vite-specific code
@@ -131,3 +131,32 @@ otherStyling.replaceSync(`
 `)
 
 export const defaultSheets: CSSStyleSheet[] = [twStyleSheet, iconsStyleSheet, otherStyling];
+
+export const weekNumber= ref("");
+
+const numberToNumber = {
+    "one": 1,
+    "two": 2,
+    "three": 3,
+    "four": 4,
+    "five": 5,
+    "six": 6,
+    "seven": 7,
+    "eight": 8,
+    "nine": 9,
+    "ten": 10,
+    "eleven": 11,
+    "twelve": 12,
+    "thirteen": 13,
+    "fourteen": 14
+}
+
+// Not remotely scuff code to wait until calendar is loaded and add the week number to the heading
+setTimeout(() => {
+    const calendarEvents: HTMLSpanElement[] = Array.from(document.querySelectorAll(".fc-event-title"));
+    const weekEvent = calendarEvents.find(el => el.innerText.includes("Week") && /\(\d\)/.test(el.innerText));
+    const weekNo = numberToNumber[weekEvent?.innerText.split(" ")[1].toLowerCase()];
+    if (weekNo) {
+        weekNumber.value = `(Week ${weekNo})`;
+    }
+}, 1500);

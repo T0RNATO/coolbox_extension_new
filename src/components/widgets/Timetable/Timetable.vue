@@ -1,7 +1,7 @@
 <template>
     <div class="mb-4 text-sm">
         <div v-if="show">
-            <h2 class="subheader">{{dayTitle}}</h2>
+            <h2 class="subheader">{{dayTitle}} {{weekNumber}}</h2>
             <div class="flex sm:flex-row lg:flex-col">
                 <!--Timetable Headers-->
                 <div class="flex lg:flex-row sm:flex-col">
@@ -44,14 +44,14 @@ import EditingContextMenu from "~/components/other/EditingContextMenu.vue";
 import {statusMessages, onPeriodChange} from "~/utils/apiUtils";
 import {Ref, ref} from "vue";
 import browser from "webextension-polyfill";
-import {useExtensionStorage} from "~/utils/componentUtils";
+import {useExtensionStorage, weekNumber} from "~/utils/componentUtils";
 import Subject from "~/components/widgets/Timetable/Subject.vue";
 import type {widgInfo} from "~/utils/types";
 
 const darkenSubjects = useExtensionStorage("timetable.dark", false);
 const outlineCurrent = useExtensionStorage("timetable.outline", false);
 
-const dayTitle = ref(document.querySelector("[data-timetable-header]")?.textContent);
+const dayTitle = document.querySelector("[data-timetable-header]")?.textContent;
 
 type Elements = Ref<NodeListOf<HTMLElement>>;
 type Subjects = Ref<{name: string, pretty: string}[]>;
@@ -79,41 +79,14 @@ function updateTimetable(page: Document) {
 
 updateTimetable(document)
 
-const domParser = new DOMParser();
+// const domParser = new DOMParser();
 
 // this just.. doesnt work todo: fix
-onPeriodChange(() => {
-    fetch(location.href).then((data) => data.text().then((page) => {
-        updateTimetable(domParser.parseFromString(page, "text/html"))
-    }))
-})
-
-const numberToNumber = {
-    "one": 1,
-    "two": 2,
-    "three": 3,
-    "four": 4,
-    "five": 5,
-    "six": 6,
-    "seven": 7,
-    "eight": 8,
-    "nine": 9,
-    "ten": 10,
-    "eleven": 11,
-    "twelve": 12,
-    "thirteen": 13,
-    "fourteen": 14
-}
-
-// Not remotely scuff code to wait until calendar is loaded and add the week number to the heading
-setTimeout(() => {
-    const calendarEvents: HTMLSpanElement[] = Array.from(document.querySelectorAll(".fc-event-title"));
-    const weekEvent = calendarEvents.find(el => el.innerText.includes("Week") && /\(\d\)/.test(el.innerText));
-    const weekNo = numberToNumber[weekEvent?.innerText.split(" ")[1].toLowerCase()];
-    if (weekNo) {
-        dayTitle.value += ` (Week ${weekNo})`;
-    }
-}, 1500);
+// onPeriodChange(() => {
+//     fetch(location.href).then((data) => data.text().then((page) => {
+//         updateTimetable(domParser.parseFromString(page, "text/html"))
+//     }))
+// })
 
 defineProps<{
     widgInfo: widgInfo
