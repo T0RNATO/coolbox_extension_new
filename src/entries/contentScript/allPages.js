@@ -6,6 +6,11 @@ import browser from "webextension-polyfill";
 import {apiSend, cookieFetched} from "~/utils/apiUtils";
 import {coolboxifyCalendar} from "~/entries/contentScript/calendar/calendar.ts";
 import {addViteStyleTarget} from "@samrum/vite-plugin-web-extension/client";
+
+if (import.meta.env.DEV) {
+    import("tailwindcss/tailwind.css");
+}
+
 addViteStyleTarget(document.head);
 
 // let collatedErrors = [];
