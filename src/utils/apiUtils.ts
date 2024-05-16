@@ -128,7 +128,7 @@ export function successToast(message: string) {
     animateToast(successToast);
 }
 
-export function apiSend(method: string, path: string, body: any, successMessage: string, errorMessage: string, callback) {
+export function apiSend(method: string, path: string, body: any, successMessage: string, errorMessage: string, callback?: (value?: any) => void) {
     fetch(`https://api.coolbox.lol/${path}`, {
         method: method,
         headers: headers,

@@ -1,12 +1,12 @@
 <template>
     <PopupBase :title="edit ? 'Edit Reminder' : 'Create Reminder'" ref="popupComponent" class="overflow-y-visible">
         Name:
-        <input placeholder="Reminder Name" maxlength="128" class="!bg-primary !text-themeText" v-model="rem.title">
+        <input placeholder="Reminder Name" maxlength="128" class="!bg-primary !text-themeText" v-model="openReminder.title">
         Time:
         <!--suppress TypeScriptValidateTypes -->
         <VueDatePicker :flow="['calender', 'time']" placeholder="Time" format="dd/MM/yyyy HH:mm"
                        position="left" input-class-name="!bg-primary !text-themeText"
-                       v-model="rem.due" :is-24="false" model-type="timestamp"/>
+                       v-model="openReminder.due" :is-24="false" model-type="timestamp"/>
         Notification Method:
         <Shadow>
             <!--Why is (key, value) backwards??-->
@@ -15,30 +15,30 @@
                 discord: 'Discord Ping',
                 both: 'Both'
             }">
-                <input type="radio" name="notification_method" :id="value" :value="value" class="dui-radio" v-model="rem.method">
+                <input type="radio" name="notification_method" :id="value" :value="value" class="dui-radio" v-model="openReminder.method">
                 <label :for="value" class="ml-1">{{display}}</label>
             </div>
         </Shadow>
 
-        <span class="text-red-500 block" v-if="(rem.method === 'discord' || rem.method === 'both') && !discordLinked">
+        <span class="text-red-500 block" v-if="(openReminder.method === 'discord' || openReminder.method === 'both') && !discordLinked">
             You must
             <a :href="authLink">authenticate</a>
             to receive Discord notifications
         </span>
-        <span class="text-red-500" v-if="rem.method === 'desktop' || rem.method === 'both'">
+        <span class="text-red-500" v-if="openReminder.method === 'desktop' || openReminder.method === 'both'">
             Note: You must enable browser notifications for system notifications
         </span>
 
-        <form method="dialog">
+        <template #buttons>
             <div class="mt-4" v-if="edit">
-                <button class="w-[calc(50%-0.5rem)] mr-2 bg-red-500 text-white" @click="deleteReminder">Delete Reminder</button>
-                <button class="!w-[calc(50%-0.5rem)] ml-2 submit" @click="saveReminder">Save</button>
+                <button class="button-l bg-red-500 text-white" @click="deleteReminder">Delete Reminder</button>
+                <button class="button-r submit" @click="saveReminder">Save</button>
             </div>
             <div class="mt-4" v-else>
-                <button class="w-[calc(50%-0.5rem)] mr-2">Cancel</button>
-                <button class="!w-[calc(50%-0.5rem)] ml-2 submit" @click="createReminder">Create Reminder</button>
+                <button class="button-l">Cancel</button>
+                <button class="button-r submit" @click="createReminder">Create Reminder</button>
             </div>
-        </form>
+        </template>
     </PopupBase>
 </template>
 
@@ -60,27 +60,27 @@ cookieFetched.then(cookie => {
     authLink.value = "https://api.coolbox.lol/discord/redirect?state=" + cookie;
 })
 
-const rem: Ref<Reminder> = ref({});
-const popupComponent = ref(null);
+const openReminder: Ref<Reminder> = ref({});
+const popupComponent: Ref<InstanceType<typeof PopupBase>> = ref(null);
 function openPopup(reminder: Reminder) {
-    popupComponent.value.$el.showModal();
-    rem.value = reminder;
+    popupComponent.value.openPopup();
+    openReminder.value = reminder;
 }
 
-function validateReminder(ev) {
-    const r = rem.value;
+function validateReminder(event: MouseEvent) {
+    const r = openReminder.value;
     if (r.title && r.due && r.method) {
         return true;
     } else {
-        ev.preventDefault();
+        event.preventDefault();
         alert('Please fill out all fields');
         return false;
     }
 }
 
-function createReminder(ev) {
-    if (validateReminder(ev)) {
-        apiSend("POST", "reminders", rem.value,
+function createReminder(event: MouseEvent) {
+    if (validateReminder(event)) {
+        apiSend("POST", "reminders", openReminder.value,
             "Reminder created successfully",
             "Failed to create reminder", () => {
                 browser.runtime.sendMessage("createNotifications");
@@ -89,9 +89,9 @@ function createReminder(ev) {
         );
     }
 }
-function saveReminder(ev) {
-    if (validateReminder(ev)) {
-        apiSend("PATCH", "reminders", rem.value,
+function saveReminder(event: MouseEvent) {
+    if (validateReminder(event)) {
+        apiSend("PATCH", "reminders", openReminder.value,
             "Reminder updated successfully",
             "Failed to update reminder", () => {
                 browser.runtime.sendMessage("createNotifications");
@@ -100,7 +100,7 @@ function saveReminder(ev) {
     }
 }
 function deleteReminder() {
-    apiSend("DELETE", "reminders", rem.value,
+    apiSend("DELETE", "reminders", openReminder.value,
         "Reminder deleted successfully",
         "Failed to delete reminder", () => {
             browser.runtime.sendMessage("createNotifications");

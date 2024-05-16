@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import PopupBase from "~/components/popups/PopupBase.vue";
-import {ref} from "vue";
+import {Ref, ref} from "vue";
 import {reminders, updateReminders} from "~/utils/apiUtils";
 import {formatDate, formatTimeAgo} from "@vueuse/core";
 
-const popupComponent = ref(null);
+const popupComponent: Ref<InstanceType<typeof PopupBase>> = ref(null);
 function openPopup() {
     reminders.value = null;
-    popupComponent.value.$el.showModal();
+    popupComponent.value.openPopup();
     updateReminders();
 }
 

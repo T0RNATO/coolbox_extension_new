@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import PopupBase from "~/components/popups/PopupBase.vue";
-import {computed, ref, WritableComputedRef as WCR} from "vue";
+import {computed, Ref, ref, WritableComputedRef as WCR} from "vue";
 import {listenForStorageChange, useExtensionStorage} from "~/utils/componentUtils";
 import {AdvancedData, Preset, ThemeType} from "~/utils/types.ts";
 import {themePresets, legacyThemePresets} from "~/utils/themePresets";
 import CBColourPicker from "~/components/other/CBColourPicker.vue";
 import browser from "webextension-polyfill";
 
-const popup = ref();
+const popup: Ref<InstanceType<typeof PopupBase>> = ref(null);
 const themeType = useExtensionStorage("theme.type", "preset" as ThemeType);
 const navbar = useExtensionStorage("theme.changeNavbar", false);
 
@@ -79,7 +79,7 @@ const themeExport = computed({
 });
 
 defineExpose({openPopup() {
-    popup.value.$el.showModal();
+    popup.value.openPopup();
 }});
 </script>
 
