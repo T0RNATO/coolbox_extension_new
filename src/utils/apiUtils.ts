@@ -3,73 +3,13 @@ import {ref} from "vue";
 import type {Ref} from 'vue';
 import purify from 'dompurify'
 // @ts-ignore
-import {Reminder, RoomChange} from "./types";
+import {Reminder, RoomChange, ApiResponse, Weather, StatusMessages} from "./types";
 
 let headers = null;
 
-interface ApiResponse {
-    user: {
-        name: string;
-        id: string;
-        year: number;
-        role: string;
-        is_active: boolean;
-        discord: {
-            linked: boolean;
-            info: {
-                id: string;
-                username: string;
-                avatar: string;
-                discriminator: string;
-                public_flags: number;
-                premium_type: number;
-                flags: number;
-                banner: string | null;
-                accent_color: number;
-                global_name: string;
-                avatar_decoration_data: string | null;
-                banner_color: string;
-                mfa_enabled: boolean;
-                locale: string;
-            };
-        };
-    };
-    status: {
-        info: string | null;
-        critical: string | null;
-        message: string | null;
-    };
-    reminders: Array<any>;
-    weather: {
-        last_updated: string;
-        forecast: any;
-    };
-    room_changes: Array<any>;
-    daily_verse: {
-        content: string;
-        reference: string;
-        link: string;
-    }
-}
-
-export const statusMessages: Ref<{
-    info?: string;
-    critical?: string;
-    message?: string;
-}> = ref({});
+export const statusMessages: Ref<StatusMessages> = ref({});
 export const discordLinked = ref(false);
-export const weather: Ref<Array<{
-    time: string;
-    time_real: string;
-    weathercode: {
-        icon: string;
-        message: string;
-    };
-    uv_index_max: number;
-    temperature_2m_max: number;
-    temperature_2m_min: number;
-    precipitation_probability_mean: number;
-}>> = ref([]);
+export const weather: Ref<Array<Weather>> = ref([]);
 export const roomChanges: Ref<RoomChange[]> = ref([]);
 export const reminders: Ref<Reminder[]> = ref([]);
 export const dailyVerse = ref({
@@ -86,12 +26,12 @@ export function periodChange() {
     }
 }
 
-export function onPeriodChange(listener) {
+export function onPeriodChange(listener: () => void) {
     periodChangeListeners.push(listener);
 }
 
 export function updateReminders() {
-    apiGet("reminders", (data) => {
+    apiGet("reminders", (data: Reminder[]) => {
         reminders.value = data;
     })
 }
@@ -147,7 +87,7 @@ if (history.state) {
     processApiData(history.state);
 }
 
-function apiGet(path, callback) {
+function apiGet(path: string, callback: (data: Object) => void) {
     fetch(`https://api.coolbox.lol/${path}`, {
         method: "GET",
         headers: headers
