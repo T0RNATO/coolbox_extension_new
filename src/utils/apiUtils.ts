@@ -108,7 +108,6 @@ function processApiData(data: ApiResponse) {
     weather.value = data.weather.forecast;
     roomChanges.value = data.room_changes;
     reminders.value = data.reminders;
-    triggerApiRespondedEvent();
     {
         const {content, link, reference} = data.daily_verse;
         dailyVerse.value = {
@@ -117,6 +116,7 @@ function processApiData(data: ApiResponse) {
             content: purify.sanitize(content)
         };
     }
+    triggerApiRespondedEvent();
 
     if (data.user.is_active === false) {
         alert("You are banned from Coolbox.");
