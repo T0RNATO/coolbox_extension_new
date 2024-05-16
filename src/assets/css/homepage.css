@@ -2,6 +2,10 @@ body .timetable-small, body .timetable {
     display: none !important;
 }
 
+body {
+    width: 100vw;
+}
+
 :root {
     overflow-y: auto !important;
 }
