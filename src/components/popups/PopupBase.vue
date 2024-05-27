@@ -1,9 +1,11 @@
 <template>
     <dialog class="dui-modal border-transparent" ref="dialog">
         <div class="dui-modal-box p-0 rounded-lg shadow-2xl bg-primary" v-bind="$attrs">
-            <h1 class="bg-[#325985] w-full !text-white p-4 mb-0 rounded-t-lg">{{title}}</h1>
-            <div class="p-4 pb-2 text-themeText">
+            <h1 class="bg-[#325985] w-full !text-white p-4 mb-0 rounded-t-lg" v-if="title">{{title}}</h1>
+            <div class="text-themeText" :class="{'p-4': !noPad}">
                 <slot/>
+            </div>
+            <div class="px-4 pb-2">
                 <form method="dialog">
                     <slot name="buttons"/>
                 </form>
@@ -33,7 +35,8 @@ defineExpose({
     }
 })
 defineProps({
-    title: String
+    title: String,
+    noPad: Boolean
 })
 defineOptions({
     inheritAttrs: false
