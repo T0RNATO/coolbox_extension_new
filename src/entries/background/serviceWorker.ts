@@ -1,35 +1,8 @@
 import browser from "webextension-polyfill";
 // @ts-ignore
-import {applyTheme, updateTheme} from "./themes";
+import {applyTheme, updateTheme, customFont} from "./themes";
 // @ts-ignore
 import {Reminder, Theme} from "../../utils/types";
-
-// migrating theme setting to new system todo remove next update
-browser.runtime.onInstalled.addListener(() => {
-    browser.storage.local.get("theme").then(data => {
-        if (!data.theme?.setting) return;
-        const newData: Theme = {
-            type: "preset",
-            changeNavbar: false,
-            presetData: {
-                preset: "light",
-            }
-        }
-        if (data.theme) {
-            switch (data.theme.setting) {
-                case "custom":
-                    newData.type = "legacy";
-                    newData.legacyData = {colour: data.theme.custom, style: data.theme.style};
-                    break;
-                default:
-                    newData.presetData.preset = data.theme.setting;
-            }
-        }
-        browser.storage.local.set({
-            theme: newData
-        })
-    })
-})
 
 type UpdateThemeMessage = {type: string, old: Theme, new: Theme}
 
@@ -50,6 +23,7 @@ browser.runtime.onMessage.addListener((message: string | UpdateThemeMessage, sen
             browser.management.uninstallSelf();
             break;
         default:
+            if (typeof message == "string") break;
             message = message as UpdateThemeMessage;
             if (message.type == "updateTheme") {
                 updateTheme(sender.tab.id, message.old, message.new)
