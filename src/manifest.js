@@ -34,6 +34,10 @@ const sharedManifest = {
         "notifications",
         "alarms",
     ],
+    options_ui: {
+        page: "src/entries/options/index.html",
+        open_in_tab: true
+    }
 };
 
 const browserAction = {
@@ -50,10 +54,10 @@ const ManifestV2 = {
         persistent: true,
     },
     browser_action: browserAction,
-    // options_ui: {
-    //     ...sharedManifest.options_ui,
-    //     chrome_style: false,
-    // },
+    options_ui: {
+        ...sharedManifest.options_ui,
+        chrome_style: false,
+    },
     permissions: [...sharedManifest.permissions, "*://schoolbox.donvale.vic.edu.au/*"],
 };
 

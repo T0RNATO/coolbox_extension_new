@@ -6,6 +6,19 @@ import {themePresets, legacyThemePresets} from "../../utils/themePresets";
 // @ts-ignore
 import {AdvancedData, Theme} from "../../utils/types";
 
+const customFont = {value: null};
+
+browser.storage.local.get("font").then(font => {
+    customFont.value = font.font;
+})
+
+browser.runtime.onMessage.addListener((message: {newFont?: string}) => {
+    if (message.newFont) {
+        console.log(message);
+        customFont.value = message.newFont;
+    }
+})
+
 export function applyTheme(tab: number) {
     browser.storage.local.get("theme").then(result => {
         const css = generateThemeCss(result.theme)
@@ -94,6 +107,10 @@ function generateThemeCss(themeObject: Theme): string | null {
             continue;
         }
         currentThemeCss += `--${name}: ${value} !important;`;
+    }
+    console.log(customFont);
+    if (customFont.value !== 'default') {
+        currentThemeCss += `}*{font-family:"${customFont.value}"`
     }
     return currentThemeCss + "}";
 }
