@@ -6,16 +6,15 @@ import {themePresets, legacyThemePresets} from "../../utils/themePresets";
 // @ts-ignore
 import {AdvancedData, Theme} from "../../utils/types";
 
-const customFont = {value: null};
+let customFont: string;
 
 browser.storage.local.get("font").then(font => {
-    customFont.value = font.font;
+    customFont = font.font;
 })
 
 browser.runtime.onMessage.addListener((message: {newFont?: string}) => {
     if (message.newFont) {
-        console.log(message);
-        customFont.value = message.newFont;
+        customFont = message.newFont;
     }
 })
 
@@ -109,8 +108,8 @@ function generateThemeCss(themeObject: Theme): string | null {
         currentThemeCss += `--${name}: ${value} !important;`;
     }
     console.log(customFont);
-    if (customFont.value !== 'default') {
-        currentThemeCss += `}*{font-family:"${customFont.value}"`
+    if (customFont !== 'default') {
+        currentThemeCss += `}*{font-family:"${customFont}"`
     }
     return currentThemeCss + "}";
 }
