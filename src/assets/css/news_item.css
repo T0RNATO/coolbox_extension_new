@@ -1,0 +1,7 @@
+.content * {
+    color: white !important;
+}
+
+.content .highlighted-note * {
+     mix-blend-mode: difference;
+}

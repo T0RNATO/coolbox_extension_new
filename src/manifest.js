@@ -18,6 +18,10 @@ const sharedManifest = {
         {
             css: ["src/assets/css/homepage.css"],
             matches: ["*://schoolbox.donvale.vic.edu.au/"],
+        },
+        {
+            css: ["src/assets/css/news_item.css"],
+            matches: ["*://schoolbox.donvale.vic.edu.au/news/*"],
         }
         // ,{
         //     css: ["src/entries/contentScript/calendar/calendar.css"],

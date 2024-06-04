@@ -39,6 +39,8 @@ ul.grid,
 #attachment-browser-panel-container,
 #attachment-browser-filesystems,
 div#account-content,
+.c-search-page__filters > .c-island,
+.c-search-page__results > div,
 .content {
     background: var(--theme-generic);
 }
@@ -55,6 +57,7 @@ div#account-content,
 .filter-dropdown .filter-component > span.open,
 body .f-open-dropdown,
 #profile-accordion,
+.c-search-select button,
 .hybrid-bar .top-menu li a:hover,
 .reveal-modal {
     background-color: var(--theme-generic) !important;
@@ -150,4 +153,16 @@ span[data-assessment-status-text],
 .timetable th,
 .content {
     color: var(--theme-text);
+}
+
+.VueTables__table-footer, .VueTables__wrapper, .VueTables :is(.filters, th, tr, td), .VueTables__search, input:not(:hover) {
+    background: var(--theme-generic) !important;
+    color: var(--theme-text) !important;
+}
+
+/* The things we have to do... */
+/* Preserving cell background colours is ideal when possible but many have hardcoded backgrounds. */
+/* This will obviously not catch off-whites but does help in a few scenarios. */
+td:is([style*="background-color:#FFFFFF"],[style*="background-color:#ffffff"],[style*="background-color:#fff"],[style*="background-color:rgb(255,255,255)"]) {
+    background-color: var(--theme-accent) !important;
 }
