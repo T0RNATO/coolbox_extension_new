@@ -77,9 +77,8 @@ if (location.pathname === "/") {
             "Authorization": `Bearer ${cookie}`,
             "Content-Type": "application/json"
         });
-        if (!history.state) {
-            apiGet("start", processApiData);
-        }
+        // Intentionally still called even when cached for up-to-date information
+        apiGet("start", processApiData);
     });
 }
 
