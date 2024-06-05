@@ -9,7 +9,7 @@ import {AdvancedData, Theme} from "../../utils/types";
 let customFont: string;
 
 browser.storage.local.get("font").then(font => {
-    customFont = font.font;
+    customFont = font.font || 'default';
 })
 
 browser.runtime.onMessage.addListener((message: {newFont?: string}) => {
