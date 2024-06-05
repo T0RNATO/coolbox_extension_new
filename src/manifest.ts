@@ -1,3 +1,4 @@
+// @ts-ignore
 import pkg from "../package.json";
 
 const sharedManifest = {
@@ -37,7 +38,7 @@ const sharedManifest = {
         "cookies",
         "notifications",
         "alarms",
-    ],
+    ] as chrome.runtime.ManifestPermissions[],
     options_ui: {
         page: "src/entries/options/index.html",
         open_in_tab: true
@@ -62,7 +63,11 @@ const ManifestV2 = {
         ...sharedManifest.options_ui,
         chrome_style: false,
     },
-    permissions: [...sharedManifest.permissions, "*://schoolbox.donvale.vic.edu.au/*"],
+    permissions: [
+        ...sharedManifest.permissions,
+        "*://schoolbox.donvale.vic.edu.au/*",
+        "*://api.coolbox.lol/*",
+    ],
 };
 
 const ManifestV3 = {
@@ -74,7 +79,7 @@ const ManifestV3 = {
     host_permissions: ["*://schoolbox.donvale.vic.edu.au/*"],
 };
 
-export function getManifest(manifestVersion) {
+export function getManifest(manifestVersion: number): chrome.runtime.Manifest {
     const manifest = {
         author: pkg.author,
         description: pkg.description,

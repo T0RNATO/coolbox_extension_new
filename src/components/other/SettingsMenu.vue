@@ -3,8 +3,8 @@
     <div class="grid-cols-2 grid p-4 items-center">
         <span class="settings-label">Hide Profile Picture:</span>
         <input type="checkbox" class="dui-toggle" v-model="pfp">
-        <span class="settings-label">Custom Font</span>
-        <div>
+        <span class="settings-label" v-if="!isFirefox">Custom Font</span>
+        <div v-if="!isFirefox">
             <div v-if="!popup">
                 <select class="dui-select dui-select-sm"
                         @click="loadFonts"
@@ -41,7 +41,6 @@
 import {useExtensionStorage} from "~/utils/componentUtils";
 import browser from "webextension-polyfill";
 import {Ref, ref} from "vue";
-import {customFont, updateCustomFont} from "~/entries/background/themes";
 
 const pfp = useExtensionStorage("pfp", false);
 const linked = ref(false);
@@ -53,6 +52,8 @@ const optionsUrl = browser.runtime.getURL("src/entries/options/index.html");
 
 const availableFonts: Ref<string[]> = ref([]);
 const selectedFont = useExtensionStorage("font", "default");
+
+const isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
 
 let cookie;
 
