@@ -1,7 +1,7 @@
 // @ts-ignore
 import pkg from "../package.json";
 
-const sharedManifest = {
+const sharedManifest: Partial<chrome.runtime.Manifest> = {
     content_scripts: [
         {
             js: ["src/entries/contentScript/allPages.js"],
@@ -38,7 +38,7 @@ const sharedManifest = {
         "cookies",
         "notifications",
         "alarms",
-    ] as chrome.runtime.ManifestPermissions[],
+    ] ,
     options_ui: {
         page: "src/entries/options/index.html",
         open_in_tab: true
@@ -52,8 +52,8 @@ const browserAction = {
     default_popup: "src/entries/popup/index.html",
 };
 
-const ManifestV2 = {
-    ...sharedManifest,
+const ManifestV2: Partial<chrome.runtime.ManifestV2> = {
+    manifest_version: 2,
     background: {
         scripts: ["src/entries/background/serviceWorker.ts"],
         persistent: true,
@@ -70,8 +70,8 @@ const ManifestV2 = {
     ],
 };
 
-const ManifestV3 = {
-    ...sharedManifest,
+const ManifestV3: Partial<chrome.runtime.ManifestV3> = {
+    manifest_version: 3,
     action: browserAction,
     background: {
         service_worker: "src/entries/background/serviceWorker.ts",
@@ -81,6 +81,7 @@ const ManifestV3 = {
 
 export function getManifest(manifestVersion: number): chrome.runtime.Manifest {
     const manifest = {
+        ...sharedManifest,
         author: pkg.author,
         description: pkg.description,
         name: pkg.displayName ?? pkg.name,
@@ -91,16 +92,14 @@ export function getManifest(manifestVersion: number): chrome.runtime.Manifest {
         return {
             ...manifest,
             ...ManifestV2,
-            manifest_version: manifestVersion,
-        };
+        } as chrome.runtime.ManifestV2;
     }
 
     if (manifestVersion === 3) {
         return {
             ...manifest,
             ...ManifestV3,
-            manifest_version: manifestVersion,
-        };
+        } as chrome.runtime.ManifestV3;
     }
 
     throw new Error(
