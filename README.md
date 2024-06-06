@@ -6,3 +6,14 @@
 A browser extension to add and change some features of the platform Schoolbox, with a focus on customisability.
 
 [View the docs.](https://coolbox.lol)
+
+## Building From Source
+
+Ensure you have Node.js installed. Then, clone the repo, and run
+
+```bash
+$ npm install
+$ npm run build
+```
+
+The extension will be built into `dist/`, and can be loaded unpacked.
