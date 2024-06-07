@@ -20,14 +20,12 @@ browser.runtime.onMessage.addListener((message: {newFont?: string}) => {
 
 export function applyTheme(tab: number) {
     browser.storage.local.get("theme").then(result => {
-        const css = generateThemeCss(result.theme)
-        if (css) {
-            applyCss(tab, css);
+        const css = generateThemeCss(result.theme);
+        if (css[0]) {
+            applyCss(tab, ...css);
         }
     })
 }
-
-const appliedCss = [];
 
 export function updateTheme(tab: number, oldT: Theme, newT: Theme) {
     // Remove the base styling, because apparently it can be added multiple times to the same page and cause issues
@@ -37,34 +35,34 @@ export function updateTheme(tab: number, oldT: Theme, newT: Theme) {
     }).then(() => {
         const oldCss = generateThemeCss(oldT);
         const newCss = generateThemeCss(newT);
-        if (oldCss) {
+        if (oldCss[0]) {
             browser.scripting.removeCSS({
                 target: {tabId: tab},
-                css: oldCss
+                css: oldCss[0]
             })
-            appliedCss.splice(appliedCss.indexOf(oldCss), 1);
         }
 
-        if (newCss) {
-            applyCss(tab, newCss);
+        if (newCss[0]) {
+            applyCss(tab, ...newCss);
         }
     })
 }
 
-function applyCss(tab: number, css: string) {
-    browser.scripting.insertCSS({
-        target: { tabId: tab },
-        files: ["/css/theme_base.css"]
-    }).then(() => {
+function applyCss(tab: number, css: string, applyBase = true) {
+    function applyTheme() {
         browser.scripting.insertCSS({
             target: { tabId: tab },
             css: css
         })
-        appliedCss.push(css);
-    })
+    }
+    if (!applyBase) return applyTheme()
+    browser.scripting.insertCSS({
+        target: { tabId: tab },
+        files: ["/css/theme_base.css"]
+    }).then(applyTheme);
 }
 
-function generateThemeCss(themeObject: Theme): string | null {
+function generateThemeCss(themeObject: Theme): [string | null, boolean] {
     let variables: AdvancedData;
     switch (themeObject?.type || "preset") {
         case "preset":
@@ -98,7 +96,13 @@ function generateThemeCss(themeObject: Theme): string | null {
             break;
     }
 
-    if (!variables) { return null }
+    if (!variables) {
+        if (customFont !== 'default') {
+            return [`*{font-family:"${customFont}"}`, false];
+        } else {
+            return [null, false];
+        }
+    }
 
     let currentThemeCss = ":root {"
     for (const [name, value] of Object.entries(variables)) {
@@ -107,9 +111,8 @@ function generateThemeCss(themeObject: Theme): string | null {
         }
         currentThemeCss += `--${name}: ${value} !important;`;
     }
-    console.log(customFont);
     if (customFont !== 'default') {
         currentThemeCss += `}*{font-family:"${customFont}"`
     }
-    return currentThemeCss + "}";
+    return [currentThemeCss + "}", true];
 }
