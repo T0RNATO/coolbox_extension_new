@@ -80,7 +80,7 @@ function setFont(f: string) {
             <div class="dui-input dui-input-sm bg-accent text-themeText cursor-text"
                  :style="{fontFamily: font == 'default' ? 'sans-serif' : font}"
                  @click="openDropdown" v-if="!dropdownOpen"
-            >{{font}}</div>
+            >{{font !== 'default' ? font : 'Default'}}</div>
 
             <template v-else>
                 <input type="text" class="dui-input dui-input-xs w-[90%] bg-accent text-themeText font-sans"
@@ -92,7 +92,7 @@ function setFont(f: string) {
                     <div v-else-if="!availableFonts.length" class="p-1">Loading Fonts...</div>
 
                     <template v-else>
-                        <div @click="setFont('default')" class="font">Default</div>
+                        <div @click="setFont('default')" class="font font-sans">Default</div>
                         <div v-for="item in filteredFonts" class="font"
                              :style="{fontFamily: item}" @click="setFont(item)"
                         >{{item}}</div>
