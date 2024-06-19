@@ -8,12 +8,31 @@ import { getManifest } from "./src/manifest.js";
 // noinspection JSUnusedGlobalSymbols
 export default defineConfig(({ mode }) => {
     const env = loadEnv(mode, process.cwd(), "");
-    const isPatchRequired = Number(env.MANIFEST_VERSION) === 2;
+    const version = Number(env.MANIFEST_VERSION);
 
-    const firefoxPatch: Plugin = {
+    return {
+        plugins: [
+            vue({
+                customElement: /\.shadow\.vue$/,
+            }),
+            webExtension({
+                manifest: getManifest(version),
+            }),
+            firefoxPatch(version === 2),
+        ],
+        resolve: {
+            alias: {
+                "~": path.resolve(__dirname, "./src"),
+            },
+        },
+    };
+});
+
+const firefoxPatch = (active: boolean): Plugin | false => {
+    return active ? {
         name: 'firefox-patch',
         transform(code, path) {
-            if (isPatchRequired && path.includes('node_modules/vue-shadow-dom')) {
+            if (path.includes('node_modules/vue-shadow-dom')) {
                 // language=js
                 const patchedCode = code.replace("shadow_root.adoptedStyleSheets = adoptedStyleSheets;", `
                     shadow_root.adoptedStyleSheets.length = 0;
@@ -29,20 +48,5 @@ export default defineConfig(({ mode }) => {
             }
             return null;
         },
-    };
-
-    return {
-        plugins: [
-            vue(),
-            webExtension({
-                manifest: getManifest(Number(env.MANIFEST_VERSION)),
-            }),
-            firefoxPatch,
-        ],
-        resolve: {
-            alias: {
-                "~": path.resolve(__dirname, "./src"),
-            },
-        },
-    };
-});
+    }: false;
+}
