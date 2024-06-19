@@ -2,10 +2,13 @@
 import PopupBase from "~/components/popups/PopupBase.vue";
 import {computed, Ref, ref, WritableComputedRef as WCR} from "vue";
 import {listenForStorageChange, useExtensionStorage} from "~/utils/componentUtils";
-import {AdvancedData, Preset, ThemeType} from "~/utils/types.ts";
+import {AdvancedData, Preset, ThemeType} from "~/utils/types";
 import {themePresets, legacyThemePresets} from "~/utils/themePresets";
 import CBColourPicker from "~/components/other/CBColourPicker.vue";
 import browser from "webextension-polyfill";
+import FontDropdown from "~/components/other/FontDropdown.shadow.vue";
+
+const isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
 
 const popup: Ref<InstanceType<typeof PopupBase>> = ref(null);
 const themeType = useExtensionStorage("theme.type", "preset" as ThemeType);
@@ -88,8 +91,12 @@ defineExpose({openPopup() {
     Customise your Schoolbox Theme.
     <hr>
     <div class="options grid-rows-2">
-        <span>Type:</span>
-        <select v-model="themeType" class="!my-2 dui-select bg-black bg-opacity-10">
+        <template v-if="!isFirefox">
+            <span>Font:</span>
+            <FontDropdown/>
+        </template>
+        <span>Theme Type:</span>
+        <select v-model="themeType" class="!my-2 dui-select bg-black bg-opacity-10 dui-select-sm">
             <option value="preset">Preset</option>
             <option value="legacy">Legacy Customised</option>
             <option value="custom">Advanced</option>

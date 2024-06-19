@@ -3,26 +3,6 @@
     <div class="grid-cols-2 grid p-4 items-center">
         <span class="settings-label">Hide Profile Picture:</span>
         <input type="checkbox" class="dui-toggle" v-model="pfp">
-        <span class="settings-label" v-if="!isFirefox">Custom Font</span>
-        <div v-if="!isFirefox">
-            <div v-if="!popup">
-                <select class="dui-select dui-select-sm"
-                        @click="loadFonts"
-                        v-if="!fontLoadingError"
-                        v-model="selectedFont"
-                        :style="{fontFamily: selectedFont == 'default' ? 'unset' : selectedFont}"
-                        @change="browser.runtime.sendMessage({newFont: $event.target.value})"
-                >
-                    <option value="default" style="font-family: system-ui, sans-serif">Default</option>
-                    <option :value="selectedFont" v-if="selectedFont !== 'default'" :style="{fontFamily: selectedFont}">{{selectedFont}}</option>
-                    <option :value="font" v-for="font in availableFonts" :style="{fontFamily: font}">{{font}}</option>
-                </select>
-                <span v-else class="text-red-500">Error loading fonts.</span>
-            </div>
-            <a v-else class="dui-link dui-link-primary mx-1" :href="optionsUrl" target="_blank">
-                Open in tab to customise
-            </a>
-        </div>
 
         <div class="col-span-2 my-2">
             Looking for settings for a specific widget? Click the customise homepage button in the top right of Schoolbox, and click on widgets to edit their settings or delete them.
@@ -40,52 +20,18 @@
 <script setup lang="ts">
 import {useExtensionStorage} from "~/utils/componentUtils";
 import browser from "webextension-polyfill";
-import {Ref, ref} from "vue";
+import {ref} from "vue";
 
 const pfp = useExtensionStorage("pfp", false);
 const linked = ref(false);
 const displayButton = ref(false);
 const networkError = ref(false);
-const fontLoadingError = ref(false);
-
-const optionsUrl = browser.runtime.getURL("src/entries/options/index.html");
-
-const availableFonts: Ref<string[]> = ref([]);
-const selectedFont = useExtensionStorage("font", "default");
-
-const isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
 
 let cookie;
 
 defineProps<{
     popup?: boolean
 }>();
-
-// TS doesn't seem to know about this API (it is experimental after all)
-// noinspection JSUnusedGlobalSymbols
-interface Window {
-    queryLocalFonts: (() => Promise<{
-        postscriptName: string
-        fullName: string
-        family: string
-        style: string
-    }[]>)
-}
-
-function loadFonts() {
-    window.queryLocalFonts().then(fontData => {
-        const fonts: string[] = [];
-        for (const font of fontData.map(f => f.family)) {
-            if (!fonts.includes(font)) {
-                fonts.push(font);
-            }
-        }
-        availableFonts.value = fonts;
-    }).catch((error) => {
-        console.log(error);
-        fontLoadingError.value = true;
-    })
-}
 
 function unlink() {
     fetch(`https://api.coolbox.lol/discord`, {
