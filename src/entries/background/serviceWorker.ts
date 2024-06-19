@@ -1,6 +1,6 @@
 import browser from "webextension-polyfill";
 // @ts-ignore
-import {applyTheme, updateTheme, customFont} from "./themes";
+import {applyTheme, updateTheme} from "./themes";
 // @ts-ignore
 import {Reminder, Theme} from "../../utils/types";
 
@@ -24,7 +24,6 @@ browser.runtime.onMessage.addListener((message: string | UpdateThemeMessage, sen
             break;
         default:
             if (typeof message == "string") break;
-            message = message as UpdateThemeMessage;
             if (message.type == "updateTheme") {
                 updateTheme(sender.tab.id, message.old, message.new)
             }
