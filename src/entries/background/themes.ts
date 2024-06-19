@@ -12,9 +12,13 @@ browser.storage.local.get("font").then(font => {
     customFont = font.font || 'default';
 })
 
-browser.runtime.onMessage.addListener((message: {newFont?: string}) => {
+browser.runtime.onMessage.addListener((message: {newFont: string, oldFont: string}, sender) => {
     if (message.newFont) {
         customFont = message.newFont;
+        browser.storage.local.get("theme").then(result => {
+            // Mildly cursed but it works
+            updateTheme(sender.tab.id, result.theme, result.theme, message.oldFont);
+        })
     }
 })
 
@@ -27,13 +31,13 @@ export function applyTheme(tab: number) {
     })
 }
 
-export function updateTheme(tab: number, oldT: Theme, newT: Theme) {
+export function updateTheme(tab: number, oldT: Theme, newT: Theme, overrideOldFont?: string) {
     // Remove the base styling, because apparently it can be added multiple times to the same page and cause issues
     browser.scripting.removeCSS({
         target: { tabId: tab },
         files: ["/css/theme_base.css"]
     }).then(() => {
-        const oldCss = generateThemeCss(oldT);
+        const oldCss = generateThemeCss(oldT, overrideOldFont || customFont);
         const newCss = generateThemeCss(newT);
         if (oldCss[0]) {
             browser.scripting.removeCSS({
@@ -62,7 +66,8 @@ function applyCss(tab: number, css: string, applyBase = true) {
     }).then(applyTheme);
 }
 
-function generateThemeCss(themeObject: Theme): [string | null, boolean] {
+// Returns [cssString | null, shouldApplyBaseStyles]
+function generateThemeCss(themeObject: Theme, font = customFont): [string | null, boolean] {
     let variables: AdvancedData;
     switch (themeObject?.type || "preset") {
         case "preset":
@@ -97,8 +102,8 @@ function generateThemeCss(themeObject: Theme): [string | null, boolean] {
     }
 
     if (!variables) {
-        if (customFont !== 'default') {
-            return [`*{font-family:"${customFont}"}`, false];
+        if (font !== 'default') {
+            return [`*{font-family:"${font}"}`, false];
         } else {
             return [null, false];
         }
@@ -111,8 +116,8 @@ function generateThemeCss(themeObject: Theme): [string | null, boolean] {
         }
         currentThemeCss += `--${name}: ${value} !important;`;
     }
-    if (customFont !== 'default') {
-        currentThemeCss += `}*{font-family:"${customFont}"`
+    if (font !== 'default') {
+        currentThemeCss += `}*{font-family:"${font}"`
     }
     return [currentThemeCss + "}", true];
 }
