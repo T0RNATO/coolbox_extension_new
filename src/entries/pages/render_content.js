@@ -1,6 +1,6 @@
 import browser from "webextension-polyfill";
 
-export default async function renderContent(render) {
+export default async function render_content(render) {
     const appRoot = document.createElement("div");
 
     if (!import.meta.hot) {

@@ -4,7 +4,7 @@ import pkg from "../package.json";
 const sharedManifest: Partial<chrome.runtime.Manifest> = {
     content_scripts: [
         {
-            js: ["src/entries/contentScript/allPages.js"],
+            js: ["src/entries/pages/all_pages.js"],
             css: [
                 "src/assets/css/icons.css",
                 "src/assets/css/all_pages.css",
@@ -12,7 +12,7 @@ const sharedManifest: Partial<chrome.runtime.Manifest> = {
             matches: ["*://schoolbox.donvale.vic.edu.au/*"],
         },
         {
-            js: ["src/entries/contentScript/homepage/beforePageLoad.js"],
+            js: ["src/entries/pages/homepage/beforePageLoad.js"],
             matches: ["*://schoolbox.donvale.vic.edu.au/*"],
             run_at: "document_start",
         },
@@ -23,11 +23,11 @@ const sharedManifest: Partial<chrome.runtime.Manifest> = {
         {
             css: ["src/assets/css/news_item.css"],
             matches: ["*://schoolbox.donvale.vic.edu.au/news/*"],
+        },
+        {
+            css: ["src/entries/pages/calendar/calendar.css"],
+            matches: ["*://schoolbox.donvale.vic.edu.au/calendar/week"],
         }
-        // ,{
-        //     css: ["src/entries/contentScript/calendar/calendar.css"],
-        //     matches: ["*://schoolbox.donvale.vic.edu.au/calendar/week"],
-        // }
     ],
     icons: {
         64: "icons/icon.png"
