@@ -3,7 +3,7 @@ defineEmits(['viewReminders', 'createReminder']);
 </script>
 
 <template>
-    <li class="pt-2">
+    <li class="!pt-2">
         <div class="flex-row w-full flex p-0 text-sm">
             <div class="button" @click="$emit('createReminder')">
                 <div>
