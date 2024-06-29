@@ -1,10 +1,10 @@
 import { createApp } from "vue";
-import renderContent from "./renderContent";
-import App from "./homepage/Homepage.vue";
+import render_content from "./render_content.js";
+import Homepage from "./homepage/Homepage.vue";
+import CalendarPage from "~/entries/pages/calendar/CalendarPage.vue";
 import shadow from 'vue-shadow-dom'
 import browser from "webextension-polyfill";
 import {apiSend, cookieFetched} from "~/utils/apiUtils";
-import {coolboxifyCalendar} from "~/entries/contentScript/calendar/calendar.ts";
 import {addViteStyleTarget} from "@samrum/vite-plugin-web-extension/client";
 
 if (import.meta.env.DEV) {
@@ -13,55 +13,18 @@ if (import.meta.env.DEV) {
 
 addViteStyleTarget(document.head);
 
-// let collatedErrors = [];
+const VueInjections = {
+    "/": Homepage,
+    "/calendar/week": CalendarPage,
+}
 
-
-// Enum of the error codes used in prod
-// const errorCodes = {
-//     0: "SETUP_FUNCTION",
-//     1: "RENDER_FUNCTION",
-//     2: "WATCH_GETTER",
-//     3: "WATCH_CALLBACK",
-//     4: "WATCH_CLEANUP",
-//     5: "NATIVE_EVENT_HANDLER",
-//     6: "COMPONENT_EVENT_HANDLER",
-//     7: "VNODE_HOOK",
-//     8: "DIRECTIVE_HOOK",
-//     9: "TRANSITION_HOOK",
-//     10: "APP_ERROR_HANDLER",
-//     11: "APP_WARN_HANDLER",
-//     12: "FUNCTION_REF",
-//     13: "ASYNC_COMPONENT_LOADER",
-//     14: "SCHEDULER",
-// }
-
-// function errorHandler(err, instance, info) {
-//     collatedErrors.push({error: err.toString(), detail: errorCodes?.[info]})
-// }
-
-// Render Vue on the homepage
-if (location.pathname === "/") {
-    renderContent((appRoot) => {
-        const app = createApp(App);
-
-        // If this is in prod, report any collected errors to the api
-        // if (process.env.NODE_ENV === "production") {
-        //     setInterval(() => {
-        //         if (collatedErrors.length) {
-        //             apiSend("POST", "error-report", collatedErrors);
-        //             collatedErrors = [];
-        //         }
-        //     }, 2000);
-        //
-        //     app.config.errorHandler = errorHandler;
-        //     app.config.warnHandler = errorHandler;
-        // }
-
+// Render Vue
+if (location.pathname in VueInjections) {
+    render_content((appRoot) => {
+        const app = createApp(VueInjections[location.pathname]);
         app.use(shadow);
         app.mount(appRoot);
     });
-} else if (location.pathname === "/calendar/week") {
-    coolboxifyCalendar();
 }
 
 // Hide profile picture if needed, and apply pretty subjects to sidebar
