@@ -5,6 +5,7 @@
       "~/*": ["./src/*"]
     },
     "target": "ESNext",
-    "moduleResolution": "nodenext"
+    "moduleResolution": "nodenext",
+    "allowImportingTsExtensions": true
   }
 }

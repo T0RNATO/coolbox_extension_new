@@ -1,8 +1,6 @@
 import browser from "webextension-polyfill";
-// @ts-ignore
-import {applyTheme, updateTheme} from "./themes";
-// @ts-ignore
-import {Reminder, Theme} from "../../utils/types";
+import {applyTheme, updateTheme} from "./themes.ts";
+import {Reminder, Theme} from "../../utils/types.ts";
 
 type UpdateThemeMessage = {type: string, old: Theme, new: Theme}
 
