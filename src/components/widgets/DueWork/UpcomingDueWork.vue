@@ -3,7 +3,7 @@
         <h2 class="subheader">Due Work</h2>
         <ul class="information-list rounded-lg bg-primary overflow-hidden" id="due-work" :class="{limitHeight: widgInfo.add}">
             <li v-for="workItem in dueWorkItems">
-                <div class="w-full p-2" :class="{hiderem: hiddenReminders.includes(getAssessmentId(workItem))}">
+                <div class="w-full p-2" :class="{hiderem: hiddenReminderIds.includes(getAssessmentId(workItem))}">
                     <!-- Work Item Name -->
                     <h3 v-html="workItem.firstElementChild.innerHTML" class="m-0"></h3>
                     <!-- Work Item Subject -->
@@ -22,11 +22,11 @@
                     <!-- Time left -->
                     <p class="meta" v-html="workItem.lastElementChild.innerHTML"></p>
                     <!-- Add reminder button -->
-                    <div class="reminder-button" v-if="!hiddenReminders.includes(getAssessmentId(workItem))">
+                    <div class="reminder-button" v-if="!hiddenReminderIds.includes(getAssessmentId(workItem))">
                         <span class="material-symbols-outlined assessment-button" @click="editReminder(workItem as HTMLElement)">
                             {{reminderExists(workItem) ? 'notifications_active' : 'notification_add'}}
                         </span>
-                            <span class="material-symbols-outlined assessment-button" @click="hiddenReminders = [...hiddenReminders, getAssessmentId(workItem)];">
+                            <span class="material-symbols-outlined assessment-button" @click="hiddenReminderIds = [...hiddenReminderIds, getAssessmentId(workItem)];">
                             visibility_off
                         </span>
                     </div>
@@ -35,7 +35,7 @@
                         <div class="dui-tooltip dui-tooltip-left" data-tip="Restore Task">
                             <!--suppress TypeScriptUnresolvedReference, toSpliced randomly is unrecognised despite target of ESNext -->
                             <span class="material-symbols-outlined assessment-button text-green-400"
-                                  @click="hiddenReminders = hiddenReminders.toSpliced(hiddenReminders.indexOf(getAssessmentId(workItem)), 1)">
+                                  @click="hiddenReminderIds = hiddenReminderIds.toSpliced(hiddenReminderIds.indexOf(getAssessmentId(workItem)), 1)">
                                 visibility
                             </span>
                         </div>
@@ -62,15 +62,15 @@ import type {widgInfo} from "~/utils/types";
 let dueWorkItems = document.querySelectorAll('#component52396 .information-list .card');
 
 const prettySubjects: Ref<{pretty: string, name: string}[]> = ref([]);
-const hiddenReminders = useExtensionStorage('hiddenReminders', []);
+const hiddenReminderIds: Ref<number[]> = useExtensionStorage('hiddenReminders', []);
 
 // Couldn't find a better way to do this
 setTimeout(() => {
     // Remove any hidden reminders that no longer exist
-    for (const reminder of hiddenReminders.value) {
+    for (const reminder of hiddenReminderIds.value) {
         if (!document.querySelector(`#component52396 .information-list .card h3 a[href*="/${reminder}"]`)) {
             // noinspection TypeScriptUnresolvedReference, toSpliced randomly is unrecognised despite target of ESNext
-            hiddenReminders.value = hiddenReminders.value.toSpliced(hiddenReminders.value.indexOf(reminder), 1)
+            hiddenReminderIds.value = hiddenReminderIds.value.toSpliced(hiddenReminderIds.value.indexOf(reminder), 1)
         }
     }
 }, 1000)
