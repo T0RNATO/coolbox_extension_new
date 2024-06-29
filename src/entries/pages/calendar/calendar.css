@@ -1,0 +1,8 @@
+#container #content, .loader-overlay {
+    display: none;
+}
+
+body, html {
+    height: 100vh !important;
+    overflow: hidden !important;
+}
