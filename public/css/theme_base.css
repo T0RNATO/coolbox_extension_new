@@ -1,10 +1,10 @@
 :root {
-    --off-canvas-hover:      var(--theme-accent)          !important;
-    --off-canvas-background: var(--theme-generic)         !important;
-    --form-border-color:     var(--body-background)       !important;
-    --form-bg-hover-color:   var(--theme-accent)          !important;
+    --off-canvas-hover:      rgb(var(--theme-accent))     !important;
+    --off-canvas-background: rgb(var(--theme-generic))    !important;
+    --form-border-color:     rgb(var(--body-background))  !important;
+    --form-bg-hover-color:   rgb(var(--theme-accent))     !important;
+    --navigation-hover:      rgb(var(--theme-generic))    !important;
     --logo-background:       var(--navigation-background) !important;
-    --navigation-hover:      var(--theme-generic)         !important;
 }
 
 /*This css file is a mess*/
@@ -16,12 +16,12 @@ body .rb-selected,
 #account-content-mobile,
 .fc .fc-list-event:hover td,
 select {
-    background-color: var(--theme-accent) !important;
+    background-color: rgb(var(--theme-accent)) !important;
 }
 
 body textarea {
     background-color: var(--body-background);
-    color: var(--theme-text) !important;
+    color: rgb(var(--theme-text)) !important;
 }
 
 .selected-item, .label.filter {
@@ -42,11 +42,11 @@ div#account-content,
 .c-search-page__filters > .c-island,
 .c-search-page__results > div,
 .content {
-    background: var(--theme-generic);
+    background: rgb(var(--theme-generic));
 }
 
 :not(.timetable-subject) > a:not(#notification-toggle, .button, .cb-link) {
-    color: var(--link-colour) !important;
+    color: rgb(var(--link-colour)) !important;
 }
 
 .component-action section,
@@ -60,7 +60,7 @@ body .f-open-dropdown,
 .c-search-select button,
 .hybrid-bar .top-menu li a:hover,
 .reveal-modal {
-    background-color: var(--theme-generic) !important;
+    background-color: rgb(var(--theme-generic)) !important;
 }
 
 .f-dropdown.content.open {
@@ -68,48 +68,48 @@ body .f-open-dropdown,
 }
 
 dl.tabs, .content table td {
-    background: var(--theme-accent);
+    background: rgb(var(--theme-accent));
 }
 
 dd.active a, [role="menuitem"] a {
-    color: var(--link-colour) !important;
+    color: rgb(var(--link-colour)) !important;
 }
 
 body blockquote {
     background-color: var(--body-background);
-    color: var(--theme-text);
-    border-left-color: var(--theme-accent);
+    color: rgb(var(--theme-text));
+    border-left-color: rgb(var(--theme-accent));
 }
 
 body blockquote::before {
-    color: var(--theme-accent);
+    color: rgb(var(--theme-accent));
 }
 
 .rubric-wrap th, .rubric-wrap td, .markable th, .markable td {
-    background-color: var(--theme-generic);
-    color: var(--theme-text) !important;
-    border: 1px solid var(--theme-text) !important;
+    background-color: rgb(var(--theme-generic));
+    color: rgb(var(--theme-text)) !important;
+    border: 1px solid rgb(var(--theme-text)) !important;
 }
 
 .active.tab-title a {
-    background: var(--theme-accent) !important;
-    color: var(--theme-text) !important;
+    background: rgb(var(--theme-accent)) !important;
+    color: rgb(var(--theme-text)) !important;
 }
 
 .dz-default.dz-message {
-    background-color: var(--theme-accent);
-    color: var(--link-colour);
+    background-color: rgb(var(--theme-accent));
+    color: rgb(var(--link-colour));
 }
 
 body .button, body button {
-    background-color: var(--theme-accent);
-    color: var(--link-colour)
+    background-color: rgb(var(--theme-accent));
+    color: rgb(var(--link-colour))
 }
 
 body .button:hover, body button:hover, body .button:focus, body button:focus {
     filter: brightness(1.2);
-    background-color: var(--theme-accent);
-    color: var(--link-colour)
+    background-color: rgb(var(--theme-accent));
+    color: rgb(var(--link-colour))
 }
 
 rect.highcharts-background {
@@ -128,11 +128,11 @@ tr.fc-list-event > td,
 .reveal-modal p,
 .reveal-modal h2,
 select {
-    color: var(--theme-text) !important;
+    color: rgb(var(--theme-text)) !important;
 }
 
 body tr.fc-list-event {
-    text-decoration-color: var(--theme-text) !important;
+    text-decoration-color: rgb(var(--theme-text)) !important;
 }
 
 .error-state div.row,
@@ -152,17 +152,17 @@ span[data-assessment-status-text],
 #fc-dom-1,
 .timetable th,
 .content {
-    color: var(--theme-text);
+    color: rgb(var(--theme-text));
 }
 
 .VueTables__table-footer, .VueTables__wrapper, .VueTables :is(.filters, th, tr, td), .VueTables__search, input:not(:hover) {
-    background: var(--theme-generic) !important;
-    color: var(--theme-text) !important;
+    background: rgb(var(--theme-generic)) !important;
+    color: rgb(var(--theme-text)) !important;
 }
 
 /* The things we have to do... */
 /* Preserving cell background colours is ideal when possible but many have hardcoded backgrounds. */
 /* This will obviously not catch off-whites but does help in a few scenarios. */
 td:is([style*="background-color:#FFFFFF"],[style*="background-color:#ffffff"],[style*="background-color:#fff"],[style*="background-color:rgb(255,255,255)"]) {
-    background-color: var(--theme-accent) !important;
+    background-color: rgb(var(--theme-accent)) !important;
 }

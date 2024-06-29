@@ -1,6 +1,13 @@
 export type Preset = "light" | "dark" | "catppuccin_mocha" | "catppuccin_frappe" | "purple" | "dark_blue";
 export type ThemeType = "preset" | "legacy" | "custom"
 
+export type PresetDefinition = {
+    display: string,
+    value: string,
+    rgb: string,
+    vars: AdvancedData
+}
+
 export type Theme = {
     type: ThemeType,
     changeNavbar: boolean,

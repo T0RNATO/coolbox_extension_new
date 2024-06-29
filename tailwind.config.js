@@ -7,10 +7,10 @@ module.exports = {
     theme: {
         extend: {
             colors: {
-                primary: 'var(--theme-generic)',
-                background: 'var(--body-background)',
-                accent: 'var(--theme-accent)',
-                themeText: 'var(--theme-text)',
+                primary: 'rgb(var(--theme-generic) / <alpha-value>)',
+                background: 'rgb(var(--body-background) / <alpha-value>)',
+                accent: 'rgb(var(--theme-accent) / <alpha-value>)',
+                themeText: 'rgb(var(--theme-text) / <alpha-value>)',
             }
         }
     },

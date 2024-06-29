@@ -109,7 +109,7 @@ defineExpose({openPopup() {
         <span class="title">Presets:</span>
         <div v-for="theme in themePresets" class="inline">
             <input type="radio" name="preset" :value="theme.value" :id="theme.value" v-model="preset">
-            <label :for="theme.value" :style="{background: theme.hex}">
+            <label :for="theme.value" :style="{background: `rgb(${theme.rgb})`}">
                 <span class="text-white mix-blend-difference">
                     {{theme.display}}
                 </span>
@@ -118,7 +118,7 @@ defineExpose({openPopup() {
         <span class="title">Legacy Presets:</span>
         <div v-for="theme in legacyThemePresets" class="inline">
             <input type="radio" name="preset" :value="theme.value" :id="theme.value" v-model="preset">
-            <label :for="theme.value" :style="{background: theme.hex}">
+            <label :for="theme.value" :style="{background: `rgb(${theme.rgb})`}">
                 <span class="text-white mix-blend-difference">
                     {{theme.display}}
                 </span>

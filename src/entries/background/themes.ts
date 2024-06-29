@@ -1,10 +1,7 @@
 import browser from "webextension-polyfill";
-// @ts-ignore
-import {shadeHexColor} from "../../utils/utilFunctions";
-// @ts-ignore
-import {themePresets, legacyThemePresets} from "../../utils/themePresets";
-// @ts-ignore
-import {AdvancedData, Theme} from "../../utils/types";
+import {hexToRGBString, shadeHexColor} from "../../utils/utilFunctions.ts";
+import {themePresets, legacyThemePresets} from "../../utils/themePresets.ts";
+import {AdvancedData, Theme} from "../../utils/types.ts";
 
 let customFont: string;
 
@@ -68,37 +65,46 @@ function applyCss(tab: number, css: string, applyBase = true) {
 
 // Returns [cssString | null, shouldApplyBaseStyles]
 function generateThemeCss(themeObject: Theme, font = customFont): [string | null, boolean] {
-    let variables: AdvancedData;
+    console.log(themePresets, themeObject);
+    let variables: Partial<AdvancedData>;
     switch (themeObject?.type || "preset") {
         case "preset":
             variables = themePresets.concat(legacyThemePresets).find(theme => theme.value === themeObject.presetData.preset)?.vars;
+            console.log(variables);
             break;
         case "legacy": {
             const colour = themeObject.legacyData.colour;
             if (themeObject.legacyData.style === "dark") {
                 variables = {
-                    "theme-text": "#e8e8e8",
-                    "theme-accent": colour,
-                    "theme-generic": shadeHexColor(colour, -0.2),
+                    "theme-text": "232 232 232",
+                    "theme-accent": hexToRGBString(colour),
+                    "theme-generic": hexToRGBString(shadeHexColor(colour, -0.2)),
+                    "link-colour": "89 169 255",
                     "body-background": shadeHexColor(colour, -0.4),
-                    "link-colour": "#59a9ff",
-                    "navigation-background": colour
+                    "navigation-background": colour,
                 }
             } else {
                 variables = {
-                    "theme-text": "#000",
-                    "theme-accent": shadeHexColor(colour, 0.4),
-                    "theme-generic": shadeHexColor(colour, 0.2),
+                    "theme-text": "0 0 0",
+                    "theme-accent": hexToRGBString(shadeHexColor(colour, 0.4)),
+                    "theme-generic": hexToRGBString(shadeHexColor(colour, 0.2)),
+                    "link-colour": "52 94 231",
                     "body-background": colour,
-                    "link-colour": "#345ee7",
-                    "navigation-background": colour
+                    "navigation-background": colour,
                 }
             }
             break;
         }
         case "custom":
-            variables = themeObject.advancedData;
-            break;
+            const vars = themeObject.advancedData;
+            variables = {
+                "theme-text": hexToRGBString(vars["theme-text"]),
+                "theme-accent": hexToRGBString(vars["theme-accent"]),
+                "theme-generic": hexToRGBString(vars["theme-generic"]),
+                "link-colour": hexToRGBString(vars["link-colour"]),
+                "body-background": vars["body-background"],
+                "navigation-background": vars["navigation-background"],
+            }
     }
 
     if (!variables) {

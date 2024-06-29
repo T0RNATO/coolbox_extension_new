@@ -7,10 +7,10 @@ body {
 }
 
 :root {
-    --theme-generic: #fff;
-    --body-background: #F8F8F8;
-    --theme-accent: #eff5ff;
-    --theme-text: #000;
+    --theme-generic: 255 255 255;
+    --body-background: 248 248 248;
+    --theme-accent: 239 245 255;
+    --theme-text: 0 0 0;
 }
 
 .hide-pfp #profile-drop {

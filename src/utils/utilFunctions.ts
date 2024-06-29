@@ -12,6 +12,11 @@ function hexToRGB(hex: string) {
     ];
 }
 
+export function hexToRGBString(hex: string) {
+    const rgb = hexToRGB(hex);
+    return `${rgb[0]} ${rgb[1]} ${rgb[2]}`;
+}
+
 function RGBtoHex(rgb: number[]) {
     return `#${rgb[0].toString(16).padStart(2, '0')}${rgb[1].toString(16).padStart(2, '0')}${rgb[2].toString(16).padStart(2, '0')}`
 }
