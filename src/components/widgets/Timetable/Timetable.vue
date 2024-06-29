@@ -1,5 +1,5 @@
 <template>
-    <div class="mb-4 text-sm">
+    <div class="mb-4 text-sm" v-if="!widgInfo.edit">
         <div v-if="show">
             <h2 class="subheader">{{dayTitle}} {{weekNumber}}</h2>
             <div class="flex sm:flex-row lg:flex-col">
@@ -22,7 +22,6 @@
                 </div>
             </div>
         </div>
-        <span class="italic text-gray-500" v-else-if="widgInfo.edit">(Timetable Widget)</span>
 
         <span class="text-red-500 text-2xl whitespace-pre-line">{{statusMessages.critical}}</span>
 
@@ -37,6 +36,7 @@
             </div>
         </EditingContextMenu>
     </div>
+    <span class="italic text-gray-500" v-else>(Timetable Widget)</span>
 </template>
 
 <script setup lang="ts">
