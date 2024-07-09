@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import {ref, type Ref, type Directive, nextTick, computed} from "vue";
+import {ref, type Ref, type Directive, nextTick, computed, onMounted} from "vue";
 import {dayIndexToMonthDay, getDayOfYear, toMondayBased} from "~/entries/pages/calendar/timeUtils";
-import {vInfiniteScroll, vIntersectionObserver} from "@vueuse/components";
 
 // todo: add sidebar to jump to months
 // todo: fix duplicated month headings if page loads with one week of prev month visible
@@ -62,56 +61,85 @@ let currentDisplayedMonth = computed(() => {
 })
 
 const calendarWeeks: Ref<Week[]> = ref([
+    generateDaysForWeek(currentScrollDayIndex.value - 14),
     generateDaysForWeek(currentScrollDayIndex.value - 7),
     generateDaysForWeek(currentScrollDayIndex.value),
     generateDaysForWeek(currentScrollDayIndex.value + 7),
     generateDaysForWeek(currentScrollDayIndex.value + 14),
+    generateDaysForWeek(currentScrollDayIndex.value + 21),
 ]);
-
-console.log(calendarWeeks.value);
 
 const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
 const scrollContainer: Ref<HTMLDivElement> = ref(null);
 
-let justLoadedMore = false;
+const threshold = 0.3;
+const observer = new IntersectionObserver(scrollChange, {threshold});
+const calendarRowElements: Record<number, HTMLDivElement> = {};
 
-function scrollDown() {
-    currentScrollDayIndex.value += 7;
-    calendarWeeks.value = [
-        ...calendarWeeks.value,
-        generateDaysForWeek(currentScrollDayIndex.value - 7),
-    ];
-    justLoadedMore = true;
+function smallestKey(obj: Record<number, any>): number {
+    return Math.min(...Object.keys(obj) as unknown as number[]) // Automatically converted from string to number
+}
+function largestKey(obj: Record<number, any>): number {
+    return Math.max(...Object.keys(obj) as unknown as number[]) // Automatically converted from string to number
 }
 
-async function scrollUp([{ isIntersecting }]: IntersectionObserverEntry[]) {
-    if (isIntersecting) {
-        currentScrollDayIndex.value -= 7;
-        calendarWeeks.value = [
-            generateDaysForWeek(currentScrollDayIndex.value - 28),
-            ...calendarWeeks.value,
-        ];
-        justLoadedMore = true;
-        await nextTick()
-        scrollContainer.value.scrollTop = 320;
+const vRowCreated: Directive<HTMLDivElement> = {
+    mounted(el, {value}) {
+        calendarRowElements[value] = el;
     }
 }
 
-let oldWeekNumber = Math.floor((currentScrollDayIndex.value - 7) / 7) * 7 + now.getFullYear() * 52;
-function scrollChange(weekNumber: number, [{ isIntersecting }]: IntersectionObserverEntry[]) {
-    if (isIntersecting) {
-        if (justLoadedMore) {
-            justLoadedMore = false;
-            return;
+let currentlyObservedIndicies: number[] = []
+
+onMounted(() => {
+    currentlyObservedIndicies = [smallestKey(calendarRowElements), largestKey(calendarRowElements)]
+    observer.observe(calendarRowElements[currentlyObservedIndicies[0]]);
+    observer.observe(calendarRowElements[currentlyObservedIndicies[1]]);
+})
+
+let oldScrolledId = Math.floor((currentScrollDayIndex.value - 7) / 7) * 7 + now.getFullYear() * 52;
+async function scrollChange(entries: IntersectionObserverEntry[]) {
+    for (const entry of entries) {
+        const { isIntersecting, target } = entry;
+        if (!isIntersecting) continue;
+
+        observer.unobserve(calendarRowElements[currentlyObservedIndicies[0]]);
+        observer.unobserve(calendarRowElements[currentlyObservedIndicies[1]]);
+        const top = smallestKey(calendarRowElements);
+        const bottom = largestKey(calendarRowElements);
+
+        const scrolledId = Number((target as HTMLDivElement).dataset.id);
+
+        const scrollDirection = Math.sign(scrolledId - oldScrolledId);
+        currentScrollDayIndex.value += 7 * scrollDirection;
+
+        oldScrolledId = scrolledId;
+        console.log(scrollDirection == 1 ? "scrolled down" : "scrolled up");
+
+        if (scrolledId === top) {
+            console.log("loading more at top")
+            calendarWeeks.value = [
+                generateDaysForWeek(currentScrollDayIndex.value - 14),
+                ...calendarWeeks.value,
+            ];
+            await nextTick()
+            scrollContainer.value.scrollTop = 160 * (2 - threshold);
+        } else if (scrolledId === bottom) {
+            console.log("loading more at bottom")
+            calendarWeeks.value = [
+                ...calendarWeeks.value,
+                generateDaysForWeek(currentScrollDayIndex.value + 21),
+            ];
+            await nextTick();
         }
-        console.log("scrollChange");
-        if (weekNumber > oldWeekNumber) {
-            currentScrollDayIndex.value += 7;
-        } else if (weekNumber < oldWeekNumber) {
-            currentScrollDayIndex.value -= 7;
-        }
+
+        currentlyObservedIndicies[0] += scrollDirection * 7;
+        currentlyObservedIndicies[1] += scrollDirection * 7;
+
+        observer.observe(calendarRowElements[currentlyObservedIndicies[0]]);
+        observer.observe(calendarRowElements[currentlyObservedIndicies[1]]);
     }
 }
 
@@ -141,25 +169,26 @@ if (import.meta.hot) {
         <span v-for="(day, i) in days" class="text-themeText w-full text-center"
               :class="{highlightColumn: daysThroughWeek % 7 === i}">{{day}}</span>
     </div>
-    <!-- Apparently tailwind custom values like 85vh don't apply immediately,
-         making the element unable to be scrolled, thus the style="" -->
+    <!-- Apparently tailwind custom values like 85vh don't apply immediately, thus the style="" -->
     <div class="px-6 overflow-y-auto no-scrollbar"
          style="max-height: 85vh"
-         v-infinite-scroll="scrollDown"
          v-start-scrolled
          ref="scrollContainer"
     >
-        <div class="scroll-padding" v-intersection-observer="scrollUp"></div>
         <div class="cl-row" v-for="week in calendarWeeks"
-             v-intersection-observer="scrollChange.bind(null, [week.number])">
+             :key="week.number"
+             v-row-created="week.number"
+             :data-id="week.number"
+        >
             <div class="month-heading subheader" v-if="week.showMonthTitle">
                 {{months[week.month]}}
             </div>
             <div class="cl-day" v-for="day in week.days" :key="day.id"
-                 :class="{isToday:      daysThroughMonth === day.number,
-                          greyed:       day.month + 1 !== currentDisplayedMonth,
-                          firstOfMonth: day.number === 1,
-                          weekend:      day.weekNo > 4
+                 :class="{
+                    isToday:      daysThroughMonth === day.number,
+                    greyed:       day.month + 1 !== currentDisplayedMonth,
+                    firstOfMonth: day.number === 1,
+                    weekend:      day.weekNo > 4
                  }"
             >
                 {{day.number}}
