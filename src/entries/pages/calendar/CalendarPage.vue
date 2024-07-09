@@ -1,19 +1,24 @@
 <script setup lang="ts">
-import {ref, type Ref, type Directive, nextTick} from "vue";
+import {ref, type Ref, type Directive, nextTick, computed} from "vue";
 import {dayIndexToMonthDay, getDayOfYear, toMondayBased} from "~/entries/pages/calendar/timeUtils";
 import {vInfiniteScroll, vIntersectionObserver} from "@vueuse/components";
+
+// todo: add sidebar to jump to months
+// todo: fix duplicated month headings if page loads with one week of prev month visible
+// todo: highlight the currently scrolled to month
 
 type Day = {
     number: number;
     id: string;
     weekNo: number;
-    firstOfMonth?: boolean
+    month: number;
 }
 
 type Week = {
     days: Day[];
     month: number;
     showMonthTitle?: boolean;
+    number: number;
 }
 
 function generateDaysForWeek(dayOfYear: number, overrideShowTitle = false, year = now.getFullYear()): Week {
@@ -33,14 +38,16 @@ function generateDaysForWeek(dayOfYear: number, overrideShowTitle = false, year 
         days.push({
             number: dayNumber,
             id: `${year}-${weekNumber}-${dayOfWeek}`,
-            firstOfMonth: dayNumber === 1,
             weekNo: dayOfWeek,
+            // add one if the month changes midweek
+            month: month + isFirstWeekOfMonth
         });
     }
     return {
         days,
         month: start.getMonth(),
-        showMonthTitle: isFirstWeekOfMonth
+        showMonthTitle: isFirstWeekOfMonth,
+        number: weekNumber + year * 52,
     };
 }
 
@@ -49,38 +56,62 @@ const daysThroughWeek: number = toMondayBased(now.getDay());
 const daysThroughMonth: number = now.getDate();
 const month = now.getMonth() + 1;
 
-let currentDisplayedMonth = ref(month);
-let currentScrollDayIndex = getDayOfYear(now);
+let currentScrollDayIndex = ref(getDayOfYear(now));
+let currentDisplayedMonth = computed(() => {
+    return dayIndexToMonthDay(currentScrollDayIndex.value - 14)[0] + 1;
+})
 
 const calendarWeeks: Ref<Week[]> = ref([
-    generateDaysForWeek(currentScrollDayIndex - 7, true),
-    generateDaysForWeek(currentScrollDayIndex),
-    generateDaysForWeek(currentScrollDayIndex + 7),
-    generateDaysForWeek(currentScrollDayIndex + 14),
+    generateDaysForWeek(currentScrollDayIndex.value - 7),
+    generateDaysForWeek(currentScrollDayIndex.value),
+    generateDaysForWeek(currentScrollDayIndex.value + 7),
+    generateDaysForWeek(currentScrollDayIndex.value + 14),
 ]);
+
+console.log(calendarWeeks.value);
 
 const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
 const scrollContainer: Ref<HTMLDivElement> = ref(null);
 
+let justLoadedMore = false;
+
 function scrollDown() {
-    currentScrollDayIndex += 7;
+    currentScrollDayIndex.value += 7;
     calendarWeeks.value = [
         ...calendarWeeks.value,
-        generateDaysForWeek(currentScrollDayIndex + 14),
+        generateDaysForWeek(currentScrollDayIndex.value - 7),
     ];
+    justLoadedMore = true;
 }
 
 async function scrollUp([{ isIntersecting }]: IntersectionObserverEntry[]) {
     if (isIntersecting) {
-        currentScrollDayIndex -= 7;
+        currentScrollDayIndex.value -= 7;
         calendarWeeks.value = [
-            generateDaysForWeek(currentScrollDayIndex - 7),
+            generateDaysForWeek(currentScrollDayIndex.value - 28),
             ...calendarWeeks.value,
         ];
+        justLoadedMore = true;
         await nextTick()
         scrollContainer.value.scrollTop = 320;
+    }
+}
+
+let oldWeekNumber = Math.floor((currentScrollDayIndex.value - 7) / 7) * 7 + now.getFullYear() * 52;
+function scrollChange(weekNumber: number, [{ isIntersecting }]: IntersectionObserverEntry[]) {
+    if (isIntersecting) {
+        if (justLoadedMore) {
+            justLoadedMore = false;
+            return;
+        }
+        console.log("scrollChange");
+        if (weekNumber > oldWeekNumber) {
+            currentScrollDayIndex.value += 7;
+        } else if (weekNumber < oldWeekNumber) {
+            currentScrollDayIndex.value -= 7;
+        }
     }
 }
 
@@ -88,6 +119,20 @@ const vStartScrolled: Directive<HTMLDivElement> = {
     mounted(el) {
         el.scrollTo(0, 160);
     }
+}
+
+// Fix infinite scrolling breaking after a hot reload in dev environment
+if (import.meta.hot) {
+    import.meta.hot.on('vite:beforeUpdate', () => {
+        import.meta.hot.data.scroll = currentScrollDayIndex.value;
+    });
+
+    import.meta.hot.on('vite:afterUpdate', () => {
+        console.log("hot reloaded");
+        if (scrollContainer.value.scrollTop !== 160) {
+            currentScrollDayIndex.value = import.meta.hot.data.scroll;
+        }
+    });
 }
 </script>
 
@@ -101,21 +146,25 @@ const vStartScrolled: Directive<HTMLDivElement> = {
     <div class="px-6 overflow-y-auto no-scrollbar"
          style="max-height: 85vh"
          v-infinite-scroll="scrollDown"
-         v-start-scrolled ref="scrollContainer"
+         v-start-scrolled
+         ref="scrollContainer"
     >
         <div class="scroll-padding" v-intersection-observer="scrollUp"></div>
-        <div class="cl-row" v-for="week in calendarWeeks">
+        <div class="cl-row" v-for="week in calendarWeeks"
+             v-intersection-observer="scrollChange.bind(null, [week.number])">
             <div class="month-heading subheader" v-if="week.showMonthTitle">
                 {{months[week.month]}}
             </div>
             <div class="cl-day" v-for="day in week.days" :key="day.id"
-                 :class="{highlightCell: daysThroughMonth === day.number,
-                          greyed:        week.month + 1 !== currentDisplayedMonth,
-                          firstOfMonth:  day.firstOfMonth,
-                          weekend:       day.weekNo > 4
-                }"
+                 :class="{isToday:      daysThroughMonth === day.number,
+                          greyed:       day.month + 1 !== currentDisplayedMonth,
+                          firstOfMonth: day.number === 1,
+                          weekend:      day.weekNo > 4
+                 }"
             >
                 {{day.number}}
+                <span v-if="daysThroughMonth === day.number && day.month + 1 == currentDisplayedMonth"
+                      class="subheader absolute right-2 my-0">Today</span>
             </div>
         </div>
     </div>
@@ -123,7 +172,7 @@ const vStartScrolled: Directive<HTMLDivElement> = {
 
 <style scoped>
 .cl-day {
-    @apply bg-primary rounded-md w-full h-40 text-themeText p-2;
+    @apply bg-primary rounded-md w-full h-40 text-themeText p-2 relative;
     transition: background-color 300ms, opacity 300ms;
     &.greyed {
         @apply opacity-40;
@@ -132,10 +181,14 @@ const vStartScrolled: Directive<HTMLDivElement> = {
         border-left: 5px solid rgb(255 255 255 / 0.2);
     }
     &.weekend {
-        @apply bg-red-300;
+        @apply bg-accent/70;
     }
-    &:hover, &.highlightCell:not(.greyed) {
-        @apply bg-accent;
+    &:hover {
+        @apply bg-accent/80;
+    }
+    &.isToday:not(.greyed) {
+        @apply bg-accent shadow-themeText/10 shadow-lg;
+        border-left: 5px solid theme(colors.sky.600);
     }
 }
 .cl-row {
