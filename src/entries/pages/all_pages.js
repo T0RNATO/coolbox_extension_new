@@ -15,7 +15,7 @@ addViteStyleTarget(document.head);
 
 const VueInjections = {
     "/": Homepage,
-    "/calendar/week": CalendarPage,
+    "/coolbox-calendar": CalendarPage,
 }
 
 // Render Vue
