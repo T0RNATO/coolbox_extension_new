@@ -12,7 +12,6 @@ type PrettySub = {
     pretty: string
 }
 
-// noinspection TypeScriptUnresolvedReference
 const props = defineProps<{
     subject: HTMLElement,
     pretty: PrettySub[],
