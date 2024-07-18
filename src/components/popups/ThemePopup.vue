@@ -106,7 +106,7 @@ defineExpose({openPopup() {
     </div>
     <hr>
     <div v-if="themeType == 'preset'">
-        <span class="title">Presets:</span>
+        <span class="cb-title">Presets:</span>
         <div v-for="theme in themePresets" class="inline">
             <input type="radio" name="preset" :value="theme.value" :id="theme.value" v-model="preset">
             <label :for="theme.value" :style="{background: `rgb(${theme.rgb})`}">
@@ -115,7 +115,7 @@ defineExpose({openPopup() {
                 </span>
             </label>
         </div>
-        <span class="title">Legacy Presets:</span>
+        <span class="cb-title">Legacy Presets:</span>
         <div v-for="theme in legacyThemePresets" class="inline">
             <input type="radio" name="preset" :value="theme.value" :id="theme.value" v-model="preset">
             <label :for="theme.value" :style="{background: `rgb(${theme.rgb})`}">
@@ -164,7 +164,7 @@ label {
 input:checked + label {
     @apply outline outline-green-400;
 }
-.title {
+.cb-title {
     @apply block font-semibold;
 }
 .options {
