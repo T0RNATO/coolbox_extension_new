@@ -154,7 +154,10 @@ const numberToNumber = {
 // Not remotely scuff code to wait until calendar is loaded and add the week number to the heading
 setTimeout(() => {
     const calendarEvents: HTMLSpanElement[] = Array.from(document.querySelectorAll(".fc-event-title"));
-    const weekEvent = calendarEvents.find(el => el.innerText.includes("Week") && /\(\d\)/.test(el.innerText));
+    const weekEvent = calendarEvents.find(el =>
+        el.innerText.includes("Week") &&
+        /\(\d+\)/.test(el.innerText)
+    );
     const weekNo = numberToNumber[weekEvent?.innerText.split(" ")[1].toLowerCase()];
     if (weekNo) {
         weekNumber.value = `(Week ${weekNo})`;
