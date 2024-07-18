@@ -1,29 +1,17 @@
 <script setup lang="ts">
 import {ref, type Ref, type Directive, nextTick, computed, onMounted} from "vue";
-import {dayIndexToMonthDay, getDayOfYear, toMondayBased} from "~/entries/pages/calendar/timeUtils";
+import {dateToDayId, dayIndexToMonthDay, getDayOfYear, toMondayBased} from "~/entries/pages/calendar/timeUtils";
+import type {Day, Event, SchoolboxApiEvent, Week} from "./types.ts"
+import CalendarDay from "~/components/calendar/CalendarDay.vue";
+
+document.title = "Coolbox Calendar"
 
 // todo: add sidebar to jump to months
 // todo: fix duplicated month headings if page loads with one week of prev month visible
-// todo: highlight the currently scrolled to month
 
-type Day = {
-    number: number;
-    id: string;
-    weekNo: number;
-    month: number;
-}
-
-type Week = {
-    days: Day[];
-    month: number;
-    showMonthTitle?: boolean;
-    number: number;
-}
-
-function generateDaysForWeek(dayOfYear: number, overrideShowTitle = false, year = now.getFullYear()): Week {
-    const weekNumber = Math.floor(dayOfYear / 7) * 7; // round to nearest whole week
+function generateWeek(dayOfYear: number, overrideShowTitle = false, year = now.getFullYear()): Week {
     const days: Day[] = [];
-    const [month, day] = dayIndexToMonthDay(weekNumber);
+    const [month, day] = dayIndexToMonthDay(dayOfYear);
     const start = new Date(year, month, day);
 
     let isFirstWeekOfMonth = overrideShowTitle || day === 0;
@@ -36,38 +24,36 @@ function generateDaysForWeek(dayOfYear: number, overrideShowTitle = false, year 
         }
         days.push({
             number: dayNumber,
-            id: `${year}-${weekNumber}-${dayOfWeek}`,
+            id: `${year}-${dayOfYear + dayOfWeek}`,
             weekNo: dayOfWeek,
             // add one if the month changes midweek
-            month: month + isFirstWeekOfMonth
+            month: (month + isFirstWeekOfMonth) % 12 + 1
         });
     }
     return {
         days,
         month: start.getMonth(),
         showMonthTitle: isFirstWeekOfMonth,
-        number: weekNumber + year * 52,
+        id: dayOfYear + year * 52,
     };
 }
 
 const now = new Date();
 const daysThroughWeek: number = toMondayBased(now.getDay());
-const daysThroughMonth: number = now.getDate();
 const month = now.getMonth() + 1;
 
-let currentScrollDayIndex = ref(getDayOfYear(now));
+// Rounded down to nearest 7 days
+let currentScrollDayIndex = ref(Math.floor(getDayOfYear(now) / 7) * 7);
 let currentDisplayedMonth = computed(() => {
-    return dayIndexToMonthDay(currentScrollDayIndex.value - 14)[0] + 1;
+    return dayIndexToMonthDay(currentScrollDayIndex.value - 21)[0] + 1;
 })
 
-const calendarWeeks: Ref<Week[]> = ref([
-    generateDaysForWeek(currentScrollDayIndex.value - 14),
-    generateDaysForWeek(currentScrollDayIndex.value - 7),
-    generateDaysForWeek(currentScrollDayIndex.value),
-    generateDaysForWeek(currentScrollDayIndex.value + 7),
-    generateDaysForWeek(currentScrollDayIndex.value + 14),
-    generateDaysForWeek(currentScrollDayIndex.value + 21),
-]);
+console.log(currentScrollDayIndex.value);
+
+// Generates the initial seven visible weeks
+const calendarWeeks: Ref<Week[]> = ref([...Array(7)].map(
+    (_, i) => generateWeek(currentScrollDayIndex.value + (i - 2) * 7))
+);
 
 const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -77,6 +63,41 @@ const scrollContainer: Ref<HTMLDivElement> = ref(null);
 const threshold = 0.3;
 const observer = new IntersectionObserver(scrollChange, {threshold});
 const calendarRowElements: Record<number, HTMLDivElement> = {};
+
+const events: Ref<Record<string, Event[]>> = ref({
+//     "2024-200": [{coolbox: true, title: "awd", due: new Date(), type: ""}],
+//     "2024-196": [{coolbox: true, title: "Generations In Jazz", due: new Date(1720693004912), type: ""}],
+});
+
+const userId = Number((document.querySelector("a.icon-staff-students") as HTMLAnchorElement).href.split("/").at(-1));
+
+fetch(`https://schoolbox.donvale.vic.edu.au/calendar/ajax/full?start=1719669600&end=1723298400&userId=${userId}`)
+    .then(response => {response.json().then(processSchoolboxEvents)});
+
+function processSchoolboxEvents(sbEvents: SchoolboxApiEvent[]) {
+    for (const event of sbEvents) {
+        const time = new Date(event.start);
+        let colour;
+
+        // Exclude subjects
+        if (event.data.meta.level.includes("source5")) continue;
+
+        // Remove long subject names from assessments/tasks
+        // todo: replace with pretty name, and maybe colour differently
+        if (event.data.meta.eventType === "type6") {
+            event.title = event.title.replace(/^.* \(.*\)\s/, "");
+            colour = "rgb(220 143 143)".slice(4, -1); // support IDE colour picker
+        }
+
+        (events.value[dateToDayId(time)] ??= ([] as Event[])).push({
+            due: time,
+            coolbox: false,
+            title: event.title,
+            all_day: event.allDay,
+            ...(colour && { colour }),
+        })
+    }
+}
 
 function smallestKey(obj: Record<number, any>): number {
     return Math.min(...Object.keys(obj) as unknown as number[]) // Automatically converted from string to number
@@ -121,7 +142,7 @@ async function scrollChange(entries: IntersectionObserverEntry[]) {
         if (scrolledId === top) {
             console.log("loading more at top")
             calendarWeeks.value = [
-                generateDaysForWeek(currentScrollDayIndex.value - 14),
+                generateWeek(currentScrollDayIndex.value - 14),
                 ...calendarWeeks.value,
             ];
             await nextTick()
@@ -130,7 +151,7 @@ async function scrollChange(entries: IntersectionObserverEntry[]) {
             console.log("loading more at bottom")
             calendarWeeks.value = [
                 ...calendarWeeks.value,
-                generateDaysForWeek(currentScrollDayIndex.value + 21),
+                generateWeek(currentScrollDayIndex.value + 28),
             ];
             await nextTick();
         }
@@ -169,57 +190,29 @@ if (import.meta.hot) {
         <span v-for="(day, i) in days" class="text-themeText w-full text-center"
               :class="{highlightColumn: daysThroughWeek % 7 === i}">{{day}}</span>
     </div>
-    <!-- Apparently tailwind custom values like 85vh don't apply immediately, thus the style="" -->
+    <!-- Tailwind custom values don't apply immediately, thus the style="" -->
     <div class="px-6 overflow-y-auto no-scrollbar"
          style="max-height: 85vh"
          v-start-scrolled
          ref="scrollContainer"
     >
         <div class="cl-row" v-for="week in calendarWeeks"
-             :key="week.number"
-             v-row-created="week.number"
-             :data-id="week.number"
+             :key="week.id"
+             v-row-created="week.id"
+             :data-id="week.id"
         >
             <div class="month-heading subheader" v-if="week.showMonthTitle">
                 {{months[week.month]}}
             </div>
-            <div class="cl-day" v-for="day in week.days" :key="day.id"
-                 :class="{
-                    isToday:      daysThroughMonth === day.number,
-                    greyed:       day.month + 1 !== currentDisplayedMonth,
-                    firstOfMonth: day.number === 1,
-                    weekend:      day.weekNo > 4
-                 }"
-            >
-                {{day.number}}
-                <span v-if="daysThroughMonth === day.number && day.month + 1 == currentDisplayedMonth"
-                      class="subheader absolute right-2 my-0">Today</span>
-            </div>
+            <CalendarDay v-for="day in week.days" :key="day.id"
+                         :day="day"
+                         :current-displayed-month="currentDisplayedMonth"
+                         :events="events[day.id] || []"/>
         </div>
     </div>
 </template>
 
 <style scoped>
-.cl-day {
-    @apply bg-primary rounded-md w-full h-40 text-themeText p-2 relative;
-    transition: background-color 300ms, opacity 300ms;
-    &.greyed {
-        @apply opacity-40;
-    }
-    &.firstOfMonth {
-        border-left: 5px solid rgb(255 255 255 / 0.2);
-    }
-    &.weekend {
-        @apply bg-accent/70;
-    }
-    &:hover {
-        @apply bg-accent/80;
-    }
-    &.isToday:not(.greyed) {
-        @apply bg-accent shadow-themeText/10 shadow-lg;
-        border-left: 5px solid theme(colors.sky.600);
-    }
-}
 .cl-row {
     @apply grid grid-cols-7 gap-4 mb-4 relative;
 }
@@ -231,9 +224,6 @@ if (import.meta.hot) {
 /*todo, unhardcode colour*/
 .highlightColumn {
     @apply border-2 border-solid border-transparent border-b-sky-600 rounded-3xl;
-}
-.scroll-padding {
-    @apply w-full h-40;
 }
 .no-scrollbar {
     scrollbar-width: none;
