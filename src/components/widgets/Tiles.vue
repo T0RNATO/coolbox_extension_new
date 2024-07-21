@@ -2,7 +2,7 @@
     <div>
         <!--I have very little idea how this works but it removes all colours except those where r,g,b are equal-->
         <svg width="0" height="0">
-            <filter id="keep-white" color-interpolation-filters="sRGB" width="100%" height="100%" x="0%" y="0%">
+            <filter id="keep-white" color-interpolation-filters="sRGB" width="98%" height="98%" x="1%" y="1%">
                 <feColorMatrix type="matrix" values="
                   1 0 0 0 0
                   0 1 0 0 0
