@@ -7,7 +7,7 @@ const sharedManifest: Partial<chrome.runtime.Manifest> = {
             js: ["src/entries/pages/all_pages.js"],
             css: [
                 "src/assets/css/icons.css",
-                "src/assets/css/all_pages.css",
+                "src/assets/css/global_css.css",
             ],
             matches: ["*://schoolbox.donvale.vic.edu.au/*"],
         },
