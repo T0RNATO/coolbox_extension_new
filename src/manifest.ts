@@ -26,7 +26,10 @@ const sharedManifest: Partial<chrome.runtime.Manifest> = {
         },
         {
             css: ["src/entries/pages/calendar/calendar.css"],
-            matches: ["*://schoolbox.donvale.vic.edu.au/coolbox-calendar"],
+            matches: [
+                "*://schoolbox.donvale.vic.edu.au/coolbox-calendar",
+                "*://schoolbox.donvale.vic.edu.au/coolbox-todo",
+            ],
         }
     ],
     icons: {
