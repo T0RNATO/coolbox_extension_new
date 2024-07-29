@@ -14,11 +14,15 @@ body {
 }
 
 .hide-pfp #profile-drop {
-    display: none;
-}
-
-.hide-pfp #search {
-    right: 4.5rem !important;
+    width: 4.5rem;
+    aspect-ratio: 1/1;
+    background-image: url("https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/2048px-Default_pfp.svg.png");
+    background-size: 50%;
+    background-repeat: no-repeat;
+    background-position: center center;
+    > img {
+        display: none;
+    }
 }
 
 .dui-modal-backdrop > button {
