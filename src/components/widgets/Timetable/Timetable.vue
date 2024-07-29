@@ -1,5 +1,5 @@
 <template>
-    <div class="mb-4 text-sm" v-if="!widgInfo.edit">
+    <div class="mb-4 text-sm" v-if="timetableSubjects.length">
         <div v-if="show">
             <h2 class="subheader">{{dayTitle}} {{weekNumber}}</h2>
             <div class="flex sm:flex-row lg:flex-col">
