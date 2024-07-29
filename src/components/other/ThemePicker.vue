@@ -13,7 +13,6 @@ const popup = ref();
                 <span class="material-symbols-outlined text-lg">palette</span>
                 <span>Theme:</span>
                 <div class="dui-indicator">
-                    <span class="dui-indicator-item dui-badge dui-badge-accent">NEW!</span>
                     <button @click="popup.openPopup()" class="dui-btn bg-gray-300">
                         Open Theme Editor
                     </button>

@@ -20,7 +20,7 @@
     <div class="grid-layout relative" v-else>
         <div class="absolute right-0 -top-2">
             <div class="dui-indicator">
-                <span class="dui-indicator-item dui-badge dui-badge-secondary z-[1004]" v-if="!checkedNewFeatures">!</span>
+                <span class="dui-indicator-item dui-badge dui-badge-secondary z-[1004]">!</span>
                 <div class="dui-tooltip bg-transparent z-[1003] before:-translate-x-32" data-tip="Customise Homepage">
                     <button class="cb-icon-button material-symbols-outlined text-themeText bg-primary rounded-full" @click="enterEditMode">edit</button>
                 </div>
@@ -57,7 +57,6 @@
                     </button>
                 </div>
                 <div class="dui-indicator">
-                    <span class="dui-indicator-item dui-badge dui-badge-accent">NEW!</span>
                     <div class="dui-tooltip" data-tip="Add Widgets">
                         <button class="dui-btn dui-btn-secondary" @click="drawerOpen = !drawerOpen">
                             <span class="material-symbols-outlined text-lg">add</span>
@@ -69,6 +68,14 @@
                         <span class="material-symbols-outlined text-lg">done</span>
                     </button>
                 </div>
+            </div>
+        </div>
+    </Shadow>
+
+    <Shadow>
+        <div class="dui-toast top-14 bottom-auto" v-if="editMode">
+            <div class="dui-alert p-2 shadow-2xl shadow-black block">
+                Do you have time to do <a href="https://forms.office.com/r/gZCSwhBPEd" target="_blank">a quick survey</a> about Coolbox for a school project?
             </div>
         </div>
     </Shadow>
@@ -134,8 +141,6 @@ import {Reminder} from "~/utils/types";
 // types do not exist for this package
 // @ts-ignore
 import {Container, Draggable} from "vue3-smooth-dnd";
-
-const checkedNewFeatures = useExtensionStorage("checkedNewFeatures", false);
 
 const currentPageLayout: Ref<Record<Column,Component[]>> = ref({
     leftCol: [],
@@ -259,7 +264,6 @@ const editMode = ref(false);
 const pageHasBeenEdited = ref(false);
 
 function enterEditMode() {
-    checkedNewFeatures.value = true;
     editMode.value = true;
     pageHasBeenEdited.value = true;
 }
