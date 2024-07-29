@@ -6,6 +6,7 @@ import shadow from 'vue-shadow-dom'
 import browser from "webextension-polyfill";
 import {apiSend, cookieFetched} from "~/utils/apiUtils";
 import {addViteStyleTarget} from "@samrum/vite-plugin-web-extension/client";
+import TodoPage from "~/entries/pages/todo/TodoPage.vue";
 
 if (import.meta.env.DEV) {
     import("tailwindcss/tailwind.css");
@@ -16,6 +17,7 @@ addViteStyleTarget(document.head);
 const VueInjections = {
     "/": Homepage,
     "/coolbox-calendar": CalendarPage,
+    "/coolbox-todo": TodoPage,
 }
 
 // Render Vue
@@ -100,3 +102,15 @@ browser.storage.local.onChanged.addListener((changes) => {
         }
     }
 });
+
+for (const anchor of document.querySelectorAll('a')) {
+    if (anchor.href.startsWith('https://schoolbox.donvale.vic.edu.au/')) {
+        anchor.addEventListener('click', event => {
+            event.preventDefault();
+            event.stopPropagation();
+            location.href = anchor.href;
+        })
+    } else {
+        anchor.target = '_blank';
+    }
+}
