@@ -41,7 +41,7 @@
 
 <script setup lang="ts">
 import EditingContextMenu from "~/components/other/EditingContextMenu.vue";
-import {statusMessages, onPeriodChange} from "~/utils/apiUtils";
+import {statusMessages} from "~/utils/apiUtils";
 import {Ref, ref} from "vue";
 import browser from "webextension-polyfill";
 import {useExtensionStorage, weekNumber} from "~/utils/componentUtils";

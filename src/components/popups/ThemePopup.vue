@@ -39,7 +39,7 @@ const variableImportExportOrder = [
     "navigation-background"
 ]
 
-const advancedColours: WCR<AdvancedData> = useExtensionStorage("theme.advancedData", Object.assign({}, defaultAdvanced));
+const advancedColours: WCR<AdvancedData> = useExtensionStorage("theme.advancedData", {...defaultAdvanced});
 
 listenForStorageChange("theme", (changes) => {
     browser.runtime.sendMessage({
@@ -66,7 +66,7 @@ const themeExport = computed({
     set(value: string) {
         const colours = value.split(";");
         if (colours.length !== variableImportExportOrder.length) {
-            advancedColours.value = Object.assign({}, defaultAdvanced);
+            advancedColours.value = {...defaultAdvanced};
             return;
         }
         const output = {};

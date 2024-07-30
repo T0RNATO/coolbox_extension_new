@@ -128,7 +128,7 @@ import browser from "webextension-polyfill";
 import {reminders} from "~/utils/apiUtils";
 import {markRaw, Ref, ref} from "vue";
 import type {Component, Raw} from "vue";
-import {manualStorageSet, useExtensionStorage} from "~/utils/componentUtils";
+import {manualStorageSet} from "~/utils/componentUtils";
 import {Reminder} from "~/utils/types";
 // types do not exist for this package
 // @ts-ignore

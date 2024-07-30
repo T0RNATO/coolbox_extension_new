@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import Shadow from "~/components/other/Shadow.vue";
 import {useExtensionStorage} from "~/utils/componentUtils";
-import {ref} from "vue";
+import {Directive, ref} from "vue";
 import browser from "webextension-polyfill";
 
 const font = useExtensionStorage("font", "default");
@@ -10,7 +10,7 @@ const availableFonts = ref<string[]>([]);
 const filteredFonts = ref<string[]>([]);
 const fontLoadingError = ref(false);
 
-const vFocus = {
+const vFocus: Directive = {
     mounted: (el) => el.focus()
 }
 
