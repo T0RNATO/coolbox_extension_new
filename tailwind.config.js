@@ -1,3 +1,7 @@
+function mix(color) {
+    return `color-mix(in oklab, theme(colors.${color}) 20%, theme(colors.accent))`
+}
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
     content: [
@@ -11,6 +15,17 @@ module.exports = {
                 background: 'rgb(var(--body-background) / <alpha-value>)',
                 accent: 'rgb(var(--theme-accent) / <alpha-value>)',
                 themeText: 'rgb(var(--theme-text) / <alpha-value>)',
+
+                faded: {
+                    green:  mix('green.400'),
+                    red:    mix('red.400'),
+                    blue:   mix('blue.400'),
+                    yellow: mix('yellow.400'),
+                    purple: mix('purple.400'),
+                    pink:   mix('pink.400'),
+                    orange: mix('orange.400'),
+                    cyan:   mix('cyan.400'),
+                }
             }
         }
     },
