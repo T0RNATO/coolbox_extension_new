@@ -22,7 +22,7 @@
             <div class="dui-indicator">
                 <span class="dui-indicator-item dui-badge dui-badge-secondary z-[1004]">!</span>
                 <div class="dui-tooltip bg-transparent z-[1003] before:-translate-x-32" data-tip="Customise Homepage">
-                    <button class="cb-icon-button material-symbols-outlined text-themeText bg-primary rounded-full" @click="enterEditMode">edit</button>
+                    <button class="cb-icon-button cb-icon text-themeText bg-primary rounded-full" @click="enterEditMode">edit</button>
                 </div>
             </div>
         </div>
@@ -49,33 +49,25 @@
     <Shadow>
         <div class="dui-toast" v-if="editMode">
             <div class="dui-alert p-2 shadow-2xl shadow-black">
-                <span class="material-symbols-outlined text-lg">edit</span>
+                <span class="cb-icon text-lg">edit</span>
                 <span>You are in edit mode! Click a widget to<br>select it and edit it, or drag them around.</span>
                 <div class="dui-tooltip" data-tip="Reset Layout">
                     <button class="dui-btn bg-gray-300" @click="resetPageLayout">
-                        <span class="material-symbols-outlined text-lg">restart_alt</span>
+                        <span class="cb-icon text-lg">restart_alt</span>
                     </button>
                 </div>
                 <div class="dui-indicator">
                     <div class="dui-tooltip" data-tip="Add Widgets">
                         <button class="dui-btn dui-btn-secondary" @click="drawerOpen = !drawerOpen">
-                            <span class="material-symbols-outlined text-lg">add</span>
+                            <span class="cb-icon text-lg">add</span>
                         </button>
                     </div>
                 </div>
                 <div class="dui-tooltip" data-tip="Done">
                     <button class="dui-btn dui-btn-primary" @click="editMode = false; clearSelectedComponent();">
-                        <span class="material-symbols-outlined text-lg">done</span>
+                        <span class="cb-icon text-lg">done</span>
                     </button>
                 </div>
-            </div>
-        </div>
-    </Shadow>
-
-    <Shadow>
-        <div class="dui-toast top-14 bottom-auto" v-if="editMode">
-            <div class="dui-alert p-2 shadow-2xl shadow-black block">
-                Do you have time to do <a href="https://forms.office.com/r/gZCSwhBPEd" target="_blank">a quick survey</a> about Coolbox for a school project?
             </div>
         </div>
     </Shadow>
@@ -83,7 +75,7 @@
     <!-- Generic Success Toast -->
     <div class="dui-toast -right-1/4 z-[1003]" id="toast-success">
         <div class="border-green-500 notif">
-            <span class="material-symbols-outlined text-green-500">check</span>
+            <span class="cb-icon text-green-500">check</span>
             <span class="content"></span>
         </div>
     </div>
@@ -91,7 +83,7 @@
     <!-- Generic Failure Toast -->
     <div class="dui-toast -right-1/4 z-[1003]" id="toast-failure">
         <div class="border-red-400 notif">
-            <span class="material-symbols-outlined text-red-400">close</span>
+            <span class="cb-icon text-red-400">close</span>
             <span class="content"></span>
         </div>
     </div>
