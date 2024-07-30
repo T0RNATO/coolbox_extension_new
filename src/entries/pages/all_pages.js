@@ -6,7 +6,7 @@ import shadow from 'vue-shadow-dom'
 import browser from "webextension-polyfill";
 import {apiSend, cookieFetched} from "~/utils/apiUtils";
 import {addViteStyleTarget} from "@samrum/vite-plugin-web-extension/client";
-import TodoPage from "~/entries/pages/todo/TodoPage.vue";
+import TodoPage from "~/entries/pages/todo/TodoPage.shadow.vue";
 
 if (import.meta.env.DEV) {
     import("tailwindcss/tailwind.css");
