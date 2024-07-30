@@ -4,7 +4,7 @@
         <span class="text-themeText">
             -
             <a href="/news/saved" class="dui-tooltip" data-tip="View Saved News Items">
-                <span class="material-symbols-outlined">
+                <span class="cb-icon">
                     hotel_class
                 </span>
             </a>

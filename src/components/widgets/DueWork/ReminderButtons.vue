@@ -7,13 +7,13 @@ defineEmits(['viewReminders', 'createReminder']);
         <div class="flex-row w-full flex p-0 text-sm">
             <div class="button" @click="$emit('createReminder')">
                 <div>
-                    <span class="material-symbols-outlined align-bottom">add</span>
+                    <span class="cb-icon align-bottom">add</span>
                     Add Reminder
                 </div>
             </div>
             <div class="button" @click="$emit('viewReminders')">
                 <div>
-                    <span class="material-symbols-outlined align-bottom">visibility</span>
+                    <span class="cb-icon align-bottom">visibility</span>
                     View All Reminders
                 </div>
             </div>

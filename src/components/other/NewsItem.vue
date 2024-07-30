@@ -14,7 +14,7 @@
                         {{item.publishAt.relativeTime}}
                     </span>
                     <div class="text-gray-500 italic text-sm" v-if="item.sticky">
-                        <span class="material-symbols-outlined">push_pin</span>
+                        <span class="cb-icon">push_pin</span>
                         Pinned
                     </div>
                 </div>
@@ -26,7 +26,7 @@
         </div>
         <hr class="m-0 mt-4">
 
-        <span class="absolute top-0 right-0 material-symbols-outlined pr-2 text-lg cursor-pointer bg-primary rounded-bl-md"
+        <span class="absolute top-0 right-0 cb-icon pr-2 text-lg cursor-pointer bg-primary rounded-bl-md"
               :class="{'icon-fill': saved}"
               @click="save(item.id)"
         >

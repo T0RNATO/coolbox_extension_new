@@ -64,15 +64,19 @@ const threshold = 0.3;
 const observer = new IntersectionObserver(scrollChange, {threshold});
 const calendarRowElements: Record<number, HTMLDivElement> = {};
 
-const events: Ref<Record<string, Event[]>> = ref({
-//     "2024-200": [{coolbox: true, title: "awd", due: new Date(), type: ""}],
-//     "2024-196": [{coolbox: true, title: "Generations In Jazz", due: new Date(1720693004912), type: ""}],
-});
+const events: Ref<Record<string, Event[]>> = ref({});
 
 const userId = Number((document.querySelector("a.icon-staff-students") as HTMLAnchorElement).href.split("/").at(-1));
 
-fetch(`https://schoolbox.donvale.vic.edu.au/calendar/ajax/full?start=1719669600&end=1723298400&userId=${userId}`)
-    .then(response => {response.json().then(processSchoolboxEvents)});
+let eventFetchStart = now.getTime() / 1000 - 60 * 60 * 24 * 7;
+const fourWeeksInSeconds = 60 * 60 * 24 * 7 * 4;
+
+function fetchSchoolboxEvents() {
+    fetch("https://schoolbox.donvale.vic.edu.au/calendar/ajax/full" +
+        `?start=${eventFetchStart}&end=${eventFetchStart + fourWeeksInSeconds}&userId=${userId}`)
+        .then(response => {response.json().then(processSchoolboxEvents)});
+}
+fetchSchoolboxEvents();
 
 function processSchoolboxEvents(sbEvents: SchoolboxApiEvent[]) {
     for (const event of sbEvents) {
@@ -145,7 +149,7 @@ async function scrollChange(entries: IntersectionObserverEntry[]) {
                 generateWeek(currentScrollDayIndex.value - 14),
                 ...calendarWeeks.value,
             ];
-            await nextTick()
+            await nextTick();
             scrollContainer.value.scrollTop = 160 * (2 - threshold);
         } else if (scrolledId === bottom) {
             console.log("loading more at bottom")

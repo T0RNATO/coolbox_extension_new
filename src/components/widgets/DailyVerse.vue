@@ -17,7 +17,7 @@ function share() {
         <div class="bg-primary text-themeText rounded-md p-4">
             <div v-if="dailyVerse.content">
                 <div class="flex">
-                    <span class="material-symbols-outlined icon-fill mr-3 text-2xl -scale-x-100">format_quote</span>
+                    <span class="cb-icon icon-fill mr-3 text-2xl -scale-x-100">format_quote</span>
                     <Shadow>
                         <div v-html="dailyVerse.content"></div>
                         <!--language=CSS-->
@@ -38,11 +38,11 @@ function share() {
                 <div class="absolute right-6 bottom-2 flex">
                     <div class="dui-tooltip dui-tooltip-left" data-tip="View on BibleGateway">
                         <a :href="dailyVerse.link" target="_blank">
-                            <span class="material-symbols-outlined !text-gray-500 text-xl">open_in_new</span>
+                            <span class="cb-icon !text-gray-500 text-xl">open_in_new</span>
                         </a>
                     </div>
                     <div class="dui-tooltip dui-tooltip-left cursor-pointer select-none" data-tip="Copy to clipboard">
-                        <span class="material-symbols-outlined text-gray-500 text-xl" @click="share">content_copy</span>
+                        <span class="cb-icon text-gray-500 text-xl" @click="share">content_copy</span>
                     </div>
                 </div>
             </div>

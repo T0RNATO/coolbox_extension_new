@@ -23,10 +23,10 @@
                     <p class="meta" v-html="workItem.lastElementChild.innerHTML"></p>
                     <!-- Add reminder button -->
                     <div class="reminder-button" v-if="!hiddenReminderIds.includes(getAssessmentId(workItem))">
-                        <span class="material-symbols-outlined assessment-button" @click="editReminder(workItem as HTMLElement)">
+                        <span class="cb-icon assessment-button" @click="editReminder(workItem as HTMLElement)">
                             {{reminderExists(workItem) ? 'notifications_active' : 'notification_add'}}
                         </span>
-                            <span class="material-symbols-outlined assessment-button" @click="hiddenReminderIds = [...hiddenReminderIds, getAssessmentId(workItem)];">
+                            <span class="cb-icon assessment-button" @click="hiddenReminderIds = [...hiddenReminderIds, getAssessmentId(workItem)];">
                             visibility_off
                         </span>
                     </div>
@@ -34,7 +34,7 @@
                     <div v-else class="reminder-button !top-2">
                         <div class="dui-tooltip dui-tooltip-left" data-tip="Restore Task">
                             <!--suppress TypeScriptUnresolvedReference, toSpliced randomly is unrecognised despite target of ESNext -->
-                            <span class="material-symbols-outlined assessment-button text-green-400"
+                            <span class="cb-icon assessment-button text-green-400"
                                   @click="hiddenReminderIds = hiddenReminderIds.toSpliced(hiddenReminderIds.indexOf(getAssessmentId(workItem)), 1)">
                                 visibility
                             </span>

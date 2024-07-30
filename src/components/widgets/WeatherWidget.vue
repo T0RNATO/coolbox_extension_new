@@ -7,7 +7,7 @@
                     {{day.time}}
                 </span>
                 <div class="day-weather">
-                    <span class="material-symbols-outlined cursor-default select-none text-5xl text-blue-400">
+                    <span class="cb-icon cursor-default select-none text-5xl text-blue-400">
                         {{day.weathercode?.icon}}
                     </span>
                     <span class="text-xs text-center px-1" :class="{fontL: widgInfo.col === 'leftCol'}">
@@ -28,13 +28,13 @@
                 </div>
                 <div class="day-details">
                     <div class="dui-tooltip" data-tip="Rain Chance">
-                        <span class="material-symbols-outlined text-xl mr-1">rainy</span>
+                        <span class="cb-icon text-xl mr-1">rainy</span>
                         <span class="text-xl mr-2">
                             {{day.precipitation_probability_mean}}%
                         </span>
                     </div>
                     <div class="dui-tooltip" data-tip="UV Index">
-                        <span class="material-symbols-outlined text-xl mr-1 text-yellow-500">sunny</span>
+                        <span class="cb-icon text-xl mr-1 text-yellow-500">sunny</span>
                         <span class="text-xl text-yellow-500">
                             {{Math.round(day.uv_index_max)}}
                         </span>

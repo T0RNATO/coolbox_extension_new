@@ -65,6 +65,7 @@ const timeFormat = new Intl.DateTimeFormat('en-AU', {
 }
 .cb-event {
     @apply px-1 rounded-md relative mb-1 overflow-hidden overflow-ellipsis;
+    transition: padding 100ms;
     &:hover {
         z-index: 5;
         box-shadow: 0 0 8px rgb(var(--theme-text) / 0.5);

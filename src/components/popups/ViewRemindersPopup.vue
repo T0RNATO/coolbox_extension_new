@@ -40,11 +40,11 @@ defineExpose({openPopup});
                 </span>
                 <div v-if="reminder.assessment" class="inline ml-2 dui-tooltip" data-tip="Linked to assessment">
                     <a :href="'https://schoolbox.donvale.vic.edu.au/learning/assessments/' + reminder.assessment">
-                        <span class="material-symbols-outlined inline-block">attachment</span>
+                        <span class="cb-icon inline-block">attachment</span>
                     </a>
                 </div>
             </div>
-            <span class="material-symbols-outlined text-[20px] absolute top-0 right-0 m-2 text-gray-500 cursor-pointer" @click="editReminder(reminder)">edit</span>
+            <span class="cb-icon text-[20px] absolute top-0 right-0 m-2 text-gray-500 cursor-pointer" @click="editReminder(reminder)">edit</span>
         </div>
     </PopupBase>
 </template>

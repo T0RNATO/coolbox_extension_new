@@ -2,16 +2,16 @@
     <div class="z-20">
         <div class="context-menu hidden" v-if="!settingsOpen">
             <div class="dui-tooltip bg-transparent [position:unset] p-0" data-tip="Customise Widget" @click="settingsOpen = true" v-if="settings">
-                <button class="cb-icon-button material-symbols-outlined">settings</button>
+                <button class="cb-icon-button cb-icon">settings</button>
             </div>
 
             <div class="dui-tooltip bg-transparent [position:unset] p-0" data-tip="Delete Widget" @click="$emit('delete')" v-if="del">
-                <button class="cb-icon-button material-symbols-outlined">delete</button>
+                <button class="cb-icon-button cb-icon">delete</button>
             </div>
         </div>
         <div class="widget-settings hidden" v-if="settingsOpen">
             <span class="font-bold">Edit Widget:</span><br>
-            <span class="material-symbols-outlined absolute top-1 right-1 cursor-pointer hover:text-gray-400" @click="settingsOpen = false">Close</span>
+            <span class="cb-icon absolute top-1 right-1 cursor-pointer hover:text-gray-400" @click="settingsOpen = false">Close</span>
             <Shadow class="no-drag">
                 <slot/>
             </Shadow>
