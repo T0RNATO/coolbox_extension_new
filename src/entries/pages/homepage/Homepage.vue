@@ -46,7 +46,7 @@
     <!-- Page Editing Toast -->
     <ThemePicker v-if="editMode"/>
     <Shadow>
-        <div class="dui-toast" v-if="editMode">
+        <div class="dui-toast z-[1005]" v-if="editMode">
             <div class="dui-alert p-2 shadow-2xl shadow-black">
                 <span class="cb-icon text-lg">edit</span>
                 <span>You are in edit mode! Click a widget to<br>select it and edit it, or drag them around.</span>
