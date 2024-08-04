@@ -102,15 +102,3 @@ browser.storage.local.onChanged.addListener((changes) => {
         }
     }
 });
-
-for (const anchor of document.querySelectorAll('a')) {
-    if (anchor.href.startsWith('https://schoolbox.donvale.vic.edu.au/')) {
-        anchor.addEventListener('click', event => {
-            event.preventDefault();
-            event.stopPropagation();
-            location.href = anchor.href;
-        })
-    } else {
-        anchor.target = '_blank';
-    }
-}
