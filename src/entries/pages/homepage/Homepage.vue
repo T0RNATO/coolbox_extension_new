@@ -20,7 +20,6 @@
     <div class="grid-layout relative" v-else>
         <div class="absolute right-0 -top-2">
             <div class="dui-indicator">
-                <span class="dui-indicator-item dui-badge dui-badge-secondary z-[1004]">!</span>
                 <div class="dui-tooltip bg-transparent z-[1003] before:-translate-x-32" data-tip="Customise Homepage">
                     <button class="cb-icon-button cb-icon text-themeText bg-primary rounded-full" @click="enterEditMode">edit</button>
                 </div>
