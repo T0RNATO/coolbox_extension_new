@@ -36,7 +36,7 @@
             </div>
         </EditingContextMenu>
     </div>
-    <span class="italic text-gray-500" v-else>(Timetable Widget)</span>
+    <span class="italic text-gray-500" v-else-if="widgInfo.edit">(Timetable Widget)</span>
 </template>
 
 <script setup lang="ts">
