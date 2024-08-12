@@ -1,4 +1,4 @@
-import { createApp } from "vue";
+import {createApp, reactive, h} from "vue";
 import render_content from "./render_content.js";
 import Homepage from "./homepage/Homepage.vue";
 import CalendarPage from "~/entries/pages/calendar/CalendarPage.vue";
@@ -20,10 +20,14 @@ const VueInjections = {
     "/coolbox-todo": TodoPage,
 }
 
+const appProps = reactive({subjects: [{name: 'Loading...', pretty: 'Loading...'}]})
+
 // Render Vue
 if (location.pathname in VueInjections) {
     render_content((appRoot) => {
-        const app = createApp(VueInjections[location.pathname]);
+        const app = createApp({
+            render: () => h(VueInjections[location.pathname], appProps)
+        });
         app.use(shadow);
         app.mount(appRoot);
     });
@@ -63,6 +67,7 @@ function fetchPrettySubjectNames() {
 }
 
 function setPrettySubjectNames(names) {
+    appProps.subjects = names;
     // Loop through subjects on sidebar to update their names
     for (const sidebarItem of document.querySelectorAll("#side-menu-mysubjects li a")) {
         // Match the subject name to the link because Schoolbox doesn't set the name correctly

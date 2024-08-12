@@ -138,6 +138,10 @@ const currentPageLayout: Ref<Record<Column,Component[]>> = ref({
     rightCol: []
 })
 
+defineProps<{
+    subjects: {name: string, pretty: string}[];
+}>();
+
 const createReminderPopup = ref(null);
 const editReminderPopup = ref(null);
 const viewReminderPopup = ref(null);
