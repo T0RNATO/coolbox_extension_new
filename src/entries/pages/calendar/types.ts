@@ -19,7 +19,7 @@ export type Event = {
     all_day: boolean;
     type?: "assessment" | "homework" | string;
     subject?: string;
-    colour?: string; // rgb triplet
+    colour?: string;
 }
 
 export type SchoolboxApiEvent= {
