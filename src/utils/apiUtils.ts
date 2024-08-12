@@ -70,22 +70,22 @@ function processApiData(data: ApiResponse) {
     history.replaceState(data, "", location.href);
 }
 
-if (location.pathname === "/") {
-    cookieFetched.then(cookie => {
-        headers = new Headers({
-            "Authorization": `Bearer ${cookie}`,
-            "Content-Type": "application/json"
-        });
+cookieFetched.then(cookie => {
+    headers = new Headers({
+        "Authorization": `Bearer ${cookie}`,
+        "Content-Type": "application/json"
+    });
+    if (location.pathname === "/") {
         // Intentionally still called even when cached for up-to-date information
         apiGet("start", processApiData);
-    });
-}
+    }
+});
 
 if (history.state) {
     processApiData(history.state);
 }
 
-function apiGet(path: string, callback: (data: Object) => void) {
+export function apiGet(path: string, callback: (data: Object) => void) {
     fetch(`https://api.coolbox.lol/${path}`, {
         method: "GET",
         headers: headers
@@ -126,7 +126,7 @@ export function successToast(message: string) {
     animateToast(successToast);
 }
 
-export function apiSend(method: string, path: string, body: any, successMessage: string, errorMessage: string, callback?: (value?: any) => void) {
+export function apiSend(method: string, path: string, body: any, successMessage?: string, errorMessage?: string, callback?: (value?: any) => void) {
     fetch(`https://api.coolbox.lol/${path}`, {
         method: method,
         headers: headers,
