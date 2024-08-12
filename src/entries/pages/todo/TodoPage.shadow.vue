@@ -2,42 +2,34 @@
 import {Directive, ref, Ref} from "vue";
 import Shadow from "~/components/other/Shadow.vue";
 import PopupBase from "~/components/popups/PopupBase.vue";
+import {apiGet, apiSend, cookieFetched} from "~/utils/apiUtils.ts";
 
 document.title = "Coolbox Todo";
 
-const todoLists: Ref<TodoList[]> = ref([
-    {
-        title: "stuff 2 do 2day",
-        items: [
-            {title: "my todo item!", completed: false, colour: "green"},
-            {title: "my todo item!", completed: false, colour: "red"},
-            {title: "my todo item!", completed: false, colour: "blue"},
-            {title: "my todo item!", completed: false, colour: "yellow"},
-            {title: "my todo item!", completed: false, colour: "purple"},
-            {title: "my todo item!", completed: false, colour: "pink"},
-            {title: "my todo item!", completed: false, colour: "orange"},
-            {title: "my todo item!", completed: false, colour: "cyan"},
-        ]
-    },
-    {
-        title: "stuff 2 do later",
-        items: [
-            {title: "my todo item!", completed: false},
-        ]
-    },
-]);
+defineProps<{
+    subjects: {name: string, pretty: string}[];
+}>();
+
+cookieFetched.then(() => {
+    apiGet("todos", (data: TodoList[]) => {
+        todoLists.value = data;
+    })
+})
+
+const todoLists: Ref<TodoList[]> = ref([]);
 
 const colours: Colour[] = ["green", "red", "blue", "yellow", "purple", "pink", "orange", "cyan"];
 type Colour = "green" | "red" | "blue" | "yellow" | "purple" | "pink" | "orange" | "cyan";
 
 type TodoList = {
-    items: TodoItem[]
-    title: string
+    items: TodoItem[],
+    title: string,
+    id: number,
 }
 type TodoItem = {
-    title: string,
+    content: string,
     completed: boolean,
-    colour?: Colour
+    colour?: Colour,
 }
 
 const confirmation_popup = ref();
@@ -54,8 +46,49 @@ function confirmDeletion(f: () => void) {
 let focusNewItem = false;
 
 function newItem(list: TodoList) {
-    list.items.push({completed: false, title: ''});
+    list.items.push({content: "", completed: false});
     focusNewItem = true;
+}
+
+function newList() {
+    apiSend("POST", "todos", {title: "New To-Do List"}, "", "Failed to create list", (data: TodoList) => {
+        todoLists.value.push(data);
+    })
+}
+
+function updateList(list: TodoList) {
+    apiSend("PUT", "todos", list, "", "Failed to save list");
+}
+
+function deleteList(list: TodoList) {
+    confirmDeletion(() => {
+        apiSend("DELETE", "todos", {id: list.id}, "", "Failed to delete list", () => {
+            // todo: should probably refactor to use `list.order` when thats added
+            todoLists.value.splice(todoLists.value.indexOf(list), 1);
+        })
+    })
+}
+
+function completeItem(item: TodoItem, list: TodoList) {
+    item.completed = !item.completed;
+    updateList(list);
+}
+
+function colourItem(item: TodoItem, colour: Colour, list: TodoList) {
+    item.colour = colour;
+    updateList(list)
+}
+
+function deleteItem(item: TodoItem, list: TodoList) {
+    list.items.splice(list.items.indexOf(item), 1);
+    updateList(list);
+}
+
+function saveListTitle(list: TodoList, evt: FocusEvent) {
+    const value = (evt.composedPath()[0] as HTMLInputElement).value;
+    apiSend("PATCH", "todos", {id: list.id, title: value}, "", "Failed to rename list", () => {
+        list.title = value;
+    });
 }
 
 const vFocus: Directive<HTMLDivElement> = {
@@ -84,25 +117,29 @@ const vFocus: Directive<HTMLDivElement> = {
     <div class="todo-list-container">
         <div class="todo-list" v-for="list in todoLists">
             <div class="flex justify-between">
-                <input class="editable-name title" v-model="list.title"/>
+                <input class="editable-name title" :value="list.title" @focusout.stop="saveListTitle(list, $event)"/>
                 <span class="cb-icon text-themeText hover:text-red-500 cb-button text-lg"
-                      @click="confirmDeletion(() => {todoLists.splice(todoLists.indexOf(list), 1)})"
+                      @click="deleteList(list)"
                 >delete</span>
             </div>
             <div class="todo-item" :class="[item.colour ?? '']" v-for="item in list.items">
-                <input class="editable-name" :class="{strike: item.completed}" v-model="item.title" v-focus @keydown.enter="$event.target.blur()"/>
+                <input class="editable-name"
+                       :class="{strike: item.completed}"
+                       v-model="item.content"
+                       v-focus
+                       @keydown.enter="$event.target.blur()"
+                       @focusout.stop="updateList(list)"
+                />
                 <div class="buttons">
-                    <span class="cb-icon hover:text-green-400"
-                          @click="item.completed = true"
-                    >style</span>
+                    <span class="cb-icon hover:text-green-400">style</span>
                     <div class="style-picker">
-                        <div @click="item.completed = !item.completed">
+                        <div @click="completeItem(item, list)">
                             <span class="cb-icon">format_strikethrough</span>
                         </div>
-                        <div :class="colour" v-for="colour of colours" @click="item.colour = colour"></div>
+                        <div :class="colour" v-for="colour of colours" @click="colourItem(item, colour, list)"></div>
                     </div>
                     <span class="cb-icon hover:text-red-500"
-                          @click="list.items.splice(list.items.indexOf(item), 1)"
+                          @click="deleteItem(item, list)"
                     >delete</span>
                 </div>
             </div>
@@ -111,7 +148,7 @@ const vFocus: Directive<HTMLDivElement> = {
                 <span>New Item</span>
             </div>
         </div>
-        <div class="new-item new-list" @click="todoLists.push({title:'My todo list', items:[]})">
+        <div class="new-item new-list" @click="newList">
             <div class="text-center">
                 <span class="cb-icon">add</span>
                 <br>
