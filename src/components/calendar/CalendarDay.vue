@@ -17,6 +17,10 @@ const timeFormat = new Intl.DateTimeFormat('en-AU', {
     hour: "numeric",
     minute: "2-digit",
 })
+
+defineEmits([
+    "openPopup"
+])
 </script>
 
 <template>
@@ -27,14 +31,14 @@ const timeFormat = new Intl.DateTimeFormat('en-AU', {
             firstOfMonth: day.number === 1,
             weekend:      day.weekNo > 4
          }"
+         @click="$emit('openPopup')"
     >
         {{day.number}}
         <span v-if="isToday"
               class="subheader absolute right-2 my-0">Today</span>
-        <!--todo: fix transparency when hovered-->
         <div v-for="event in events" class="cb-event"
-             :style="{backgroundColor: event.colour && `rgb(${event.colour} / 0.25)`}"
-             :class="isToday ? 'bg-primary/50' : 'bg-accent/70'"
+             :class="['bg-faded-accent', event.colour ? 'bg-faded-red': '']"
+             @click.stop
         >
             <span class="cb-time" v-if="!event.all_day">{{timeFormat.format(event.due)}}</span>
             <div class="cb-title">{{event.title}}</div>
@@ -55,9 +59,6 @@ const timeFormat = new Intl.DateTimeFormat('en-AU', {
     &.weekend {
         @apply bg-accent/70;
     }
-    &:hover {
-        @apply bg-accent/80;
-    }
     &.isToday {
         @apply bg-accent shadow-themeText/10 shadow-lg;
         border-left: 5px solid theme(colors.sky.600);
@@ -69,7 +70,7 @@ const timeFormat = new Intl.DateTimeFormat('en-AU', {
     &:hover {
         z-index: 5;
         box-shadow: 0 0 8px rgb(var(--theme-text) / 0.5);
-        @apply bg-accent min-w-max p-1 px-2;
+        @apply min-w-max p-1 px-2;
         .cb-time {
             display: inline;
         }

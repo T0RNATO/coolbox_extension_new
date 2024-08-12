@@ -3,6 +3,7 @@ import {ref, type Ref, type Directive, nextTick, computed, onMounted} from "vue"
 import {dateToDayId, dayIndexToMonthDay, getDayOfYear, toMondayBased} from "~/entries/pages/calendar/timeUtils";
 import type {Day, Event, SchoolboxApiEvent, Week} from "./types.ts"
 import CalendarDay from "~/components/calendar/CalendarDay.vue";
+import TaskPopup from "~/components/calendar/TaskPopup.vue";
 
 document.title = "Coolbox Calendar"
 
@@ -174,6 +175,12 @@ const vStartScrolled: Directive<HTMLDivElement> = {
     }
 }
 
+const popup: Ref<InstanceType<typeof TaskPopup>> = ref(null);
+
+defineProps<{
+    subjects: {name: string, pretty: string}[];
+}>();
+
 // Fix infinite scrolling breaking after a hot reload in dev environment
 if (import.meta.hot) {
     import.meta.hot.on('vite:beforeUpdate', () => {
@@ -190,6 +197,9 @@ if (import.meta.hot) {
 </script>
 
 <template>
+    <teleport to="body">
+        <TaskPopup ref="popup" :subjects="subjects"/>
+    </teleport>
     <div class="grid grid-cols-7 pb-2 px-6 gap-4">
         <span v-for="(day, i) in days" class="text-themeText w-full text-center"
               :class="{highlightColumn: daysThroughWeek % 7 === i}">{{day}}</span>
@@ -211,7 +221,9 @@ if (import.meta.hot) {
             <CalendarDay v-for="day in week.days" :key="day.id"
                          :day="day"
                          :current-displayed-month="currentDisplayedMonth"
-                         :events="events[day.id] || []"/>
+                         :events="events[day.id] || []"
+                         @open-popup="popup.openPopup()"
+            />
         </div>
     </div>
 </template>
