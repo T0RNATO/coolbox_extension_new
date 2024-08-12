@@ -1,5 +1,5 @@
-function mix(color) {
-    return `color-mix(in oklab, theme(colors.${color}) 20%, theme(colors.accent))`
+function mix(color, percent = 20) {
+    return `color-mix(in oklab, theme(colors.${color}) ${percent}%, theme(colors.accent))`
 }
 
 /** @type {import('tailwindcss').Config} */
@@ -17,6 +17,8 @@ module.exports = {
                 themeText: 'rgb(var(--theme-text) / <alpha-value>)',
 
                 faded: {
+                    accent: mix('primary', 40),
+
                     green:  mix('green.400'),
                     red:    mix('red.400'),
                     blue:   mix('blue.400'),
