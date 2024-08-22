@@ -1,94 +1,42 @@
 <script setup lang="ts">
-import {Directive, ref, Ref} from "vue";
+import type {Colour, TodoItem, TodoListType} from "~/entries/pages/todo/types.js";
+import {apiSend} from "~/utils/apiUtils.js";
+import {Directive} from "vue";
 import Shadow from "~/components/other/Shadow.vue";
-import PopupBase from "~/components/popups/PopupBase.vue";
-import {apiGet, apiSend, cookieFetched} from "~/utils/apiUtils.ts";
-
-document.title = "Coolbox Todo";
-
-defineProps<{
-    subjects: {name: string, pretty: string}[];
-}>();
-
-cookieFetched.then(() => {
-    apiGet("todos", (data: TodoList[]) => {
-        todoLists.value = data;
-    })
-})
-
-const todoLists: Ref<TodoList[]> = ref([]);
 
 const colours: Colour[] = ["green", "red", "blue", "yellow", "purple", "pink", "orange", "cyan"];
-type Colour = "green" | "red" | "blue" | "yellow" | "purple" | "pink" | "orange" | "cyan";
 
-type TodoList = {
-    items: TodoItem[],
-    title: string,
-    id: number,
-}
-type TodoItem = {
-    content: string,
-    completed: boolean,
-    colour?: Colour,
-}
-
-const confirmation_popup = ref();
-const confirmation_button = ref();
-
-let confirm: Function;
-
-function confirmDeletion(f: () => void) {
-    confirmation_popup.value.openPopup();
-    confirmation_button.value.focus();
-    confirm = f;
-}
-
-let focusNewItem = false;
-
-function newItem(list: TodoList) {
-    list.items.push({content: "", completed: false});
-    focusNewItem = true;
-}
-
-function newList() {
-    apiSend("POST", "todos", {title: "New To-Do List"}, "", "Failed to create list", (data: TodoList) => {
-        todoLists.value.push(data);
-    })
-}
-
-function updateList(list: TodoList) {
+function updateList(list: TodoListType) {
     apiSend("PUT", "todos", list, "", "Failed to save list");
 }
 
-function deleteList(list: TodoList) {
-    confirmDeletion(() => {
-        apiSend("DELETE", "todos", {id: list.id}, "", "Failed to delete list", () => {
-            // todo: should probably refactor to use `list.order` when thats added
-            todoLists.value.splice(todoLists.value.indexOf(list), 1);
-        })
-    })
-}
-
-function completeItem(item: TodoItem, list: TodoList) {
+function completeItem(item: TodoItem, list: TodoListType) {
     item.completed = !item.completed;
     updateList(list);
 }
 
-function colourItem(item: TodoItem, colour: Colour, list: TodoList) {
+function colourItem(item: TodoItem, colour: Colour, list: TodoListType) {
     item.colour = colour;
     updateList(list)
 }
 
-function deleteItem(item: TodoItem, list: TodoList) {
+function deleteItem(item: TodoItem, list: TodoListType) {
     list.items.splice(list.items.indexOf(item), 1);
     updateList(list);
 }
 
-function saveListTitle(list: TodoList, evt: FocusEvent) {
-    const value = (evt.composedPath()[0] as HTMLInputElement).value;
+function saveListTitle(list: TodoListType, el: HTMLInputElement) {
+    const value = el.value;
     apiSend("PATCH", "todos", {id: list.id, title: value}, "", "Failed to rename list", () => {
         list.title = value;
     });
+}
+
+let focusNewItem = false;
+
+function newItem(list: TodoListType) {
+    list.items.push({content: "", completed: false});
+    focusNewItem = true;
 }
 
 const vFocus: Directive<HTMLDivElement> = {
@@ -99,27 +47,27 @@ const vFocus: Directive<HTMLDivElement> = {
         }
     }
 }
+
+defineProps<{
+    list: TodoListType
+    widget?: boolean
+}>();
+
+defineEmits(["delete"]);
 </script>
 
 <template>
-    <teleport to="body">
-        <PopupBase title="Confirm Deletion?" ref="confirmation_popup" no-pad>
-            <template #buttons>
-                <div class="mt-4">
-                    <button class="button-l">No</button>
-                    <button class="button-r submit" @click="confirm" ref="confirmation_button">Yes</button>
-                </div>
-            </template>
-        </PopupBase>
-    </teleport>
-    <h2 class="subheader">To-do Lists</h2>
     <Shadow>
-    <div class="todo-list-container">
-        <div class="todo-list" v-for="list in todoLists">
+        <div class="todo-list" :class="{widget}">
             <div class="flex justify-between">
-                <input class="editable-name title" :value="list.title" @focusout.stop="saveListTitle(list, $event)"/>
+                <input class="editable-name title"
+                       :value="list.title"
+                       @focusout.stop="saveListTitle(list, $event.target)"
+                       @keydown.enter="$event.target.blur()"
+                />
                 <span class="cb-icon text-themeText hover:text-red-500 cb-button text-lg"
-                      @click="deleteList(list)"
+                      @click="$emit('delete', list)"
+                      v-if="!widget"
                 >delete</span>
             </div>
             <div class="todo-item" :class="[item.colour ?? '']" v-for="item in list.items">
@@ -148,23 +96,12 @@ const vFocus: Directive<HTMLDivElement> = {
                 <span>New Item</span>
             </div>
         </div>
-        <div class="new-item new-list" @click="newList">
-            <div class="text-center">
-                <span class="cb-icon">add</span>
-                <br>
-                <span>New List</span>
-            </div>
-        </div>
-    </div>
     </Shadow>
 </template>
 
 <style scoped>
 .cb-button {
     @apply cursor-pointer transition-colors;
-}
-.new-list {
-    @apply h-[50vh] min-w-[7vw] justify-center;
 }
 .new-item {
     @apply bg-accent/60 text-themeText p-2 rounded-md flex
@@ -192,30 +129,29 @@ const vFocus: Directive<HTMLDivElement> = {
 .orange { @apply bg-faded-orange; }
 .cyan   { @apply bg-faded-cyan; }
 .todo-list {
-    @apply min-w-[20vw] max-w-[20vw] bg-primary h-[50vh] rounded-md p-2 overflow-y-auto;
+    @apply min-w-[20vw] bg-primary rounded-md p-2 overflow-y-auto;
+    &.widget {
+        width: calc(100% - 1rem);
+        max-height: 60vh;
+        @apply rounded-b-none;
+    }
+    &:not(.widget) {
+        @apply max-w-[20vw] h-[50vh];
+    }
     &::-webkit-scrollbar {
         display: none;
     }
 }
-.todo-list-container {
-    @apply overflow-x-auto flex gap-2 py-2;
-    &::-webkit-scrollbar {
-        @apply bg-primary rounded-md;
-    }
-    &::-webkit-scrollbar-thumb {
-        @apply bg-accent rounded-md;
-    }
-}
 .editable-name {
     @apply bg-transparent border-none text-themeText font-sans
-            outline-none rounded-md focus:pl-2 w-[90%] focus:bg-primary/30;
+    outline-none rounded-md focus:pl-2 w-[90%] focus:bg-primary/30;
     &.title {
         @apply font-semibold underline underline-offset-4 text-xl mb-2 focus:bg-accent
     }
 }
 .style-picker {
     @apply absolute rounded-3xl bg-accent border-primary/40 border-2 z-20
-            border-solid w-6 p-0.5 hidden items-center flex-col gap-1 top-0 -left-1;
+    border-solid w-6 p-0.5 hidden items-center flex-col gap-1 top-0 -left-1;
     > div {
         cursor: pointer;
         @apply rounded-3xl size-5;
