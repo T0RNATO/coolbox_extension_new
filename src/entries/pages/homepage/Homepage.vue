@@ -132,6 +132,7 @@ import {Reminder} from "~/utils/types";
 // types do not exist for this package
 // @ts-ignore
 import {Container, Draggable} from "vue3-smooth-dnd";
+import TodoListWidget from "~/components/widgets/TodoListWidget.vue";
 
 const currentPageLayout: Ref<Record<Column,Component[]>> = ref({
     leftCol: [],
@@ -208,6 +209,7 @@ const allWidgets: Raw<Component>[] = [
     NewsItems,
     Calendar,
     TermDates,
+    TodoListWidget
 ].map(markRaw);
 const drawerOpen = ref(false);
 

@@ -3,6 +3,7 @@ import {ref} from "vue";
 import type {Ref} from 'vue';
 import purify from 'dompurify'
 import {Reminder, RoomChange, ApiResponse, Weather, StatusMessages} from "./types.ts";
+import type {TodoListType} from "~/entries/pages/todo/types.js";
 
 let headers = null;
 
@@ -40,6 +41,17 @@ let triggerApiRespondedEvent: (value?: unknown) => void;
 export const apiResponded = new Promise(resolve => {
     triggerApiRespondedEvent = resolve;
 })
+
+let todoLists: Ref<TodoListType[] | null> = ref(null);
+
+export function getCachedTodoLists(): Promise<TodoListType[]> {
+   return new Promise((resolve) => {
+        if (todoLists.value) {
+            return resolve(todoLists.value);
+        }
+        apiGet("todos", resolve);
+    })
+}
 
 function processApiData(data: ApiResponse) {
     statusMessages.value = data.status;
