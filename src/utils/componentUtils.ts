@@ -1,5 +1,5 @@
-import browser, {Storage} from "webextension-polyfill";
-import {computed, ref, UnwrapRef, WritableComputedRef} from "vue";
+import browser, {type Storage} from "webextension-polyfill";
+import {computed, ref, type UnwrapRef, type WritableComputedRef} from "vue";
 // @ts-ignore, vite-specific code
 import tailwind from "tailwindcss/tailwind.css?inline";
 // @ts-ignore, vite-specific code
