@@ -35,7 +35,7 @@ defineProps<{
 
 <template>
 <div>
-    <div v-if="loaded" class="flex flex-col items-stretch w-full main">
+    <div v-if="loaded" class="flex flex-col items-stretch w-full todo-container">
         <Transition mode="in-out">
             <TodoList :list="todoLists[displayedListIndex]" :key="displayedListIndex" :widget="true"/>
         </Transition>
@@ -58,11 +58,12 @@ defineProps<{
 </div>
 </template>
 
+<!--suppress CssUnusedSymbol -->
 <style scoped>
 .cb-icon {
-    @apply cursor-pointer text-themeText my-auto;
+    @apply cursor-pointer text-themeText my-auto select-none;
 }
-.main {
+.todo-container {
     transition: height 0.3s ease;
 }
 

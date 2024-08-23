@@ -7,6 +7,12 @@ import Shadow from "~/components/other/Shadow.vue";
 const colours: Colour[] = ["green", "red", "blue", "yellow", "purple", "pink", "orange", "cyan"];
 
 function updateList(list: TodoListType) {
+    for (const item of list.items) {
+        if (!item.content) {
+            list.items.splice(list.items.indexOf(item), 1);
+            return;
+        }
+    }
     apiSend("PUT", "todos", list, "", "Failed to save list");
 }
 
@@ -58,7 +64,7 @@ defineEmits(["delete"]);
 
 <template>
     <Shadow>
-        <div class="todo-list" :class="{widget}">
+        <div class="todo-list" :class="{widget, scrolling: list.items.length >= 9}">
             <div class="flex justify-between">
                 <input class="editable-name title"
                        :value="list.title"
@@ -99,6 +105,7 @@ defineEmits(["delete"]);
     </Shadow>
 </template>
 
+<!--suppress CssUnusedSymbol -->
 <style scoped>
 .cb-button {
     @apply cursor-pointer transition-colors;
@@ -129,11 +136,14 @@ defineEmits(["delete"]);
 .orange { @apply bg-faded-orange; }
 .cyan   { @apply bg-faded-cyan; }
 .todo-list {
-    @apply min-w-[20vw] bg-primary rounded-md p-2 overflow-y-auto;
+    @apply min-w-[20vw] bg-primary rounded-md p-2;
     &.widget {
         width: calc(100% - 1rem);
         max-height: 60vh;
         @apply rounded-b-none;
+    }
+    &.scrolling {
+        overflow-y: auto;
     }
     &:not(.widget) {
         @apply max-w-[20vw] h-[50vh];
