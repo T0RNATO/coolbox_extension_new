@@ -4,7 +4,7 @@ import type {widgInfo} from "~/utils/types.js";
 import {cookieFetched, getCachedTodoLists} from "~/utils/apiUtils.js";
 import type {TodoListType} from "~/entries/pages/todo/types.js";
 import {ref, type Ref} from "vue";
-import TodoList from "~/entries/pages/todo/TodoList.shadow.vue"
+import TodoList from "~/entries/pages/todo/TodoList.vue"
 
 const todoLists: Ref<TodoListType[]> = ref([]);
 const loaded: Ref<boolean> = ref(false);
@@ -35,18 +35,18 @@ defineProps<{
 
 <template>
 <div>
-    <div v-if="loaded" class="flex flex-col items-stretch w-full todo-container">
-        <Transition mode="in-out">
+    <div v-if="loaded" class="flex flex-col items-stretch w-full todo-container bg-primary rounded-md">
+        <Transition mode="out-in">
             <TodoList :list="todoLists[displayedListIndex]" :key="displayedListIndex" :widget="true"/>
         </Transition>
         <div class="w-full flex justify-center pb-2 bg-primary rounded-b-md">
-            <span class="cb-icon text-2xl" @click="inc">chevron_left</span>
+            <span class="cb-icon text-2xl" @click="dec">chevron_left</span>
             <span class="cb-icon text-md"
                   v-for="(_, i) in todoLists"
                   :class="{'icon-fill': i == displayedListIndex}"
                   @click="displayedListIndex = i"
             >circle</span>
-            <span class="cb-icon text-2xl" @click="dec">chevron_right</span>
+            <span class="cb-icon text-2xl" @click="inc">chevron_right</span>
         </div>
     </div>
     <div v-else class="bg-primary p-2 rounded-md">
@@ -63,18 +63,19 @@ defineProps<{
 .cb-icon {
     @apply cursor-pointer text-themeText my-auto select-none;
 }
-.todo-container {
-    transition: height 0.3s ease;
-}
 
 .v-enter-active, .v-leave-active {
-    transition: transform 0.2s ease, opacity 0.6s;
+    transition: transform 0.2s ease, opacity 0.2s;
 }
 .v-enter-from {
-    transform: translateX(-100%);
+    transform: translateX(-10%);
     opacity: 0;
 }
 .v-enter-to {
     opacity: 1;
+}
+.v-leave-to {
+    transform: translateX(10%);
+    opacity: 0;
 }
 </style>

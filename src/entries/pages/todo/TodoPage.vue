@@ -3,7 +3,7 @@ import {ref, type Ref} from "vue";
 import PopupBase from "~/components/popups/PopupBase.vue";
 import {apiGet, apiSend, cookieFetched} from "~/utils/apiUtils.ts";
 import type {TodoListType} from "~/entries/pages/todo/types.js";
-import TodoList from "~/entries/pages/todo/TodoList.shadow.vue";
+import TodoList from "~/entries/pages/todo/TodoList.vue";
 
 document.title = "Coolbox Todo";
 
@@ -33,16 +33,32 @@ function confirmDeletion(f: () => void) {
 }
 
 function newList() {
-    apiSend("POST", "todos", {title: "New To-Do List"}, "", "Failed to create list", (data: TodoListType) => {
+    apiSend("POST", "todos", {title: "New To-Do List", display_id: todoLists.value.length}, "", "Failed to create list", (data: TodoListType) => {
         todoLists.value.push(data);
     })
+}
+
+// todo: make this work?
+function reorderList(list: TodoListType, newIndex: number) {
+    if (newIndex < 0 || newIndex >= todoLists.value.length) return;
+
+    const listOldIndex = list.display_id;
+    const listBeingReplaced = todoLists.value.find(l => l.display_id === listOldIndex);
+
+    apiSend("PATCH", "todos", {id: listBeingReplaced.id, display_id: listOldIndex}, "", "Failed to reorder list", () => {
+        listBeingReplaced.display_id = listOldIndex
+        apiSend("PATCH", "todos", {id: list.id, display_id: newIndex}, "", "Failed to reorder list", () => {
+            list.display_id = newIndex
+            todoLists.value.sort((a, b) => a.display_id - b.display_id);
+        });
+    });
 }
 
 function deleteList(list: TodoListType) {
     confirmDeletion(() => {
         apiSend("DELETE", "todos", {id: list.id}, "", "Failed to delete list", () => {
-            // todo: should probably refactor to use `list.order` when thats added
             todoLists.value.splice(todoLists.value.indexOf(list), 1);
+            todoLists.value.map((l, i) => l.display_id = i);
         })
     })
 }
@@ -61,9 +77,11 @@ function deleteList(list: TodoListType) {
     </teleport>
     <h2 class="subheader">To-do Lists</h2>
     <div class="todo-list-container" v-if="loaded">
-        <TodoList v-for="list in todoLists"
+        <TodoList v-for="(list, i) in todoLists"
                   :list="list"
-                  @delete="deleteList"
+                  @delete="deleteList(list)"
+                  @left="reorderList(list, i - 1)"
+                  @right="reorderList(list, i + 1)"
         />
         <div class="new-list" @click="newList">
             <div class="text-center">

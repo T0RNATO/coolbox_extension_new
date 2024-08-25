@@ -4,6 +4,7 @@ export type TodoListType = {
     items: TodoItem[],
     title: string,
     id: number,
+    display_id: number,
 }
 
 export type TodoItem = {
