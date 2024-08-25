@@ -107,3 +107,16 @@ browser.storage.local.onChanged.addListener((changes) => {
         }
     }
 });
+
+// Currently disabled
+if (import.meta.env.DEV) {
+    const todoButton = document.createElement("li");
+    todoButton.style.display = 'list-item';
+    todoButton.innerHTML = `
+        <a href="/coolbox-todo">
+            <span class="cb-icon icon-fill" style="font-size: 1.5rem">list_alt</span>
+            <span style="margin-top: .25rem;">To-Do Lists</span>
+        </a>`
+
+    document.querySelector("#top-menu").appendChild(todoButton);
+}
