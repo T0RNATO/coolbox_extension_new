@@ -3,49 +3,30 @@
         <h2 class="subheader">Due Work</h2>
         <ul class="information-list rounded-lg bg-primary overflow-hidden" id="due-work" :class="{limitHeight: widgInfo.add}">
             <li v-for="workItem in dueWorkItems">
-                <div class="w-full p-2" :class="{hiderem: hiddenReminderIds.includes(getAssessmentId(workItem))}">
-                    <!-- Work Item Name -->
-                    <h3 v-html="workItem.firstElementChild.innerHTML" class="m-0"></h3>
-                    <!-- Work Item Subject -->
-                    <p class="meta inline">
-                        <a :href="(workItem.children[1].firstElementChild as HTMLAnchorElement)?.href">
-                            {{
-                                prettySubjects?.find(
-                                    subject => subject?.name?.toLowerCase() ===
-                                        workItem.children[1]?.firstElementChild?.textContent?.split("(")[1]?.slice(0, -1)?.toLowerCase()
-                                )?.pretty
-                                || workItem.children[1].firstElementChild?.textContent
-                            }}
-                        </a>
-                        {{workItem.children[1].lastChild.textContent}}
-                    </p>
-                    <!-- Time left -->
-                    <p class="meta" v-html="workItem.lastElementChild.innerHTML"></p>
-                    <!-- Add reminder button -->
-                    <div class="reminder-button" v-if="!hiddenReminderIds.includes(getAssessmentId(workItem))">
-                        <span class="cb-icon assessment-button" @click="editReminder(workItem as HTMLElement)">
-                            {{reminderExists(workItem) ? 'notifications_active' : 'notification_add'}}
-                        </span>
-                            <span class="cb-icon assessment-button" @click="hiddenReminderIds = [...hiddenReminderIds, getAssessmentId(workItem)];">
-                            visibility_off
-                        </span>
+                <DueWorkItem
+                    :work-item="workItem"
+                    :hidden-ids="hiddenReminderIds"
+                    :pretty="prettySubjects"
+                    @show="show"
+                    @hide="hide"
+                />
+            </li>
+            <li class="!pt-2">
+                <div class="flex-row w-full flex p-0 text-sm">
+                    <div class="button" @click="createReminder(false)">
+                        <div>
+                            <span class="cb-icon align-bottom">add</span>
+                            Add Reminder
+                        </div>
                     </div>
-                    <!-- Hide work item button -->
-                    <div v-else class="reminder-button !top-2">
-                        <div class="dui-tooltip dui-tooltip-left" data-tip="Restore Task">
-                            <!--suppress TypeScriptUnresolvedReference, toSpliced randomly is unrecognised despite target of ESNext -->
-                            <span class="cb-icon assessment-button text-green-400"
-                                  @click="hiddenReminderIds = hiddenReminderIds.toSpliced(hiddenReminderIds.indexOf(getAssessmentId(workItem)), 1)">
-                                visibility
-                            </span>
+                    <div class="button" @click="$emit('viewReminders')">
+                        <div>
+                            <span class="cb-icon align-bottom">visibility</span>
+                            View All Reminders
                         </div>
                     </div>
                 </div>
             </li>
-            <ReminderButtons
-                @view-reminders="$emit('viewReminders')"
-                @create-reminder="createReminder(false)"
-            />
         </ul>
         <EditingContextMenu @delete="$emit('delete')"/>
     </div>
@@ -56,8 +37,8 @@ import EditingContextMenu from "~/components/other/EditingContextMenu.vue";
 import {Ref, ref} from "vue";
 import browser from "webextension-polyfill";
 import {useExtensionStorage} from "~/utils/componentUtils";
-import ReminderButtons from "~/components/widgets/DueWork/ReminderButtons.vue";
 import type {widgInfo} from "~/utils/types";
+import DueWorkItem from "~/components/widgets/DueWork/DueWorkItem.vue";
 
 let dueWorkItems = document.querySelectorAll('#component52396 .information-list .card');
 
@@ -107,6 +88,13 @@ function getAssessmentId(workItem: Element): number {
     return Number(id);
 }
 
+function hide(id: number) {
+    hiddenReminderIds.value = [...hiddenReminderIds.value, id];
+}
+function show(id: number) {
+    hiddenReminderIds.value = hiddenReminderIds.value.toSpliced(hiddenReminderIds.value.indexOf(id), 1)
+}
+
 function editReminder(workItem: Element) {
     if (reminderExists(workItem)) {
         emit('editReminder', props.widgInfo.reminders.find(reminder => reminder.assessment === getAssessmentId(workItem)));
@@ -117,41 +105,11 @@ function editReminder(workItem: Element) {
 </script>
 
 <style scoped>
-.reminder-button {
-    @apply absolute w-[20px] aspect-square right-[10px] top-[5px] cursor-pointer text-gray-500 text-xl;
-}
-
-.assessment-button {
-    @apply transition-all;
-}
-
-.assessment-button:hover {
-    @apply text-gray-400;
-}
-
 .limitHeight {
     max-height: 240px;
 }
-
-.hiderem {
-    @apply max-h-3 !bg-accent transition-[max-height] overflow-hidden;
-}
-
-.hiderem > h3 {
-    @apply mt-5 transition-[margin];
-}
-.hiderem:hover > h3 {
-    @apply mt-0;
-}
-.hiderem .assessment-button {
-    @apply transition-[opacity] opacity-0;
-}
-.hiderem:hover .assessment-button {
-    @apply opacity-100;
-}
-
-.hiderem:hover {
-    @apply max-h-24 pt-2;
+.button {
+    @apply w-full m-2 mt-0 flex items-center justify-center rounded-md;
 }
 </style>
 
