@@ -93,7 +93,7 @@ cookieFetched.then(cookie => {
     }
 });
 
-if (history.state) {
+if (history.state && location.pathname === "/" && Object.values(history.state).length) {
     processApiData(history.state);
 }
 
