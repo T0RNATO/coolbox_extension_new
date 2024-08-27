@@ -36,7 +36,7 @@ function loadFonts() {
         availableFonts.value = fonts;
         filteredFonts.value = fonts;
     }).catch((error) => {
-        console.log(error);
+        console.error(error);
         fontLoadingError.value = true;
     })
 }

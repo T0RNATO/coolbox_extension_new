@@ -8,7 +8,6 @@ export function generateThemeCss(themeObject: Theme, font: string): [string | nu
     switch (themeObject?.type || "preset") {
         case "preset":
             variables = themePresets.concat(legacyThemePresets).find(theme => theme.value === themeObject.presetData.preset)?.vars;
-            console.log(variables);
             break;
         case "legacy": {
             const colour = themeObject.legacyData.colour;

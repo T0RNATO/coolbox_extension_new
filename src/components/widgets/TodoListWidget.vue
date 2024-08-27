@@ -36,8 +36,6 @@ function inc() {
 const props = defineProps<{
     widgInfo: widgInfo
 }>();
-
-console.log(props.widgInfo);
 </script>
 
 <template>

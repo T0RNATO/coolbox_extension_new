@@ -2,7 +2,6 @@
 import type {Colour, TodoItem, TodoListType} from "~/entries/pages/todo/types.js";
 import {apiSend} from "~/utils/apiUtils.js";
 import {Directive} from "vue";
-import Shadow from "~/components/other/Shadow.vue";
 // noinspection TypeScriptCheckImport
 import {Container, Draggable} from "vue3-smooth-dnd";
 
@@ -48,7 +47,6 @@ function newItem(list: TodoListType) {
 }
 
 function dropItem({ removedIndex, addedIndex, payload: item }, list: TodoListType) {
-    console.log(removedIndex, addedIndex, list);
     if (removedIndex !== null) {
         list.items.splice(removedIndex, 1);
     }
