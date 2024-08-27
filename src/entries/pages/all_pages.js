@@ -108,8 +108,27 @@ browser.storage.local.onChanged.addListener((changes) => {
     }
 });
 
+const replacementNavIcons = [
+    "schedule",
+    "school",
+    "download", //or place_item
+    "check",
+    "calendar_month",
+    "newspaper",
+]
+
 // Currently disabled
 if (import.meta.env.DEV) {
+    const nav = document.querySelector("#top-menu");
+
+    for (const [i, item] of Object.entries(nav.children)) {
+        const anchor = item.firstElementChild;
+        anchor.classList = [];
+        anchor.innerHTML = `
+            <span class="cb-icon icon-fill" style="font-size: 1.5rem; margin-bottom: .25rem">${replacementNavIcons[i]}</span>
+        ` + anchor.innerHTML;
+    }
+
     const todoButton = document.createElement("li");
     todoButton.style.display = 'list-item';
     todoButton.innerHTML = `
@@ -118,5 +137,5 @@ if (import.meta.env.DEV) {
             <span style="margin-top: .25rem;">To-Do Lists</span>
         </a>`
 
-    document.querySelector("#top-menu").appendChild(todoButton);
+    nav.appendChild(todoButton);
 }
