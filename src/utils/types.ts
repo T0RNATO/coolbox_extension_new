@@ -1,3 +1,5 @@
+import type {ComputedRef} from "vue";
+
 export type Preset = "light" | "dark" | "catppuccin_mocha" | "catppuccin_frappe" | "purple" | "dark_blue";
 export type ThemeType = "preset" | "legacy" | "custom"
 
@@ -96,6 +98,7 @@ export interface ApiResponse {
         reference: string;
         link: string;
     }
+    tasks: Task[];
 }
 
 export type Weather = {
@@ -115,4 +118,24 @@ export type StatusMessages = {
     info?: string;
     critical?: string;
     message?: string;
+}
+
+export type Task = {
+    title: string,
+    due: string,
+    type: string,
+    subject?: string,
+    id: number,
+}
+
+export type WorkItem = {
+    name: string;
+    userDefined: boolean;
+    prettySubject?: ComputedRef<string>;
+    id?: number;
+    subject?: string;
+    subjectLink?: string;
+    link?: string;
+    reminderExists: boolean;
+    due: Date;
 }

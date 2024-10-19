@@ -2,27 +2,35 @@
     <div>
         <h2 class="subheader">Due Work</h2>
         <ul class="information-list rounded-lg bg-primary overflow-hidden" id="due-work" :class="{limitHeight: widgInfo.add}">
-            <li v-for="workItem in dueWorkItems">
-                <DueWorkItem
-                    :work-item="workItem"
-                    :hidden-ids="hiddenReminderIds"
-                    :pretty="prettySubjects"
-                    @show="show"
-                    @hide="hide"
-                />
-            </li>
+            <DueWorkItem v-for="workItem in dueWorkItems"
+                :item="workItem"
+                :hidden="workItem.id && hiddenReminderIds.includes(workItem.id)"
+                @show="show"
+                @hide="hide"
+                @remind="editReminder"
+            />
             <li class="!pt-2">
-                <div class="flex-row w-full flex p-0 text-sm">
-                    <div class="button" @click="createReminder(false)">
-                        <div>
-                            <span class="cb-icon align-bottom">add</span>
-                            Add Reminder
+                <div class="flex-row w-full flex p-1 pt-0 text-sm">
+                    <div class="button-section">
+                        <div class="dui-divider">Tasks</div>
+                        <div class="button-container">
+                            <div class=button @click="$emit('popup', 'createTask')">
+                                <span class="cb-icon align-bottom">task</span>
+                                Add
+                            </div>
                         </div>
                     </div>
-                    <div class="button" @click="$emit('viewReminders')">
-                        <div>
-                            <span class="cb-icon align-bottom">visibility</span>
-                            View All Reminders
+                    <div class="button-section !flex-grow-[2]">
+                        <div class="dui-divider">Reminders</div>
+                        <div class="button-container">
+                            <div class=button @click="createReminder(false)">
+                                <span class="cb-icon align-bottom">notifications</span>
+                                Add
+                            </div>
+                            <div class=button @click="$emit('popup', 'viewReminders')">
+                                <span class="cb-icon align-bottom">visibility</span>
+                                View
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -34,13 +42,72 @@
 
 <script setup lang="ts">
 import EditingContextMenu from "~/components/other/EditingContextMenu.vue";
-import {Ref, ref} from "vue";
+import {computed, ComputedRef, Ref, ref} from "vue";
 import browser from "webextension-polyfill";
 import {useExtensionStorage} from "~/utils/componentUtils";
-import type {widgInfo} from "~/utils/types";
+import type {widgInfo, WorkItem} from "~/utils/types";
 import DueWorkItem from "~/components/widgets/DueWork/DueWorkItem.vue";
+import {userTasks} from "~/utils/apiUtils.js";
 
-let dueWorkItems = document.querySelectorAll('#component52396 .information-list .card');
+const dueWorkItems: ComputedRef<WorkItem[]> = computed(() => {
+    const userWorkItems: WorkItem[] = [];
+
+    for (const userTask of userTasks.value) {
+        const task: WorkItem = {
+            due: new Date(userTask.due),
+            name: userTask.title,
+            reminderExists: false, //todo
+            userDefined: true,
+            id: userTask.id,
+        }
+
+        if (userTask.subject) {
+            task.subject = userTask.subject;
+            task.prettySubject = computed(() =>
+                prettySubjects.value.find(subject =>
+                    subject.name.toLowerCase() === userTask.subject.toLowerCase()
+                )?.pretty || userTask.subject
+            )
+            task.subjectLink = `/code/${userTask.subject}`;
+        }
+
+        userWorkItems.push(task);
+    }
+
+    return [...sbWorkItems, ...userWorkItems].sort((a, b) => a.due.getTime() - b.due.getTime());
+})
+
+const sbWorkItems: WorkItem[] = [];
+
+for (const sbWorkItem of document.querySelectorAll<HTMLDivElement>('#component52396 .information-list .card')) {
+    const titleEl = sbWorkItem.querySelector<HTMLAnchorElement>(".title");
+    const timeEl = sbWorkItem.querySelector<HTMLTimeElement>("time");
+    const subjectEl = sbWorkItem.querySelector<HTMLAnchorElement>(".meta > a");
+
+    const subject = subjectEl.textContent.split(" (")[0];
+
+    const possibleSubjectCodes = subjectEl.textContent.split("(")[1]?.slice(0, -1)?.split(',');
+    const prettySubject = computed(() =>
+        prettySubjects.value.find(
+            subject => possibleSubjectCodes.some(
+                code => code.toLowerCase() === subject.name.toLowerCase()
+            )
+        )?.pretty || subject
+    )
+
+    const date = new Date(timeEl.dateTime);
+
+    sbWorkItems.push({
+        reminderExists: false, //todo
+        userDefined: false,
+        due: date,
+        name: titleEl.textContent,
+        link: titleEl.href,
+        prettySubject, subject,
+        subjectLink: subjectEl.href,
+        id: Number((titleEl.href.split('/').slice(-2, -1)[0])),
+    });
+}
 
 const prettySubjects: Ref<{pretty: string, name: string}[]> = ref([]);
 const hiddenReminderIds: Ref<number[]> = useExtensionStorage('hiddenReminders', []);
@@ -50,35 +117,33 @@ setTimeout(() => {
     // Remove any hidden reminders that no longer exist
     for (const reminder of hiddenReminderIds.value) {
         if (!document.querySelector(`#component52396 .information-list .card h3 a[href*="/${reminder}"]`)) {
-            // noinspection TypeScriptUnresolvedReference, toSpliced randomly is unrecognised despite target of ESNext
             hiddenReminderIds.value = hiddenReminderIds.value.toSpliced(hiddenReminderIds.value.indexOf(reminder), 1)
         }
     }
 }, 1000)
 
 browser.storage.local.get("subjects").then(data => {
-    prettySubjects.value = data.subjects?.value || []
+    prettySubjects.value = data.subjects?.value || [];
 })
 
 const props = defineProps<{
     widgInfo: widgInfo
 }>();
 
-const emit = defineEmits(['openReminder', 'delete', 'viewReminders', 'editReminder']);
+const emit = defineEmits(['popup', 'delete']);
 
-function createReminder(assessmentReminder: boolean, workItem?: Element) {
+function createReminder(assessmentReminder: boolean, id?: number, title?: string) {
     if (assessmentReminder) {
-        const assessmentId = getAssessmentId(workItem);
-        const title = workItem.querySelector('h3').innerText;
-        emit('openReminder', {assessment: assessmentId, title: title})
+        emit('popup', 'createReminder', {assessment: id, title})
     } else {
-        emit('openReminder', {});
+        emit('popup', 'createReminder', {});
     }
 }
 
-function reminderExists(workItem: Element): boolean {
+function reminderExists(item: Element | number): boolean {
     if (props.widgInfo.reminders) {
-        return props.widgInfo.reminders.some(reminder => reminder.assessment === getAssessmentId(workItem));
+        const id = typeof item === 'number' ? item : getAssessmentId(item);
+        return props.widgInfo.reminders.some(reminder => reminder.assessment === id);
     }
     return false;
 }
@@ -95,11 +160,11 @@ function show(id: number) {
     hiddenReminderIds.value = hiddenReminderIds.value.toSpliced(hiddenReminderIds.value.indexOf(id), 1)
 }
 
-function editReminder(workItem: Element) {
-    if (reminderExists(workItem)) {
-        emit('editReminder', props.widgInfo.reminders.find(reminder => reminder.assessment === getAssessmentId(workItem)));
+function editReminder(id: number, title: string) {
+    if (reminderExists(id)) {
+        emit('popup', 'editReminder', props.widgInfo.reminders.find(reminder => reminder.assessment === id));
     } else {
-        createReminder(true, workItem);
+        createReminder(true, id, title);
     }
 }
 </script>
@@ -108,8 +173,17 @@ function editReminder(workItem: Element) {
 .limitHeight {
     max-height: 240px;
 }
+.button-section {
+    @apply flex-grow mx-1 flex items-center flex-col justify-center rounded-md text-gray-500;
+}
+.dui-divider {
+    @apply mt-0 mb-2 before:bg-gray-500 after:bg-gray-500 ;
+}
 .button {
-    @apply w-full m-2 mt-0 flex items-center justify-center rounded-md;
+    @apply rounded-md w-full;
+}
+.button-container {
+    @apply flex align-middle w-full gap-x-2;
 }
 </style>
 

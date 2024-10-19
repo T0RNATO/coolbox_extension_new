@@ -2,7 +2,7 @@ import browser from "webextension-polyfill";
 import {ref} from "vue";
 import type {Ref} from 'vue';
 import purify from 'dompurify'
-import {Reminder, RoomChange, ApiResponse, Weather, StatusMessages} from "./types.ts";
+import {Reminder, RoomChange, ApiResponse, Weather, StatusMessages, Task} from "./types.ts";
 import type {TodoListType} from "~/entries/pages/todo/types.js";
 
 let headers = null;
@@ -17,6 +17,7 @@ export const dailyVerse = ref({
     reference: null,
     link: null,
 });
+export const userTasks: Ref<Array<Task>> = ref([]);
 
 const periodChangeListeners = [];
 
@@ -33,6 +34,12 @@ export function onPeriodChange(listener: () => void) {
 export function updateReminders() {
     apiGet("reminders", (data: Reminder[]) => {
         reminders.value = data;
+    })
+}
+
+export function updateTasks() {
+    apiGet("tasks", (data: Task[]) => {
+        userTasks.value = data;
     })
 }
 
@@ -59,6 +66,7 @@ function processApiData(data: ApiResponse) {
     weather.value = data.weather.forecast;
     roomChanges.value = data.room_changes;
     reminders.value = data.reminders;
+    userTasks.value = data.tasks;
     {
         const {content, link, reference} = data.daily_verse;
         dailyVerse.value = {
