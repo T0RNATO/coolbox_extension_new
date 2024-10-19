@@ -37,7 +37,7 @@ function create(event: MouseEvent) {
         event.preventDefault()
         return
     }
-    const task: Task = {title: title.value, due: new Date(due.value).toISOString(), type: "Task"};
+    const task: Partial<Task> = {title: title.value, due: new Date(due.value).toISOString(), type: "Task"};
     if (subject.value) {
         task.subject = subject.value;
     }
