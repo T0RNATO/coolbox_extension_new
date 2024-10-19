@@ -3,7 +3,7 @@ import {ref, type Ref, type Directive, nextTick, computed, onMounted} from "vue"
 import {dateToDayId, dayIndexToMonthDay, getDayOfYear, toMondayBased} from "~/entries/pages/calendar/timeUtils";
 import type {Day, Event, SchoolboxApiEvent, Week} from "./types.ts"
 import CalendarDay from "~/components/calendar/CalendarDay.vue";
-import TaskPopup from "~/components/calendar/TaskPopup.vue";
+import TaskPopup from "~/components/popups/TaskPopup.vue";
 
 document.title = "Coolbox Calendar"
 

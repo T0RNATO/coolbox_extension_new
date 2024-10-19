@@ -30,9 +30,7 @@
                        :is="el" :key="i" :class="{'px-2': true, 'slide-in': pageHasBeenEdited}"
                        :widg-info="{edit: false, col: column, add: false, reminders: reminders}"
                        class="my-2"
-                       @open-reminder="(rem: Reminder) => {openCreateReminderPopup(rem)}"
-                       @view-reminders="viewReminderPopup.openPopup()"
-                       @edit-reminder="(rem: Reminder) => {editReminderPopup.openPopup(rem)}"
+                       @popup="openPopup"
             />
         </div>
     </div>
@@ -41,6 +39,7 @@
         <ReminderPopup :edit="false" ref="createReminderPopup"/>
         <ReminderPopup :edit="true" ref="editReminderPopup"/>
         <ViewRemindersPopup ref="viewReminderPopup" @edit-reminder="(rem) => {editReminderPopup.openPopup(rem)}"/>
+        <TaskPopup ref="taskPopup" :subjects="subjects"/>
     </teleport>
 
     <!-- Page Editing Toast -->
@@ -128,11 +127,12 @@ import {reminders} from "~/utils/apiUtils";
 import {markRaw, Ref, ref} from "vue";
 import type {Component, Raw} from "vue";
 import {manualStorageSet} from "~/utils/componentUtils";
-import {Reminder} from "~/utils/types";
+import {Reminder, Task} from "~/utils/types";
 // types do not exist for this package
 // @ts-ignore
 import {Container, Draggable} from "vue3-smooth-dnd";
 import TodoListWidget from "~/components/widgets/TodoListWidget.vue";
+import TaskPopup from "~/components/popups/TaskPopup.vue";
 
 const currentPageLayout: Ref<Record<Column,Component[]>> = ref({
     leftCol: [],
@@ -146,8 +146,26 @@ defineProps<{
 const createReminderPopup = ref(null);
 const editReminderPopup = ref(null);
 const viewReminderPopup = ref(null);
-function openCreateReminderPopup(reminder: Reminder) {
-    createReminderPopup.value.openPopup(reminder);
+const taskPopup = ref(null);
+
+function openPopup(popupType: "createReminder" | "editReminder", payload: Reminder): void;
+function openPopup(popupType: "createTask" | "editTask", payload: Task): void;
+function openPopup(popupType: "viewReminders"): void;
+function openPopup(popupType: string, payload?: Reminder | Task): void {
+    switch (popupType) {
+        case "viewReminders":
+            return viewReminderPopup.value.openPopup();
+        case "createReminder":
+            return createReminderPopup.value.openPopup(payload as Reminder);
+        case "editReminder":
+            return editReminderPopup.value.openPopup(payload as Reminder);
+        case "createTask":
+            return taskPopup.value.openPopup(payload as Task);
+        case "editTask":
+            return taskPopup.value.openPopup(payload as Task);
+        default:
+            throw new Error(`Unknown popup type: ${popupType}`);
+    }
 }
 
 function getBody() {
