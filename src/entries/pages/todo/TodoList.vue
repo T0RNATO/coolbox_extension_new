@@ -34,6 +34,7 @@ function deleteItem(item: TodoItem, list: TodoListType) {
 
 function renameList(list: TodoListType, el: HTMLInputElement) {
     const value = el.value;
+    if (value == list.title) return;
     apiSend("PATCH", "todos", {id: list.id, title: value}, "", "Failed to rename list", () => {
         list.title = value;
     });
@@ -84,6 +85,7 @@ defineEmits(["delete", "left", "right"]);
                    @keydown.enter="$event.target.blur()"
             />
             <div v-if="!widget" class="text-themeText text-lg">
+                    <!--todo: implement list reordering-->
 <!--                <span class="cb-icon cb-button" @click="$emit('left')">chevron_left</span>-->
 <!--                <span class="cb-icon cb-button" @click="$emit('right')">chevron_right</span>-->
                 <span class="cb-icon hover:text-red-500 cb-button" @click="$emit('delete')">delete</span>
