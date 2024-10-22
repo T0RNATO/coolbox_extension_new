@@ -21,7 +21,7 @@
 
         <span class="text-red-500 block" v-if="(currentReminder.method === 'discord' || currentReminder.method === 'both') && !discordLinked">
             You must
-            <a :href="authLink">authenticate</a>
+            <a :href="authLink" target="_blank">authenticate</a>
             to receive Discord notifications
         </span>
         <span class="text-red-500" v-if="currentReminder.method === 'desktop' || currentReminder.method === 'both'">
