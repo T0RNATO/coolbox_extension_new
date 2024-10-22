@@ -45,9 +45,6 @@ const sharedManifest: Partial<chrome.runtime.Manifest> = {
     options_ui: {
         page: "src/entries/options/index.html",
         open_in_tab: true
-    },
-    content_security_policy: {
-        extension_pages: "script-src 'self' 'wasm-unsafe-eval'; object-src 'self';"
     }
 };
 
