@@ -117,25 +117,35 @@ const replacementNavIcons = [
     "newspaper",
 ]
 
-// Currently disabled
-if (import.meta.env.DEV) {
-    const nav = document.querySelector("#top-menu");
+const nav = document.querySelector("#top-menu");
 
-    for (const [i, item] of Object.entries(nav.children)) {
-        const anchor = item.firstElementChild;
-        anchor.classList = [];
-        anchor.innerHTML = `
-            <span class="cb-icon icon-fill" style="font-size: 1.5rem; margin-bottom: .25rem">${replacementNavIcons[i]}</span>
-        ` + anchor.innerHTML;
-    }
+for (const [i, item] of Object.entries(nav.children)) {
+    const anchor = item.firstElementChild;
+    anchor.classList = [];
+    anchor.innerHTML = `
+        <span class="cb-icon icon-fill" style="font-size: 1.5rem; margin-bottom: .25rem">${replacementNavIcons[i]}</span>
+    ` + anchor.innerHTML;
+}
 
     const todoButton = document.createElement("li");
     todoButton.style.display = 'list-item';
+    todoButton.addEventListener("click", () => {
+        browser.storage.local.set({checkedNewFeatures: true});
+        nav.querySelector(".dui-indicator").style.opacity = "0";
+    })
     todoButton.innerHTML = `
         <a href="/coolbox-todo">
-            <span class="cb-icon icon-fill" style="font-size: 1.5rem">list_alt</span>
-            <span style="margin-top: .25rem;">To-Do Lists</span>
+            <div class="dui-indicator flex flex-col w-full">
+                <span class="dui-indicator-item dui-badge dui-badge-secondary !h-[18px] opacity-0"></span>
+                <span class="cb-icon icon-fill" style="font-size: 1.5rem">list_alt</span>
+                <span style="margin-top: .25rem;">To-Do Lists</span>
+            </div>
         </a>`
 
-    nav.appendChild(todoButton);
-}
+browser.storage.local.get("checkedNewFeatures").then((data) => {
+    if (!data.checkedNewFeatures) {
+        nav.querySelector(".dui-badge").style.opacity = "1";
+    }
+});
+
+nav.appendChild(todoButton);
