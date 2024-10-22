@@ -23,6 +23,7 @@
                     <div class="button-section !flex-grow-[2]">
                         <div class="dui-divider">Reminders</div>
                         <div class="button-container">
+                            <!--todo: fix adding reminders to tasks-->
                             <div class=button @click="createReminder(false)">
                                 <span class="cb-icon align-bottom">notifications</span>
                                 Add
