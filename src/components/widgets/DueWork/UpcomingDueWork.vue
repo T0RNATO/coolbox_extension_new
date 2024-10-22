@@ -3,6 +3,7 @@
         <h2 class="subheader">Due Work</h2>
         <ul class="information-list rounded-lg bg-primary overflow-hidden" id="due-work" :class="{limitHeight: widgInfo.add}">
             <DueWorkItem v-for="workItem in dueWorkItems"
+                :key="workItem.id"
                 :item="workItem"
                 :hidden="workItem.id && hiddenReminderIds.includes(workItem.id)"
                 @show="show"
