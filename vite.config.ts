@@ -17,6 +17,7 @@ export default defineConfig(({ mode }) => {
             }),
             webExtension({
                 manifest: getManifest(version),
+                useDynamicUrlWebAccessibleResources: false,
             }),
             firefoxPatch(version === 2),
         ],
