@@ -75,7 +75,8 @@ function deleteList(list: TodoListType) {
             </template>
         </PopupBase>
     </teleport>
-    <h2 class="subheader">To-do Lists</h2>
+    <h2 class="subheader inline">To-do Lists</h2>
+    <span class="ml-2 text-themeText/40">(Check out the homepage widget!)</span>
     <div class="todo-list-container" v-if="loaded">
         <TodoList v-for="(list, i) in todoLists"
                   :list="list"
