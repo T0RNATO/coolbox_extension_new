@@ -4,6 +4,12 @@ import {Reminder, Theme} from "../../utils/types.ts";
 
 type UpdateThemeMessage = {type: string, old: Theme, new: Theme}
 
+browser.runtime.onInstalled.addListener((details) => {
+    if (details.previousVersion === "1.1.18") {
+        browser.storage.local.set({checkedNewFeatures: false})
+    }
+})
+
 browser.runtime.onMessage.addListener((message: string | UpdateThemeMessage, sender, sendResponse: (cookie: string) => void) => {
     switch (message) {
         case "applyTheme":
