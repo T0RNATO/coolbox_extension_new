@@ -16,7 +16,7 @@ function colourTimeDiff(date: Date): string {
 const relativeTime = useTimeAgo(props.item.due);
 const time = useDateFormat(props.item.due, 'dddd Do MMMM, h:mma')
 
-defineEmits(['hide', 'show', 'remind']);
+defineEmits(['hide', 'show', 'remind', 'edit']);
 
 function deleteTask() {
     apiSend("DELETE", "tasks", {id: props.item.id}, "Successfully deleted task.", "Failed to delete task.", updateTasks)
@@ -42,21 +42,19 @@ function deleteTask() {
         </p>
 
         <div class="reminder-buttons">
-            <span class="cb-icon show-more h-[80px]" v-if="!item.reminderExists">more_horiz</span>
-            <span class="cb-icon show-more h-[80px]" v-else>more_horiz<br>notifications_active</span>
-            <div class="hover-menu">
-                <span class="cb-icon" @click="$emit('show', item.id)" v-if="hidden">visibility</span>
-                <template v-else>
-                    <span class="cb-icon" @click="$emit('hide', item.id)" v-if="!item.userDefined">visibility_off</span>
-                    <span class="cb-icon" @click="deleteTask" v-else>delete</span>
+            <span class="cb-icon text-green-400 -mt-2" @click="$emit('show', item.id)" v-if="hidden">visibility</span>
+            <template v-else>
+                <span class="cb-icon" @click="$emit('hide', item.id)" v-if="!item.userDefined">visibility_off</span>
+                <span class="cb-icon" @click="deleteTask" v-else>delete</span>
 
-                    <span class="cb-icon" @click="$emit('remind', item.id, item.name)" v-if="!item.reminderExists">notification_add</span>
-                    <span class="cb-icon" @click="$emit('remind', item.id, item.name)" v-else>notifications_active</span>
+                <!--todo-->
+<!--                <span class="cb-icon" v-if="!item.userDefined">edit_note</span>-->
+                <span class="cb-icon" v-if="item.userDefined" @click="$emit('edit', item)">edit</span>
 
-                    <!--todo-->
-                    <span class="cb-icon">edit_note</span>
-                </template>
-            </div>
+                <span class="cb-icon" @click="$emit('remind', item.id, item.name)">
+                    {{item.reminderExists ? 'notifications_active' : 'notification_add'}}
+                </span>
+            </template>
         </div>
     </div>
 </li>
@@ -69,48 +67,9 @@ function deleteTask() {
     right: 7px;
     @apply absolute aspect-square cursor-pointer text-gray-500 text-xl flex flex-col;
 }
-.hover-menu {
-    @apply flex-col gap-y-1;
-    &:not(:hover) {
-        animation: persist 500ms forwards;
-    }
-
-    .cb-icon {
-        @apply transition-colors;
-        &:hover {
-            @apply text-gray-400;
-        }
-    }
-}
-.show-more:not(:is(:hover, :has(+.hover-menu:hover))) {
-    animation: persist-hidden 500ms forwards;
-}
-.hover-menu, .show-more:where(:hover, :has(+.hover-menu:hover)) {
-    display: none;
-}
-.show-more:hover + .hover-menu, .hover-menu:hover {
-    display: flex;
-}
-
-@keyframes persist {
-    from { display: flex; }
-    to { display: none; }
-}
-@keyframes persist-hidden {
-    from { display: none; }
-    99.9% { display: none; }
-    to { display: block; }
-}
 
 .hiderem {
     @apply max-h-3 !bg-accent transition-[max-height] overflow-hidden;
-
-    .show-more {
-        display: none;
-    }
-    .hover-menu {
-        animation: none;
-    }
 
     > h3 {
         @apply mt-5 transition-[margin];
@@ -119,12 +78,6 @@ function deleteTask() {
         @apply max-h-24 pt-2;
         > h3 {
             @apply mt-0;
-        }
-        .hover-menu {
-            display: flex;
-            .cb-icon {
-                @apply text-green-400;
-            }
         }
     }
 }
