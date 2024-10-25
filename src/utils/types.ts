@@ -126,6 +126,7 @@ export type Task = {
     type: string,
     subject?: string,
     id: number,
+    content: string;
 }
 
 export type WorkItem = {

@@ -2,14 +2,25 @@
 import PopupBase from "~/components/popups/PopupBase.vue";
 import {ref} from "vue";
 import VueDatePicker from "@vuepic/vue-datepicker";
-import {apiSend, updateTasks} from "~/utils/apiUtils.js";
-import {Task} from "~/utils/types.js";
+import {apiSend, updateTasks, userTasks} from "~/utils/apiUtils.js";
+import {Task, WorkItem} from "~/utils/types.js";
 
-function openPopup() {
-    subject.value = '';
+function openPopup(task?: WorkItem) {
+    if (!task) {
+        editing.value = false;
+        subject.value = '';
+        title.value = '';
+        content.value = '';
+        due.value = 0;
+    } else {
+        editing.value = true;
+        editingID = task.id;
+        subject.value = task.subject;
+        title.value = task.name;
+        content.value = userTasks.value.find(t => t.id === task.id).content;
+        due.value = new Date(task.due).getTime();
+    }
     error.value = '';
-    title.value = '';
-    due.value = 0;
     popup.value.openPopup();
 }
 
@@ -19,11 +30,15 @@ defineProps<{
     subjects: {name: string, pretty: string}[];
 }>();
 
+const editing = ref(false);
+let editingID = 0;
+
 const popup = ref(null);
 
 const title = ref('');
 const subject = ref('');
 const due = ref(0);
+const content = ref('');
 
 const error = ref('');
 
@@ -37,16 +52,25 @@ function create(event: MouseEvent) {
         event.preventDefault()
         return
     }
-    const task: Partial<Task> = {title: title.value, due: new Date(due.value).toISOString(), type: "Task"};
+    const task: Partial<Task> = {title: title.value, content: content.value,
+        due: new Date(due.value).toISOString(), type: "Task"};
     if (subject.value) {
         task.subject = subject.value;
     }
-    apiSend("POST", "tasks", task, "Task created successfully.", "Failed to create task.", updateTasks);
+    if (!editing.value) {
+        apiSend("POST", "tasks", task, "Task created successfully.", "Failed to create task.",
+            Array.prototype.push.bind(userTasks.value));
+    } else {
+        task.id = editingID;
+        apiSend("PATCH", "tasks", task, "Task edited successfully.", "Failed to edit task.", (newTask: Task) => {
+            userTasks.value[userTasks.value.findIndex(el => el.id === newTask.id)] = newTask
+        })
+    }
 }
 </script>
 
 <template>
-<PopupBase title="Create Task" ref="popup" class="overflow-y-visible">
+<PopupBase :title="editing ? 'Edit Task':'Create Task'" ref="popup" class="overflow-y-visible">
     <div class="grid grid-cols-[30%_70%] items-center gap-y-4">
         <span>Title:</span>
         <input type="text" placeholder="Title" v-model="title">
@@ -56,6 +80,8 @@ function create(event: MouseEvent) {
                        position="left" input-class-name="!bg-primary !text-themeText"
                        :is-24="false" model-type="timestamp" class="h-10" v-model="due"/>
         <div class="col-span-2">
+            <span>Details:</span><span class="text-gray-500 pl-2 text-sm">(Optional)</span>
+            <textarea v-model="content" class="resize-y max-h-60"></textarea>
             <span>Subject:</span>
             <div class="flex flex-wrap gap-2 mt-2">
                 <div v-for="subj in subjects">
@@ -71,8 +97,8 @@ function create(event: MouseEvent) {
         </div>
     </div>
     <template #buttons>
-        <button class="button-l submit" @click="create">Create</button>
-        <button class="button-r">Cancel</button>
+        <button class="button-l">Cancel</button>
+        <button class="button-r submit" @click="create">{{editing ? 'Save' : 'Create'}}</button>
     </template>
 </PopupBase>
 </template>
