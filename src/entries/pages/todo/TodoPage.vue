@@ -24,7 +24,7 @@ const loaded: Ref<boolean> = ref(false);
 const confirmation_popup = ref();
 const confirmation_button = ref();
 
-let confirm: Function;
+let confirm: () => void;
 
 function confirmDeletion(f: () => void) {
     confirmation_popup.value.openPopup();
