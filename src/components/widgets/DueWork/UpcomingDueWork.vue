@@ -8,7 +8,8 @@
                 :hidden="workItem.id && hiddenReminderIds.includes(workItem.id)"
                 @show="show"
                 @hide="hide"
-                @remind="editReminder"
+                @remind="workItemReminder"
+                @edit="$emit('popup', 'editTask', $event)"
             />
             <li class="!pt-2">
                 <div class="flex-row w-full flex p-1 pt-0 text-sm">
@@ -24,7 +25,6 @@
                     <div class="button-section !flex-grow-[2]">
                         <div class="dui-divider">Reminders</div>
                         <div class="button-container">
-                            <!--todo: fix adding reminders to tasks-->
                             <div class=button @click="createReminder(false)">
                                 <span class="cb-icon align-bottom">notifications</span>
                                 Add
@@ -50,6 +50,10 @@ import {useExtensionStorage} from "~/utils/componentUtils";
 import type {widgInfo, WorkItem} from "~/utils/types";
 import DueWorkItem from "~/components/widgets/DueWork/DueWorkItem.vue";
 import {userTasks} from "~/utils/apiUtils.js";
+
+const props = defineProps<{
+    widgInfo: widgInfo
+}>();
 
 const dueWorkItems: ComputedRef<WorkItem[]> = computed(() => {
     const userWorkItems: WorkItem[] = [];
@@ -99,15 +103,17 @@ for (const sbWorkItem of document.querySelectorAll<HTMLDivElement>('#component52
 
     const date = new Date(timeEl.dateTime);
 
+    const id = Number((titleEl.href.split('/').slice(-2, -1)[0]));
+
     sbWorkItems.push({
-        reminderExists: false, //todo
+        reminderExists: reminderExists(id),
         userDefined: false,
         due: date,
         name: titleEl.textContent,
         link: titleEl.href,
         prettySubject, subject,
         subjectLink: subjectEl.href,
-        id: Number((titleEl.href.split('/').slice(-2, -1)[0])),
+        id
     });
 }
 
@@ -127,10 +133,6 @@ setTimeout(() => {
 browser.storage.local.get("subjects").then(data => {
     prettySubjects.value = data.subjects?.value || [];
 })
-
-const props = defineProps<{
-    widgInfo: widgInfo
-}>();
 
 const emit = defineEmits(['popup', 'delete']);
 
@@ -162,11 +164,12 @@ function show(id: number) {
     hiddenReminderIds.value = hiddenReminderIds.value.toSpliced(hiddenReminderIds.value.indexOf(id), 1)
 }
 
-function editReminder(id: number, title: string) {
+function workItemReminder(id: number, title: string) {
     if (reminderExists(id)) {
         emit('popup', 'editReminder', props.widgInfo.reminders.find(reminder => reminder.assessment === id));
     } else {
         createReminder(true, id, title);
+        dueWorkItems.value.find(item => item.id === id).reminderExists = true;
     }
 }
 </script>
