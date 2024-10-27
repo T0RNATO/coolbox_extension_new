@@ -5,7 +5,7 @@ function mix(color, percent = 20) {
 /** @type {import('tailwindcss').Config} */
 module.exports = {
     content: [
-        "./src/**/*.{vue,js,ts,jsx,tsx}",
+        "./src/**/*.vue",
         "./public/css/*.css",
     ],
     theme: {
