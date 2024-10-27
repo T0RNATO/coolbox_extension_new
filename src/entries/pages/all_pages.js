@@ -127,20 +127,20 @@ for (const [i, item] of Object.entries(nav.children)) {
     ` + anchor.innerHTML;
 }
 
-    const todoButton = document.createElement("li");
-    todoButton.style.display = 'list-item';
-    todoButton.addEventListener("click", () => {
-        browser.storage.local.set({checkedNewFeatures: true});
-        nav.querySelector(".dui-indicator").style.opacity = "0";
-    })
-    todoButton.innerHTML = `
-        <a href="/coolbox-todo">
-            <div class="dui-indicator flex flex-col w-full">
-                <span class="dui-indicator-item dui-badge dui-badge-secondary !h-[18px] opacity-0"></span>
-                <span class="cb-icon icon-fill" style="font-size: 1.5rem">list_alt</span>
-                <span style="margin-top: .25rem;">To-Do Lists</span>
-            </div>
-        </a>`
+const todoButton = document.createElement("li");
+todoButton.style.display = 'list-item';
+todoButton.addEventListener("click", () => {
+    browser.storage.local.set({checkedNewFeatures: true});
+    nav.querySelector(".dui-indicator").style.opacity = "0";
+})
+todoButton.innerHTML = `
+    <a href="/coolbox-todo">
+        <div class="dui-indicator flex flex-col w-full">
+            <span class="dui-indicator-item dui-badge dui-badge-secondary !h-[18px] opacity-0"></span>
+            <span class="cb-icon icon-fill" style="font-size: 1.5rem">list_alt</span>
+            <span style="margin-top: .25rem;">To-Do Lists</span>
+        </div>
+    </a>`
 
 browser.storage.local.get("checkedNewFeatures").then((data) => {
     if (!data.checkedNewFeatures) {
