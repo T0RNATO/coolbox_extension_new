@@ -82,7 +82,7 @@ function processApiData(data: ApiResponse) {
         browser.runtime.sendMessage("uninstall");
     }
 
-    if (data.user.role !== "student") {
+    if (data.user.role && data.user.role !== "student") {
         alert("Sorry! Coolbox is only available to students at the moment.");
         browser.runtime.sendMessage("uninstall");
     }
