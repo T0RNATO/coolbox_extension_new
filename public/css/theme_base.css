@@ -58,6 +58,7 @@ div#account-content,
 body .f-open-dropdown,
 #profile-accordion,
 .c-search-select button,
+#pwaPrompt,
 .hybrid-bar .top-menu li a:hover,
 .reveal-modal {
     background-color: rgb(var(--theme-generic)) !important;
