@@ -33,12 +33,17 @@ if (location.pathname in VueInjections) {
     });
 }
 
+const pwaPrompt = document.querySelector("#pwaPrompt");
+
 // Hide profile picture if needed, and apply pretty subjects to sidebar
-browser.storage.local.get(["pfp", "subjects"]).then(data => {
+browser.storage.local.get(["pfp", "subjects", "hidepwa"]).then(data => {
+    if (data.pfp) {
+        document.body.classList.add("hide-pfp");
+    }
+    if (data.hidepwa) {
+        pwaPrompt.remove();
+    }
     cookieFetched.then(() => {
-        if (data.pfp) {
-            document.body.classList.add("hide-pfp");
-        }
         if (data.subjects) {
             if (data.subjects.time + 1000 * 60 * 60 * 24 > Date.now()) {
                 setPrettySubjectNames(data.subjects.value);
@@ -149,3 +154,16 @@ browser.storage.local.get("checkedNewFeatures").then((data) => {
 });
 
 nav.appendChild(todoButton);
+
+if (pwaPrompt) {
+    const hideButton = document.createElement("button");
+    hideButton.textContent = "Hide Permanently";
+    hideButton.className = "rounded-md text-white p-2 w-full";
+    hideButton.style.background = "linear-gradient(45deg, #b592ca 0%, #74adcb 100%)";
+    hideButton.onclick = () => {
+        pwaPrompt.remove();
+        browser.storage.local.set({hidepwa: true});
+    }
+
+    pwaPrompt.children[0].appendChild(hideButton);
+}
