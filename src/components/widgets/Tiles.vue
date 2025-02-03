@@ -2,15 +2,20 @@
     <div>
         <!--I have very little idea how this works but it removes all colours except those where r,g,b are equal-->
         <svg width="0" height="0">
-            <filter id="keep-white" color-interpolation-filters="sRGB" width="98%" height="98%" x="1%" y="1%">
-                <feColorMatrix type="matrix" values="
-                  1 0 0 0 0
-                  0 1 0 0 0
-                  0 0 1 0 0
-                  -1 -1 -1 3.0001 0" />
-                <feComponentTransfer>
-                    <feFuncA type="linear" slope="-10" intercept="10"/>
+            <filter id="keep-white">
+                <feFlood flood-color="white" result="white" />
+                <feBlend in="SourceGraphic" in2="white" mode="difference" result="diff" />
+                <feColorMatrix in="diff" type="matrix" values="
+                  1000 0 0 0 -1000
+                  0 1000 0 0 -1000
+                  0 0 1000 0 -1000
+                  0.3333 0.3333 0.3333 0 0" result="mask" />
+
+                <feComponentTransfer in="mask" result="invMask">
+                    <feFuncA type="discrete" tableValues="1 0" />
                 </feComponentTransfer>
+
+                <feComposite in="SourceGraphic" in2="invMask" operator="in" />
             </filter>
         </svg>
 
