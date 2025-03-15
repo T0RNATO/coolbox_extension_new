@@ -138,5 +138,5 @@ export type WorkItem = {
     subjectLink?: string;
     link?: string;
     reminderExists: boolean;
-    due: Date;
+    due?: Date;
 }

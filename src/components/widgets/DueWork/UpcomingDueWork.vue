@@ -80,7 +80,7 @@ const dueWorkItems: ComputedRef<WorkItem[]> = computed(() => {
         userWorkItems.push(task);
     }
 
-    return [...sbWorkItems, ...userWorkItems].sort((a, b) => a.due.getTime() - b.due.getTime());
+    return [...sbWorkItems, ...userWorkItems].sort((a, b) => (a.due?.getTime() || Number.NEGATIVE_INFINITY) - (b.due?.getTime() || Number.NEGATIVE_INFINITY));
 })
 
 const sbWorkItems: WorkItem[] = [];
@@ -101,7 +101,7 @@ for (const sbWorkItem of document.querySelectorAll<HTMLDivElement>('#component52
         )?.pretty || subject
     )
 
-    const date = new Date(timeEl.dateTime);
+    const date = timeEl ? new Date(timeEl.dateTime): null;
 
     const id = Number((titleEl.href.split('/').slice(-2, -1)[0]));
 

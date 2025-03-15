@@ -36,8 +36,11 @@ function deleteTask() {
             {{ item.subject }}
         </p>
         <p class="meta">
-            <span :class="colourTimeDiff(item.due)">
+            <span v-if="item.due !== null" :class="colourTimeDiff(item.due)">
                 Due {{ time }} ({{ relativeTime }})
+            </span>
+            <span v-else class="bg-red-500 inline-block p-1 mt-1 rounded-sm text-white">
+                Resubmission Required!
             </span>
         </p>
 
