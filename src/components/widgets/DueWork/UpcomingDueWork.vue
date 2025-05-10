@@ -74,7 +74,7 @@ const dueWorkItems: ComputedRef<WorkItem[]> = computed(() => {
                     subject.name.toLowerCase() === userTask.subject.toLowerCase()
                 )?.pretty || userTask.subject
             )
-            task.subjectLink = `/code/${userTask.subject}`;
+            task.subjectLink = `/homepage/code/${userTask.subject}`;
         }
 
         userWorkItems.push(task);
