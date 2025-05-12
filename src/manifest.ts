@@ -71,6 +71,7 @@ const ManifestV2: Partial<chrome.runtime.ManifestV2> = {
         "*://schoolbox.donvale.vic.edu.au/*",
         "*://api.coolbox.lol/*",
     ],
+    web_accessible_resources: ["/fonts/icons.woff2"]
 };
 
 const ManifestV3: Partial<chrome.runtime.ManifestV3> = {
@@ -80,6 +81,12 @@ const ManifestV3: Partial<chrome.runtime.ManifestV3> = {
         service_worker: "src/entries/background/serviceWorker.ts",
     },
     host_permissions: ["*://schoolbox.donvale.vic.edu.au/*"],
+    web_accessible_resources: [
+        {
+            resources: ["/fonts/icons.woff2"],
+            matches: ["*://schoolbox.donvale.vic.edu.au/*"],
+        }
+    ]
 };
 
 export function getManifest(manifestVersion: number): chrome.runtime.Manifest {

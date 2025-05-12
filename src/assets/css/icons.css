@@ -2,7 +2,9 @@
     font-family: 'Material Symbols Outlined';
     font-style: normal;
     font-weight: 400;
-    src: url("https://fonts.gstatic.com/s/materialsymbolsoutlined/v151/kJEhBvYX7BgnkSrUwT8OhrdQw4oELdPIeeII9v6oFsI.woff2") format('woff2');
+    /*I literally can't find any docs on this but it works?? so, cool ig*/
+    /*noinspection CssUnknownTarget*/
+    src: url("chrome-extension://__MSG_@@extension_id__/fonts/icons.woff2") format('woff2');
 }
 
 .cb-icon {
