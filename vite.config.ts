@@ -1,4 +1,4 @@
-import { defineConfig, loadEnv, type Plugin } from "vite";
+import {defineConfig, loadEnv, type Plugin, UserConfig} from "vite";
 import vue from "@vitejs/plugin-vue";
 import webExtension from "@samrum/vite-plugin-web-extension";
 import path from "path";
@@ -13,12 +13,14 @@ export default defineConfig(({ mode }) => {
     return {
         plugins: [
             vue({
-                customElement: /\.shadow\.vue$/,
+                features: {
+                    customElement: /\.shadow\.vue$/,
+                },
             }),
             webExtension({
                 manifest: getManifest(version),
                 useDynamicUrlWebAccessibleResources: false,
-            }),
+            }) as unknown as Plugin, // idk why this is necessary
             firefoxPatch(version === 2),
         ],
         resolve: {
@@ -31,7 +33,7 @@ export default defineConfig(({ mode }) => {
                 external: /\.dev\./,
             }
         }
-    };
+    } satisfies UserConfig;
 });
 
 const firefoxPatch = (active: boolean): Plugin | false => {
