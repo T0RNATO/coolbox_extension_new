@@ -58,7 +58,7 @@ apiResponded.then(() => {
                 <!--The room change, if applicable-->
                 <div class="dui-tooltip ml-1" data-tip='Room Change' v-if="roomChange">
                     <span class="font-semibold">
-                        → {{roomChange['assigned_room']}}
+                        → {{roomChange.assigned_room}}
                     </span>
                 </div>
             </div>
