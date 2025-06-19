@@ -94,12 +94,14 @@ for (const sbWorkItem of document.querySelectorAll<HTMLDivElement>('#component52
 
     const possibleSubjectCodes = subjectEl.textContent.split("(")[1]?.slice(0, -1)?.split(',');
     const prettySubject = computed(() =>
-        prettySubjects.value.find(
-            subject => possibleSubjectCodes.some(
-                code => code.toLowerCase() === subject.name.toLowerCase()
-            )
-        )?.pretty || subject
-    )
+        possibleSubjectCodes ?
+            prettySubjects.value.find(
+                subjectCode => possibleSubjectCodes.some(
+                    code => code.toLowerCase() === subjectCode.name.toLowerCase()
+                )
+            )?.pretty || subject
+        : subject
+    );
 
     const date = timeEl ? new Date(timeEl.dateTime): null;
 
