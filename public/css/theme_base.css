@@ -7,6 +7,11 @@
     --logo-background:       var(--navigation-background) !important;
 }
 
+.css_vars_so_webstorm_chills_out {
+    --navigation-background: 0;
+    --link-colour: 0;
+}
+
 /*This css file is a mess*/
 
 .smooth-dnd-draggable-wrapper,
@@ -122,6 +127,7 @@ label:not(.button),
 ul.off-canvas-list *,
 body h1,
 .article h4,
+article h4,
 dd a,
 :not(a) > h3,
 .fc-col-header-cell-cushion,
