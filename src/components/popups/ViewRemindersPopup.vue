@@ -11,10 +11,10 @@ function openPopup() {
     updateReminders();
 }
 
-const emit = defineEmits(['popup'])
+const emit = defineEmits(['editReminder'])
 
 function editReminder(rem) {
-    emit('popup', 'editReminder', rem);
+    emit('editReminder', rem);
 }
 
 defineExpose({openPopup});
