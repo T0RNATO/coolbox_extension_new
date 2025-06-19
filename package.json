@@ -1,7 +1,7 @@
 {
   "name": "coolbox",
   "type": "module",
-  "version": "1.2.4",
+  "version": "1.2.5",
   "displayName": "Coolbox",
   "author": "TorNato & SleepyStew",
   "description": "An extension to extend and customise Schoolbox.",
