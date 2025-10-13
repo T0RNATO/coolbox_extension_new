@@ -7,6 +7,7 @@ import browser from "webextension-polyfill";
 import {apiSend, cookieFetched} from "~/utils/apiUtils";
 import {addViteStyleTarget} from "@samrum/vite-plugin-web-extension/client";
 import TodoPage from "~/entries/pages/todo/TodoPage.vue";
+import AnnoyingCookiePrompt from "~/components/other/AnnoyingCookiePrompt.vue";
 
 if (import.meta.env.DEV) {
     import("tailwindcss/tailwind.css");
@@ -21,6 +22,14 @@ const VueInjections = {
 }
 
 const appProps = reactive({subjects: [{name: 'Loading...', pretty: 'Loading...'}]})
+
+// Mount the prank overlay and react to settings
+const overlayRoot = document.createElement("div");
+document.body.appendChild(overlayRoot);
+const overlayApp = createApp({
+    render: () => h(AnnoyingCookiePrompt)
+});
+overlayApp.mount(overlayRoot);
 
 // Render Vue
 if (location.pathname in VueInjections) {
