@@ -17,7 +17,7 @@
               type="checkbox"
               :checked="toggles[i]"
               @change="onToggleChange(i, $event)"
-              class="dui-toggle !dui-toggle-success !transition-all"
+              class="!dui-toggle !dui-toggle-success !transition-all plain border-solid border-gray-500"
               :aria-checked="toggles[i] ? 'true' : 'false'"
             />
           </label>
