@@ -146,12 +146,6 @@ export function successToast(message: string) {
     animateToast(successToast);
 }
 
-export function failureToast(message: string) {
-    const errorToast = document.querySelector("#toast-failure");
-    errorToast.querySelector(".content").textContent = message;
-    animateToast(errorToast);
-}
-
 export function apiSend(method: string, path: string, body: any, successMessage?: string, errorMessage?: string, callback?: (value?: any) => void) {
     fetch(`https://api.coolbox.lol/${path}`, {
         method: method,
