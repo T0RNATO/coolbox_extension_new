@@ -3,7 +3,6 @@ import {apiResponded, roomChanges} from "~/utils/apiUtils";
 import {useExtensionStorage} from "~/utils/componentUtils";
 import {type RoomChange} from "~/utils/types";
 import {ref, type Ref} from "vue";
-import {isLegacyDay} from "~/utils/isLegacyDay.js";
 
 const darkenSubjects = useExtensionStorage("timetable.dark", false);
 const outlineCurrent = useExtensionStorage("timetable.outline", false);
@@ -29,15 +28,6 @@ apiResponded.then(() => {
         change => change.timetabled_room === props.subject.children[2]?.textContent &&
             change.class_name.toLowerCase() === subjectID
     );
-
-    // Legacy Day Room Change
-    if (!isLegacyDay())
-      return;
-    if (props.subject.parentElement.parentElement.parentElement.children[1] === props.subject.parentElement.parentElement) {
-      roomChange.value = {...roomChange.value, assigned_room: "L3.10" }
-    }
-
-
 })
 </script>
 
@@ -49,7 +39,6 @@ apiResponded.then(() => {
             outline: outlineCurrent && subject.parentElement.classList.contains('timetable-subject-active')
         }"
          class="cb-subject">
-      {{ date }}
         <div v-if="subject.tagName === 'DIV'">
             <!--The title of the subject-->
             <a :href="(subject.firstElementChild as HTMLAnchorElement)?.href" class="cb-link">
@@ -67,7 +56,7 @@ apiResponded.then(() => {
                 <!--The normal room, struck through if a roomchange exists-->
                 <span :class="{strike: roomChange}">{{subject.children[2]?.textContent}}</span>
                 <!--The room change, if applicable-->
-                <div class="dui-tooltip ml-1" data-tip='Room Change' v-if="roomChange && subject.children[2]?.textContent">
+                <div class="dui-tooltip ml-1" data-tip='Room Change' v-if="roomChange">
                     <span class="font-semibold">
                         → {{roomChange.assigned_room}}
                     </span>
