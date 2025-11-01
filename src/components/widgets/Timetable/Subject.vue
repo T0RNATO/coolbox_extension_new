@@ -34,7 +34,7 @@ apiResponded.then(() => {
     if (!isLegacyDay())
       return;
     if (props.subject.parentElement.parentElement.parentElement.children[1] === props.subject.parentElement.parentElement) {
-      roomChange.value = {...roomChange.value, assigned_room: "L3" }
+      roomChange.value = {...roomChange.value, assigned_room: "L3.10" }
     }
 
 
