@@ -23,7 +23,7 @@
             </div>
         </div>
 
-        <span class="text-red-500 text-2xl whitespace-pre-line">{{statusMessages.critical}}</span>
+<!--        <span class="text-red-500 text-2xl whitespace-pre-line">{{statusMessages.critical}}</span>-->
 
         <EditingContextMenu @delete="$emit('delete')" settings="true">
             <div class="option">
@@ -41,7 +41,7 @@
 
 <script setup lang="ts">
 import EditingContextMenu from "~/components/other/EditingContextMenu.vue";
-import {statusMessages} from "~/utils/apiUtils";
+// import {statusMessages} from "~/utils/apiUtils";
 import {Ref, ref} from "vue";
 import browser from "webextension-polyfill";
 import {useExtensionStorage, weekNumber} from "~/utils/componentUtils";

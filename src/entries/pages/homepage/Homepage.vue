@@ -26,6 +26,11 @@
             </div>
         </div>
         <div v-for="[column, components] in Object.entries(currentPageLayout)">
+            <div v-if="column == 'leftCol'" class="text-xl text-red-500 pl-2">
+                <strong>Attention:</strong>
+                Coolbox is shutting down on December 10th.
+                Please <a href="https://coolbox.lol/closure" target="_blank" class="font-bold cb-link !text-inherit underline"> click to read more</a>.
+            </div>
             <component v-for="[i, el] in Object.entries(components)"
                        :is="el" :key="i" :class="{'px-2': true, 'slide-in': pageHasBeenEdited}"
                        :widg-info="{edit: false, col: column, add: false, reminders: reminders}"

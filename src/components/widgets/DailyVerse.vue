@@ -20,8 +20,8 @@ function share() {
                     <span class="cb-icon icon-fill mr-3 text-2xl -scale-x-100">format_quote</span>
                     <Shadow>
                         <div v-html="dailyVerse.content"></div>
-                        <!--language=CSS-->
                         <!--suppress CssUnusedSymbol -->
+                        <!--language=CSS-->
                         <shadow_style>
                             span.small-caps {font-variant: small-caps;}
                             h3, h4 {margin: 0;}
